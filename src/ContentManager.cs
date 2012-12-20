@@ -273,7 +273,7 @@ public static class {0}
             _sPages = new Dictionary<string, Page>();
             _sContent = new Dictionary<string, byte[]>();
 
-            _sContentDirectory = Path.GetFullPath( ini.GetValue( "pagesdir" ) ?? "res" );
+            _sContentDirectory = ini.GetValue( "pagesdir" ) ?? "res";
             _sAllowedExtensions = ( ini.GetValue( "allowedext" ) ?? "" ).Split( ',' ).ToList();
 
             for ( int i = 0; i < _sAllowedExtensions.Count; ++i )

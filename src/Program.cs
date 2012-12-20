@@ -24,11 +24,13 @@ namespace TestServer
 
             stActive = true;
 
-            if ( !File.Exists( Path.Combine( System.AppDomain.CurrentDomain.BaseDirectory, "config.ini" ) ) )
+            String iniPath = Path.Combine( System.AppDomain.CurrentDomain.BaseDirectory, "config.ini" );
+
+            if ( !File.Exists( iniPath ) )
                 Console.WriteLine( "WARNING: config.ini not found, some features may not function" );
             else
             {
-                IniDocument ini = new IniDocument( "config.ini" );
+                IniDocument ini = new IniDocument( iniPath );
                 IniSection general = ini.Sections["general"];
                 ServerAddress = general.GetValue( "address" );
                 int.TryParse( general.GetValue( "localport" ), out LocalPort );

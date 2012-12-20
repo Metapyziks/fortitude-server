@@ -68,35 +68,13 @@ namespace TestServer
 
             while ( stActive )
             {
-                String input;
-                try
-                {
-                    input = Console.ReadLine();
-                }
-                catch ( UnauthorizedAccessException )
-                {
-                    Thread.Sleep( 100 );
-                    continue;
-                }
-
-                String[] line = input.Split( new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries );
+#if DEBUG
+                String[] line = Console.ReadLine().Split( new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries );
                 if ( line.Length > 0 )
-                {
-#if !DEBUG
-                    try
-                    {
+                    ProcessCommand( line[0].ToLower(), line.Where( ( x, i ) => i > 0 ).ToArray() );
+#else
+                Thread.Yield();
 #endif
-                        ProcessCommand( line[0].ToLower(), line.Where( ( x, i ) => i > 0 ).ToArray() );
-#if !DEBUG
-                    }
-                    catch ( Exception e )
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine( e.GetType().Name + " thrown: " + e.Message );
-                        Console.ResetColor();
-                    }
-#endif
-                }
             }
 
             clientThread.Abort();

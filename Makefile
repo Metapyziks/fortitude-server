@@ -48,7 +48,7 @@ debug:
 	mkdir -p $(DEBUGBINDIR)
 	rm -f $(DEBUGBINDIR)/$(TARGET)
 	$(CSC) -langversion:$(CSVERSION) $(SRC) -r:$(SYSLIBS),$(LIBDIR)/$(NINI),$(SQLLIB) -d:$(DEF),DEBUG \
-		-main:$(MAINCLASS) -out:$(DEBUGBINDIR)/$(TARGET)
+		-main:$(MAINCLASS) -out:$(DEBUGBINDIR)/$(TARGET) -debug
 	cp -r $(LIBDIR)/. $(DEBUGBINDIR)
 	cp -r $(RESDIR) $(DEBUGBINDIR)/$(RESDIR)
 	cp config.ini $(DEBUGBINDIR)

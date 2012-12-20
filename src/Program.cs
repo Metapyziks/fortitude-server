@@ -24,7 +24,7 @@ namespace TestServer
 
             stActive = true;
 
-            if ( !File.Exists( "config.ini" ) )
+            if ( !File.Exists( Path.Combine( System.AppDomain.CurrentDomain.BaseDirectory, "config.ini" ) ) )
                 Console.WriteLine( "WARNING: config.ini not found, some features may not function" );
             else
             {

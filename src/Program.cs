@@ -20,6 +20,7 @@ namespace TestServer
 
         static void Main( String[] args )
         {
+            Directory.SetCurrentDirectory( System.AppDomain.CurrentDomain.BaseDirectory );
             Console.Title = "Fortitude Server Prototype";
 
             stActive = true;

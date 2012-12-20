@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8" />
+		<title>Fortitude Server Prototype - User List</title>
+	</head>
+	<body>
+		<center>
+			<h1>User List</h1>
+			<table border="1">
+				<tr>
+					<th>ID</th>
+					<th>Username</th>
+					<th>Rank</th>
+					<th>Join Date</th>
+				</tr><?
+	List<Account> users = DatabaseManager.SelectAll<Account>();
+	foreach ( Account acc in users )
+	{ ?>
+				  	<tr>
+						<td>{$acc.AccountID}</td>
+						<td>{$acc.Username}</td>
+						<td>{$acc.Rank}</td>
+						<td>{$acc.RegistrationDate.ToShortDateString()}</td>
+					</tr><?
+	} ?>
+			</table>
+			<br />
+			<a href="/index.html">Home</a>
+		</center>
+	</body>
+</html>

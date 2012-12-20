@@ -315,7 +315,7 @@ public static class {0}
 
         private static void InitializeDirectory( string dir, int depth = 0 )
         {
-            String dirName = "res" + dir.Substring( _sContentDirectory.Length );
+            String dirName = dir;
             Console.WriteLine( dirName );
 
             foreach ( String file in Directory.GetFiles( dir ) )

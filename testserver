@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/local/bin/mono /root/fortitude-server/bin/release/TestServer.exe

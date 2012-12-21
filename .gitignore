@@ -5,9 +5,9 @@
 *.config
 *.db
 *.user
+*.log
 
 config.ini
-console.log
 
 bin
 obj

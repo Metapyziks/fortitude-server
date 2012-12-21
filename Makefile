@@ -1,4 +1,4 @@
-CSC = mcs
+CSC = /usr/local/bin/mcs
 
 CSVERSION = future
 

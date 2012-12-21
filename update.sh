@@ -23,7 +23,7 @@ make release
 if [ $MONO ]
 then
 	echo "Starting server"
-	sh init.sh
+	bash init.sh >init.log 2>&1
 fi
 
 echo "Entering $OLDDIR"

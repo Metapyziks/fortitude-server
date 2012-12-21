@@ -57,6 +57,9 @@ update:
 	bash update.sh >update.log 2>&1
 
 install:
+	chmod 755 init.sh
+	chmod 755 update.sh
+	chmod 755 stop.sh
 	cp init.d.sh /etc/init.d/fortitude
 	chmod 755 /etc/init.d/fortitude
 	update-rc.d fortitude defaults

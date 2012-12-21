@@ -6,7 +6,8 @@ ftdir=/root/fortitude-server/
 
 case "$1" in
   start)
-    echo "Starting fortitude..."
+    echo "Updating and starting fortitude..."
+    bash ${ftdir}update.sh >${ftdir}update.log 2>&1
     bash ${ftdir}init.sh >${ftdir}init.log 2>&1
     ;;
   stop)

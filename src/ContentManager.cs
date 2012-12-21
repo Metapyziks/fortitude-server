@@ -16,40 +16,59 @@ namespace TestServer
 {
     static class ContentManager
     {
-        private abstract class Page
+        private abstract class Resource
         {
             public readonly String Path;
 
-            protected Page( String path, String content )
+            protected Resource( String path )
             {
                 Path = path;
-                Update( content );
+                Update();
             }
 
             public virtual void ServeRequest( HttpListenerContext context )
             {
-                StreamWriter writer = new StreamWriter( context.Response.OutputStream );
+                WriteContent( context.Response.OutputStream );
+            }
+
+            public abstract void Update();
+            public abstract void WriteContent( Stream stream );
+        }
+
+        private abstract class Page : Resource
+        {
+            protected Page( String path )
+                : base( path ) { }
+
+            public override void WriteContent( Stream stream )
+            {
+                StreamWriter writer = new StreamWriter( stream );
                 WriteContent( writer );
                 writer.Flush();
             }
 
-            public abstract void Update( String content );
-            public abstract void WriteContent( StreamWriter writer );
+            public override void Update()
+            {
+                Update( File.ReadAllText( Path ) );
+            }
+
+            protected abstract void Update( String content );
+            protected abstract void WriteContent( StreamWriter writer );
         }
 
         private class StaticPage : Page
         {
             public String Content { get; private set; }
 
-            public StaticPage( String path, String content )
-                : base( path, content ) { }
+            public StaticPage( String path )
+                : base( path ) { }
 
-            public override void Update( String content )
+            protected override void Update( String content )
             {
                 Content = content;
             }
 
-            public override void WriteContent( StreamWriter writer )
+            protected override void WriteContent( StreamWriter writer )
             {
                 writer.Write( Content );
             }
@@ -130,8 +149,8 @@ public static class {0}
             private Assembly _assembly;
             private MethodInfo _serveMethod;
 
-            public ScriptedPage( String path, String content )
-                : base( path, content ) { }
+            public ScriptedPage( String path )
+                : base( path ) { }
 
             private String FormatHTMLBlock( String block )
             {
@@ -193,12 +212,13 @@ public static class {0}
                 }
                 builder.Append( FormatHTMLBlock( content.Substring( j, i - j ) ) );
 
-                _className = "PageScript" + Path.Replace( '/', '_' ).Substring( 0, Path.IndexOf( '.' ) );
+                String formatted = FormatPath( Path );
+                _className = "PageScript" + formatted.Replace( '/', '_' ).Substring( 0, formatted.IndexOf( '.' ) );
                 
                 return _sTemplate.Replace( "{0}", _className ).Replace( "{1}", builder.ToString() );
             }
 
-            public override void Update( String content )
+            protected override void Update( String content )
             {
                 _generatedCode = GenerateCode( content );
 
@@ -254,7 +274,7 @@ public static class {0}
                 writer.Flush();
             }
 
-            public override void WriteContent( StreamWriter writer )
+            protected override void WriteContent( StreamWriter writer )
             {
                 throw new NotImplementedException();
             }
@@ -345,7 +365,7 @@ public static class {0}
 
             if ( !_sPages.ContainsKey( formatted ) )
             {
-                _sPages.Add( formatted, new ScriptedPage( formatted, File.ReadAllText( path ) ) );
+                _sPages.Add( formatted, new ScriptedPage( path ) );
                 Console.Write( "+ ".PadLeft( 2 + depth * 2 ) );
             }
             else
@@ -358,7 +378,7 @@ public static class {0}
                     {
                         try
                         {
-                            _sPages[formatted].Update( File.ReadAllText( path ) );
+                            _sPages[formatted].Update();
                             break;
                         }
                         catch ( IOException )

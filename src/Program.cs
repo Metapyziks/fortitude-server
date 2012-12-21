@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if !LINUX
+#define WINDOWS
+#endif
+
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -22,7 +26,6 @@ namespace TestServer
         {
             Directory.SetCurrentDirectory( System.AppDomain.CurrentDomain.BaseDirectory );
             Console.Title = "Fortitude Server Prototype";
-
             stActive = true;
 
             String iniPath = Path.Combine( System.AppDomain.CurrentDomain.BaseDirectory, "config.ini" );

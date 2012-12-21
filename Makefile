@@ -41,7 +41,7 @@ release:
 	$(CSC) -langversion:$(CSVERSION) $(SRC) -r:$(SYSLIBS),$(LIBDIR)/$(NINI),$(SQLLIB) -d:$(DEF) \
 		-main:$(MAINCLASS) -out:$(RELEASEBINDIR)/$(TARGET)
 	cp -r $(LIBDIR)/. $(RELEASEBINDIR)
-	cp -r $(RESDIR) $(RELEASEBINDIR)/$(RESDIR)
+	cp -r $(RESDIR) $(RELEASEBINDIR)
 	cp config.ini $(RELEASEBINDIR)
 
 debug:
@@ -50,7 +50,7 @@ debug:
 	$(CSC) -langversion:$(CSVERSION) $(SRC) -r:$(SYSLIBS),$(LIBDIR)/$(NINI),$(SQLLIB) -d:$(DEF),DEBUG \
 		-main:$(MAINCLASS) -out:$(DEBUGBINDIR)/$(TARGET) -debug
 	cp -r $(LIBDIR)/. $(DEBUGBINDIR)
-	cp -r $(RESDIR) $(DEBUGBINDIR)/$(RESDIR)
+	cp -r $(RESDIR) $(DEBUGBINDIR)
 	cp config.ini $(DEBUGBINDIR)
 
 update:

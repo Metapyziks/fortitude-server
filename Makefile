@@ -52,6 +52,3 @@ debug:
 	cp -r $(LIBDIR)/. $(DEBUGBINDIR)
 	cp -r $(RESDIR) $(DEBUGBINDIR)/$(RESDIR)
 	cp config.ini $(DEBUGBINDIR)
-
-install:
-	cp fortitude.init.sh /etc/init.d/fortitude

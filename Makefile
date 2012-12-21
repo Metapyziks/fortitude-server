@@ -55,3 +55,12 @@ debug:
 
 update:
 	bash update.sh >update.log 2>&1
+
+install:
+	cp init.d.sh /etc/init.d/fortitude
+	chmod 755 /etc/init.d/fortitude
+	update-rc.d fortitude defaults
+
+uninstall:
+	update-rc.d -f fortitude remove
+	rm /etc/init.d/fortitude

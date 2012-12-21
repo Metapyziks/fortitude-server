@@ -13,7 +13,7 @@ if [ -n $MONO ] ; then
 fi
 
 echo "Pulling new changes"
-git pull origin master
+git pull origin live
 echo "Making"
 make release
 echo "Starting server"

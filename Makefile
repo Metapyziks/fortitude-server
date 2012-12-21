@@ -52,3 +52,6 @@ debug:
 	cp -r $(LIBDIR)/. $(DEBUGBINDIR)
 	cp -r $(RESDIR) $(DEBUGBINDIR)/$(RESDIR)
 	cp config.ini $(DEBUGBINDIR)
+
+update:
+	bash update.sh >update.log 2>&1

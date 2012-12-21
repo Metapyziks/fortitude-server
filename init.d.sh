@@ -2,18 +2,21 @@
 # /etc/init.d/fortitude
 #
 
+ftdir=/root/fortitude-server/
+
 case "$1" in
   start)
     echo "Starting fortitude..."
-    bash /root/fortitude/init.sh
+    bash ${ftdir}init.sh >${ftdir}init.log 2>&1
     ;;
   stop)
     echo "Stopping fortitude..."
-    bash /root/fortitude/stop.sh
+    bash ${ftdir}stop.sh >${ftdir}stop.log 2>&1
     ;;
   update)
     echo "Updating fortitude..."
-    bash /root/fortitude/update.sh
+    bash ${ftdir}update.sh >${ftdir}update.log 2>&1
+    ;;
   *)
     echo "Usage: /etc/init.d/fortitude {start|stop|update}"
     exit 1

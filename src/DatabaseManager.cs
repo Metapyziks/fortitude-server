@@ -347,10 +347,14 @@ using System.Linq.Expressions;
                     return String.Format( "'{0}'", Expression.Lambda<Func<String>>(
                         Expression.Invoke( toString, exp ) ).Compile()() );
                 }
-                else
+                else if ( exp.Type == typeof( int ) )
                 {
-                    return String.Format( "'{0}'", Expression.Lambda<Func<Object>>( exp ).Compile()() );
+                    Expression<Func<int,String>> toString = x => x.ToString();
+                    return String.Format( "'{0}'", Expression.Lambda<Func<String>>(
+                        Expression.Invoke( toString, exp ) ).Compile()() );
                 }
+                else
+                    return String.Format( "'{0}'", Expression.Lambda<Func<Object>>( exp ).Compile()() );
             }
 
             if ( exp is UnaryExpression )

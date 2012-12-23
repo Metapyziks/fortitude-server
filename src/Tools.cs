@@ -56,5 +56,14 @@ namespace TestServer
 
             return str;
         }
+
+        public static bool Extends( this Type type, Type other )
+        {
+            if ( type == other )
+                return true;
+            if ( type.BaseType != null )
+                return Extends( type.BaseType, other );
+            return false;
+        }
     }
 }

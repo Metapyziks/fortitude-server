@@ -51,8 +51,8 @@ namespace TestServer
 
             if ( obj is DateTime )
             {
-                builder.Append( ( ( (DateTime) obj ).ToUniversalTime() -
-                    Tools.UnixEpoch ).TotalSeconds.ToString() );
+                builder.Append( ( (int) ( ( (DateTime) obj ).ToUniversalTime() -
+                    Tools.UnixEpoch ).TotalSeconds ).ToString() );
                 return;
             }
 

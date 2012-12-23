@@ -6,6 +6,10 @@ using System.Reflection;
 
 namespace TestServer
 {
+    [AttributeUsage( AttributeTargets.Class )]
+    class JSONSerializableAttribute : Attribute { }
+
+    [AttributeUsage( AttributeTargets.Property | AttributeTargets.Field )]
     class SerializeAttribute : Attribute
     {
         public readonly String KeyName;
@@ -74,7 +78,7 @@ namespace TestServer
             }
 
             Type type = obj.GetType();
-            if ( type.IsDefined( typeof( SerializableAttribute ), true ) )
+            if ( type.IsDefined( typeof( JSONSerializableAttribute ), true ) )
             {
                 builder.Append( "{" );
                 bool first = true;

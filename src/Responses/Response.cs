@@ -2,7 +2,7 @@
 
 namespace TestServer.Responses
 {
-    [Serializable]
+    [JSONSerializable]
     public class Response
     {
         [Serialize( "success" )]

@@ -2,7 +2,7 @@
 
 namespace TestServer.Entities
 {
-    [Serializable, DatabaseEntity]
+    [JSONSerializable, DatabaseEntity]
     public class Player
     {
         public struct Fields

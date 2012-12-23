@@ -5,7 +5,7 @@ using TestServer.Entities;
 
 namespace TestServer.Responses
 {
-    [Serializable]
+    [JSONSerializable]
     public class UserInfoResponse : Response
     {
         [Serialize( "users" )]

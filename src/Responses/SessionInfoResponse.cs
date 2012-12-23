@@ -2,7 +2,7 @@
 
 namespace TestServer.Responses
 {
-    [Serializable]
+    [JSONSerializable]
     public class SessionInfoResponse : Response
     {
         [Serialize( "code" )]

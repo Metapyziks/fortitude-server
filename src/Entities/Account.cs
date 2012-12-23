@@ -13,7 +13,7 @@ namespace TestServer.Entities
         Owner = 7
     }
 
-    [Serializable, DatabaseEntity]
+    [JSONSerializable, DatabaseEntity]
     public class Account
     {
         private static readonly Regex stUsernameRegex;

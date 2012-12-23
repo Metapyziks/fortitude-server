@@ -4,7 +4,7 @@ using TestServer.Entities;
 
 namespace TestServer.Responses
 {
-    [Serializable]
+    [JSONSerializable]
     public class UserBalanceResponse : Response
     {
         [Serialize( "balance" )]

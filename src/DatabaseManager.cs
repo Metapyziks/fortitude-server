@@ -253,9 +253,9 @@ using System.Linq.Expressions;
 
         public static void ConnectLocal()
         {
-#if DEBUG
-            DropDatabase();
-#endif
+// #if DEBUG
+//             DropDatabase();
+// #endif
 
             if( !File.Exists( _sFileName ) )
                 CreateDatabase( "Data Source={0};", _sFileName );

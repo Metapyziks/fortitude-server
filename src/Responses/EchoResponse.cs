@@ -2,7 +2,7 @@
 
 namespace TestServer.Responses
 {
-    [Serializable]
+    [JSONSerializable]
     public class EchoResponse : Response
     {
         [Serialize( "msg" )]

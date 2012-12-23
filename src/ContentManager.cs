@@ -76,7 +76,7 @@ namespace TestServer
 
         private class ScriptedPage : Page
         {
-            #region Template
+#region Template
             private static readonly String _sTemplate = @"
 using System;
 using System.Net;
@@ -109,7 +109,7 @@ public static class {0}
     }
 }
 ";
-            #endregion
+#endregion
 
             private static CodeDomProvider _compiler;
 
@@ -207,14 +207,14 @@ public static class {0}
                             while ( ++i < content.Length && content[i] != '\'' ) ;
                     }
 
-                    
+
                     ++i;
                 }
                 builder.Append( FormatHTMLBlock( content.Substring( j, i - j ) ) );
 
                 String formatted = FormatPath( Path );
                 _className = "PageScript" + formatted.Replace( '/', '_' ).Substring( 0, formatted.IndexOf( '.' ) );
-                
+
                 return _sTemplate.Replace( "{0}", _className ).Replace( "{1}", builder.ToString() );
             }
 
@@ -224,12 +224,12 @@ public static class {0}
 
                 CompilerResults results = _compiler.CompileAssemblyFromSource(
                     CreateCompilerPatameters(), _generatedCode );
-                
+
                 bool borked = false;
                 if ( results.Errors.Count > 0 )
                 {
                     Console.WriteLine( "Encountered {0} error{1} or warning{1} while compiling {2}:",
-                        results.Errors.Count,  results.Errors.Count != 1 ? "s" : "", Path );
+                        results.Errors.Count, results.Errors.Count != 1 ? "s" : "", Path );
 
                     foreach ( CompilerError error in results.Errors )
                     {

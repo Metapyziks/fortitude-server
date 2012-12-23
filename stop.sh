@@ -15,5 +15,5 @@ else
 	echo "Server not running"
 fi
 
-echo "Entering $OLDDIR"
+echo "Leaving $DIR"
 cd $OLDDIR

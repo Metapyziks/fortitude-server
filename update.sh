@@ -26,5 +26,5 @@ then
 	bash init.sh >init.log 2>&1
 fi
 
-echo "Entering $OLDDIR"
+echo "Leaving $DIR"
 cd $OLDDIR

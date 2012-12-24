@@ -98,7 +98,7 @@ namespace TestServer.Requests
             {
                 if ( !Account.IsPasswordHashValid( passwordHash ) )
                 {
-                    error = new Responses.ErrorResponse( "auth error: invalid password hash" );
+                    error = new Responses.ErrorResponse( "auth error: invalid password" );
                     return false;
                 }
             }
@@ -107,7 +107,7 @@ namespace TestServer.Requests
                 if ( acceptSession )
                     error = new Responses.ErrorResponse( "auth error: no password or session code given" );
                 else
-                    error = new Responses.ErrorResponse( "auth error: no password hash given" );
+                    error = new Responses.ErrorResponse( "auth error: no password given" );
                 
                 return false;
             }
@@ -124,7 +124,7 @@ namespace TestServer.Requests
             {
                 if ( !passwordHash.EqualsCharArray( account.PasswordHash ) )
                 {
-                    error = new Responses.ErrorResponse( "auth error: incorrect password hash" );
+                    error = new Responses.ErrorResponse( "auth error: incorrect password" );
                     return false;
                 }
             }
@@ -134,7 +134,13 @@ namespace TestServer.Requests
 
                 if ( sess == null || !sessionCode.EqualsCharArray( sess.SessionCode ) )
                 {
-                    error = new Responses.ErrorResponse( "auth error: incorrect or expired session code" );
+                    error = new Responses.ErrorResponse( "auth error: incorrect session code" );
+                    return false;
+                }
+
+                if ( sess.IsExpired )
+                {
+                    error = new Responses.ErrorResponse( "auth error: session expired" );
                     return false;
                 }
 

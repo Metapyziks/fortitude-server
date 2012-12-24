@@ -37,10 +37,10 @@ namespace TestServer
             {
                 AuthSession sess = stSessions[ account.AccountID ];
 
-                if ( !sess.IsExpired )
-                    return sess;
+                if ( sess.IsExpired )
+                    stSessions.Remove( account.AccountID );
 
-                stSessions.Remove( account.AccountID );
+                return sess;
             }
 
             return null;

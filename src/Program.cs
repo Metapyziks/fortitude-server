@@ -59,7 +59,7 @@ namespace TestServer
                     Task<HttpListenerContext> ctxTask = listener.GetContextAsync();
 
                     while( !ctxTask.IsCompleted && stActive )
-                        Thread.Yield();
+                        Thread.Sleep(10);
 
                     if ( !stActive )
                         break;
@@ -79,7 +79,7 @@ namespace TestServer
                 if ( line.Length > 0 )
                     ProcessCommand( line[0].ToLower(), line.Where( ( x, i ) => i > 0 ).ToArray() );
 #else
-                Thread.Yield();
+                Thread.Sleep(10);
 #endif
             }
 

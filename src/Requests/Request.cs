@@ -11,7 +11,7 @@ namespace TestServer.Requests
     {
         public readonly String Name;
 
-        public RequestTypeNameAttribute( String name )
+        public RequestTypeNameAttribute(String name)
         {
             Name = name;
         }
@@ -25,122 +25,100 @@ namespace TestServer.Requests
         {
             stRegistered = new Dictionary<String, Request>();
 
-            foreach ( Type type in Assembly.GetExecutingAssembly().GetTypes() )
-            {
-                if ( type.BaseType == typeof( Request ) )
-                {
-                    ConstructorInfo cons = type.GetConstructor( new Type[ 0 ] );
-                    Request inst = (Request) cons.Invoke( new object[ 0 ] );
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes()) {
+                if (type.BaseType == typeof(Request)) {
+                    ConstructorInfo cons = type.GetConstructor(new Type[0]);
+                    Request inst = (Request) cons.Invoke(new object[0]);
 
                     String name;
-                    if ( type.IsDefined( typeof( RequestTypeNameAttribute ), false ) )
+                    if (type.IsDefined(typeof(RequestTypeNameAttribute), false))
                         name = type.GetCustomAttribute<RequestTypeNameAttribute>().Name;
-                    else
-                    {
+                    else {
                         name = type.Name.ToLower();
-                        if ( name.EndsWith( "request" ) )
-                            name = name.Substring( 0, name.Length - ( "request" ).Length );
+                        if (name.EndsWith("request"))
+                            name = name.Substring(0, name.Length - ("request").Length);
                     }
 
-                    stRegistered.Add( name, inst );
+                    stRegistered.Add(name, inst);
                 }
             }
         }
 
-        public static void Register( String name, Request type )
+        public static void Register(String name, Request type)
         {
-            stRegistered.Add( name, type );
+            stRegistered.Add(name, type);
         }
 
-        public static Request Get( String name )
+        public static Request Get(String name)
         {
-            try
-            {
-                return stRegistered[ name ];
-            }
-            catch ( KeyNotFoundException )
-            {
+            try {
+                return stRegistered[name];
+            } catch (KeyNotFoundException) {
                 return null;
             }
         }
 
-        public bool CheckAuth( NameValueCollection args, out Account account,
-            out Responses.ErrorResponse error, bool acceptSession = true )
+        public bool CheckAuth(NameValueCollection args, out Account account,
+            out Responses.ErrorResponse error, bool acceptSession = true)
         {
-            error = new Responses.ErrorResponse( "auth error" );
+            error = new Responses.ErrorResponse("auth error");
             account = null;
 
-            String sessionCode = args[ "session" ];
-            String username = args[ "uname" ];
-            String passwordHash = args[ "phash" ];
+            String sessionCode = args["session"];
+            String username = args["uname"];
+            String passwordHash = args["phash"];
 
-            if ( username == null || username.Length == 0 )
-            {
-                error = new Responses.ErrorResponse( "auth error: no username given" );
+            if (username == null || username.Length == 0) {
+                error = new Responses.ErrorResponse("auth error: no username given");
                 return false;
             }
 
-            if ( !Account.IsUsernameValid( username ) )
-            {
-                error = new Responses.ErrorResponse( "auth error: invalid username" );
+            if (!Account.IsUsernameValid(username)) {
+                error = new Responses.ErrorResponse("auth error: invalid username or password");
                 return false;
             }
 
-            if ( acceptSession && sessionCode != null && sessionCode.Length > 0 )
-            {
-                if ( !AuthSession.IsCodeValid( sessionCode ) )
-                {
-                    error = new Responses.ErrorResponse( "auth error: invalid session code" );
+            if (acceptSession && sessionCode != null && sessionCode.Length > 0) {
+                if (!AuthSession.IsCodeValid(sessionCode)) {
+                    error = new Responses.ErrorResponse("auth error: invalid session code");
                     return false;
                 }
-            }
-            else if ( passwordHash != null && passwordHash.Length > 0 )
-            {
-                if ( !Account.IsPasswordHashValid( passwordHash ) )
-                {
-                    error = new Responses.ErrorResponse( "auth error: invalid password" );
+            } else if (passwordHash != null && passwordHash.Length > 0) {
+                if (!Account.IsPasswordHashValid(passwordHash)) {
+                    error = new Responses.ErrorResponse("auth error: invalid username or password");
                     return false;
                 }
-            }
-            else
-            {
-                if ( acceptSession )
-                    error = new Responses.ErrorResponse( "auth error: no password or session code given" );
+            } else {
+                if (acceptSession)
+                    error = new Responses.ErrorResponse("auth error: no password or session code given");
                 else
-                    error = new Responses.ErrorResponse( "auth error: no password given" );
-                
+                    error = new Responses.ErrorResponse("auth error: no password given");
+
                 return false;
             }
 
-            account = DatabaseManager.SelectFirst<Account>( x => x.Username == username );
+            account = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
 
-            if ( account == null )
-            {
-                error = new Responses.ErrorResponse( "auth error: unrecognised username" );
+            if (account == null) {
+                error = new Responses.ErrorResponse("auth error: unrecognised username");
                 return false;
             }
 
-            if ( passwordHash != null && passwordHash.Length != 0 )
-            {
-                if ( !passwordHash.EqualsCharArray( account.PasswordHash ) )
-                {
-                    error = new Responses.ErrorResponse( "auth error: incorrect password" );
+            if (passwordHash != null && passwordHash.Length != 0) {
+                if (!passwordHash.EqualsCharArray(account.PasswordHash)) {
+                    error = new Responses.ErrorResponse("auth error: incorrect password");
                     return false;
                 }
-            }
-            else
-            {
-                AuthSession sess = AuthSession.Get( account );
+            } else {
+                AuthSession sess = AuthSession.Get(account);
 
-                if ( sess == null || !sessionCode.EqualsCharArray( sess.SessionCode ) )
-                {
-                    error = new Responses.ErrorResponse( "auth error: incorrect session code" );
+                if (sess == null || !sessionCode.EqualsCharArray(sess.SessionCode)) {
+                    error = new Responses.ErrorResponse("auth error: incorrect session code");
                     return false;
                 }
 
-                if ( sess.IsExpired )
-                {
-                    error = new Responses.ErrorResponse( "auth error: session expired" );
+                if (sess.IsExpired) {
+                    error = new Responses.ErrorResponse("auth error: session expired");
                     return false;
                 }
 
@@ -150,6 +128,6 @@ namespace TestServer.Requests
             return true;
         }
 
-        public abstract Responses.Response Respond( NameValueCollection args );
+        public abstract Responses.Response Respond(NameValueCollection args);
     }
 }

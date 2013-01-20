@@ -32,11 +32,16 @@ namespace TestServer
 
         public static AuthSession Get(Account account)
         {
-            if (stSessions.ContainsKey(account.AccountID)) {
-                AuthSession sess = stSessions[account.AccountID];
+            return Get(account.AccountID);
+        }
+
+        public static AuthSession Get(int accountID)
+        {
+            if (stSessions.ContainsKey(accountID)) {
+                AuthSession sess = stSessions[accountID];
 
                 if (sess.IsExpired)
-                    stSessions.Remove(account.AccountID);
+                    stSessions.Remove(accountID);
 
                 return sess;
             }

@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 
 <?
-	
+    var uname = post["uname"] ?? "";
+    var phash = ( post["phash"] ?? "" ).ToLower();
+
+    var hasCreds = uname.Length > 0 && phash.Length > 0;
+
+    ErrorResponse error = null;
+    if (hasCreds) {
+        error = Account.AttemptLogin( uname, phash, out session );
+        if (session != null) {
+            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
+            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
+        }
+    }
 ?>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -24,19 +36,18 @@
 <? if( error != null ) { ?>
             We could not log you in :(<br />
             Reason: {$error.Message}<br /><br />
-            <a href="/login.html?uname={$uname}&email={$email}" >Retry</a>
+            <a href="/login.html?uname={$uname}" >Retry</a>
 <?} else if( session == null ) { ?>
-      
-            <form name="regForm" action="/register.html" method="post" onsubmit="if( pword.value.length > 0 ) phash.value = hash(pword.value); pword.value = ''">
+            <form name="loginForm" action="/login.html" method="post"
+                onsubmit="if (pword.value.length > 0) phash.value = hash(pword.value); pword.value = ''">
                 <input type="hidden" name="phash" />
                 <table>
                 <tr><td>Username:</td> <td><input type="text"     name="uname" value="{$uname}" /></td></tr>
-                <tr><td>Email:   </td> <td><input type="email"    name="email" value="{$email}" /></td></tr>
                 <tr><td>Password:</td> <td><input type="password" name="pword" /></td></tr>
                 <tr><td colspan ="2">
                 </td></tr>
                 
-                <tr><td colspan="2"><input type="submit" value="Register" /></td></tr>
+                <tr><td colspan="2"><input type="submit" value="Login" /></td></tr>
                 </table>
             </form>
 <? } else { ?>

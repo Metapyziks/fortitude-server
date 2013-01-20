@@ -106,13 +106,11 @@ public static class {0}
         var post = HttpUtility.ParseQueryString( body );
 
         AuthSession session = null;
-        if (request.Cookies[""auth-uid""] != null && request.Cookies[""auth-sid""] != null) {
+        if (request.Cookies[""auth-uid""] != null && request.Cookies[""auth-session""] != null) {
             var uid = Int32.Parse(request.Cookies[""auth-uid""].Value);
             var sid = request.Cookies[""auth-session""].Value;
-            var account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == uid);
-            if (account == null) return null;
-            session = AuthSession.Get(account);
-            if (!sid.EqualsCharArray(session.SessionCode)) session = null;
+            session = AuthSession.Get(uid);
+            if (session != null && !sid.EqualsCharArray(session.SessionCode)) session = null;
         }
 
         var writer = new StreamWriter( response.OutputStream );
@@ -262,15 +260,18 @@ public static class {0}
             public override void ServeRequest(HttpListenerContext context)
             {
                 if (_serveMethod != null) {
+#if !DEBUG
                     try {
+#endif
                         _serveMethod.Invoke(null, new object[] { context });
-                        return;
+#if !DEBUG
                     } catch {
+                        StreamWriter writer = new StreamWriter(context.Response.OutputStream);
+                        writer.WriteLine("Internal server error :(");
+                        writer.Flush();
                     }
+#endif
                 }
-                StreamWriter writer = new StreamWriter(context.Response.OutputStream);
-                writer.WriteLine("Internal server error :(");
-                writer.Flush();
             }
 
             protected override void WriteContent(StreamWriter writer)

@@ -136,9 +136,37 @@ namespace TestServer.Entities
             return account.Promote();
         }
 
-        public static Responses.ErrorResponse AttemptLogin(String username, String password, out Account account, out AuthSession session)
+        public static Responses.ErrorResponse AttemptLogin(String username, String passwordHash, out AuthSession session)
         {
+            session = null;
 
+            if (username == null || username.Length == 0) {
+                return new Responses.ErrorResponse("no username given");
+            }
+
+            if (!Account.IsUsernameValid(username)) {
+                return new Responses.ErrorResponse("invalid username or password");
+            }
+
+            if (passwordHash != null && passwordHash.Length > 0) {
+                if (!Account.IsPasswordHashValid(passwordHash)) {
+                    return new Responses.ErrorResponse("invalid username or password");
+                }
+            } else {
+                return new Responses.ErrorResponse("auth error: no password given");
+            }
+
+            var account = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
+
+            if (account == null || !passwordHash.EqualsCharArray(account.PasswordHash)) {
+                return new Responses.ErrorResponse("invalid username or password");
+            }
+
+            session = AuthSession.Get(account);
+            if (session == null || session.IsExpired)
+                session = AuthSession.Create(account);
+
+            return null;
         }
 
         [Serialize("accountid")]

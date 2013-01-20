@@ -10,35 +10,33 @@ namespace TestServer
     {
         public const double ExpirationTime = 60.0 * 15.0;
 
-        private static readonly Regex stCodeRegex = new Regex( "^[0-9a-f]{16}$" );
+        private static readonly Regex stCodeRegex = new Regex("^[0-9a-f]{16}$");
 
         private static Dictionary<Int32, AuthSession> stSessions = new Dictionary<int, AuthSession>();
 
-        public static AuthSession Create( Account account )
+        public static AuthSession Create(Account account)
         {
-            AuthSession sess = new AuthSession()
-            {
+            AuthSession sess = new AuthSession() {
                 AccountID = account.AccountID,
-                SessionCode = Tools.GenerateHash( 16 ),
+                SessionCode = Tools.GenerateHash(16),
                 LastRefresh = DateTime.Now
             };
 
-            if ( stSessions.ContainsKey( account.AccountID ) )
-                stSessions[ account.AccountID ] = sess;
+            if (stSessions.ContainsKey(account.AccountID))
+                stSessions[account.AccountID] = sess;
             else
-                stSessions.Add( account.AccountID, sess );
+                stSessions.Add(account.AccountID, sess);
 
             return sess;
         }
 
-        public static AuthSession Get( Account account )
+        public static AuthSession Get(Account account)
         {
-            if ( stSessions.ContainsKey( account.AccountID ) )
-            {
-                AuthSession sess = stSessions[ account.AccountID ];
+            if (stSessions.ContainsKey(account.AccountID)) {
+                AuthSession sess = stSessions[account.AccountID];
 
-                if ( sess.IsExpired )
-                    stSessions.Remove( account.AccountID );
+                if (sess.IsExpired)
+                    stSessions.Remove(account.AccountID);
 
                 return sess;
             }
@@ -46,20 +44,20 @@ namespace TestServer
             return null;
         }
 
-        public static void Remove( Account account )
+        public static void Remove(Account account)
         {
-            Remove( account.AccountID );
+            Remove(account.AccountID);
         }
 
-        public static void Remove( int accountID )
+        public static void Remove(int accountID)
         {
-            if ( stSessions.ContainsKey( accountID ) )
-                stSessions.Remove( accountID );
+            if (stSessions.ContainsKey(accountID))
+                stSessions.Remove(accountID);
         }
 
-        public static bool IsCodeValid( String code )
+        public static bool IsCodeValid(String code)
         {
-            return stCodeRegex.IsMatch( code );
+            return stCodeRegex.IsMatch(code);
         }
 
         public int AccountID { get; private set; }
@@ -68,7 +66,7 @@ namespace TestServer
 
         public bool IsExpired
         {
-            get { return ( LastRefresh - DateTime.Now ).TotalSeconds >= ExpirationTime; }
+            get { return (LastRefresh - DateTime.Now).TotalSeconds >= ExpirationTime; }
         }
 
         public void Refresh()

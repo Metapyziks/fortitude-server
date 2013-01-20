@@ -101,10 +101,11 @@ using System.Linq.Expressions;
 
             if ( type == typeof( String ) || type == typeof( Char[] ) )
             {
-                if ( col.FixedLength )
-                    return "NCHAR({0})";
-
-                return "NVARCHAR({0})";
+                String name = col.FixedLength ? "NCHAR({0})" : "NVARCHAR({0})";
+#if LINUX
+                name += "COLLATE NOCASE";
+#endif
+                return name;
             }
 
             if ( type == typeof( Int64 ) || type == typeof( DateTime ) )

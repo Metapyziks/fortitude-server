@@ -36,7 +36,7 @@
 <? if( error != null ) { ?>
             We could not log you in :(<br />
             Reason: {$error.Message}<br /><br />
-            <a href="/login.html?uname={$uname}" >Retry</a>
+            <a href="/login.html" >Retry</a>
 <?} else if( session == null ) { ?>
             <form name="loginForm" action="/login.html" method="post"
                 onsubmit="if (pword.value.length > 0) phash.value = hash(pword.value); pword.value = ''">

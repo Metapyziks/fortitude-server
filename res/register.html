@@ -32,7 +32,7 @@
 <? if( error != null ) { ?>
             There was an error when making your account :(<br />
             Reason: {$error.Message}<br /><br />
-            <a href="/register.html?uname={$uname}&email={$email}" >Retry</a>
+            <a href="/register.html" >Retry</a>
 <?} else if( !hasCreds ) { ?>
       
             <form name="regForm" action="/register.html" method="post" onsubmit="if( pword.value.length > 0 ) phash.value = hash(pword.value); pword.value = ''">

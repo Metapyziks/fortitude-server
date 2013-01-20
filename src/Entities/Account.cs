@@ -89,7 +89,7 @@ namespace TestServer.Entities
             DatabaseManager.Insert(account);
 
             account = DatabaseManager.Select<Account>(x => x.Email == email)[0];
-            ActivationCode.Create(account).SendEmail(account);
+            EmailValidationCode.Create(EmailValidationType.Activate, account).SendEmail(account);
 
             return null;
         }
@@ -211,7 +211,7 @@ namespace TestServer.Entities
             if (IsVerified)
                 return new Responses.ErrorResponse("account already activated");
 
-            ActivationCode request = ActivationCode.Get(this);
+            EmailValidationCode request = EmailValidationCode.Get(EmailValidationType.Activate, this);
 
             if (code != null && (request == null || !code.EqualsCharArray(request.Code)))
                 return new Responses.ErrorResponse("incorrect activation code");

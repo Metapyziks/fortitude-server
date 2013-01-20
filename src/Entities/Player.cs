@@ -11,34 +11,32 @@ namespace TestServer.Entities
             public const String Balance = "Balance";
         }
 
-        public static Player GetPlayer( Account acc )
+        public static Player GetPlayer(Account acc)
         {
-            return GetPlayer( acc.AccountID );
+            return GetPlayer(acc.AccountID);
         }
 
-        public static Player GetPlayer( int accountID )
+        public static Player GetPlayer(int accountID)
         {
-            Player ply = DatabaseManager.SelectFirst<Player>( x => x.AccountID == accountID );
+            Player ply = DatabaseManager.SelectFirst<Player>(x => x.AccountID == accountID);
 
-            if ( ply == null )
-            {
-                ply = new Player()
-                {
+            if (ply == null) {
+                ply = new Player() {
                     AccountID = accountID,
                     Balance = 0
                 };
 
-                DatabaseManager.Insert( ply );
+                DatabaseManager.Insert(ply);
             }
 
             return ply;
         }
 
-        [Serialize( "accountid" )]
+        [Serialize("accountid")]
         [PrimaryKey]
         public int AccountID { get; set; }
 
-        [Serialize( "balance" )]
+        [Serialize("balance")]
         [NotNull]
         public int Balance { get; set; }
     }

@@ -97,7 +97,7 @@
     <Compile Include="src\ContentManager.cs" />
     <Compile Include="src\Serialization.cs" />
     <Compile Include="src\Tools.cs" />
-    <Compile Include="src\ActivationCode.cs" />
+    <Compile Include="src\EmailValidationCode.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="res\404.html" />

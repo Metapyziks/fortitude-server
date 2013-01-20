@@ -8,30 +8,30 @@ using TestServer.Entities;
 
 namespace TestServer.Requests
 {
-    [RequestTypeName( "sendverify" )]
+    [RequestTypeName("sendverify")]
     class SendActivationRequest : Request
     {
-        public override Responses.Response Respond( NameValueCollection args )
+        public override Responses.Response Respond(NameValueCollection args)
         {
-            String email = args[ "email" ];
+            String email = args["email"];
 
-            if ( email == null || email.Length == 0 )
-                return new Responses.ErrorResponse( "no email address given" );
+            if (email == null || email.Length == 0)
+                return new Responses.ErrorResponse("no email address given");
 
-            if ( !Account.IsEmailValid( email ) )
-                return new Responses.ErrorResponse( "invalid email address" );
-            
-            Account account = DatabaseManager.SelectFirst<Account>( x => x.Email == email );
+            if (!Account.IsEmailValid(email))
+                return new Responses.ErrorResponse("invalid email address");
 
-            if ( account == null )
-                return new Responses.ErrorResponse( "email address not recognised" );
+            Account account = DatabaseManager.SelectFirst<Account>(x => x.Email == email);
 
-            if ( account.IsVerified )
-                return new Responses.ErrorResponse( "account already activated" );
+            if (account == null)
+                return new Responses.ErrorResponse("email address not recognised");
 
-            ActivationCode.Create( account ).SendEmail( account );
+            if (account.IsVerified)
+                return new Responses.ErrorResponse("account already activated");
 
-            return new Responses.Response( true );
+            EmailValidationCode.Create(EmailValidationType.Activate, account).SendEmail(account);
+
+            return new Responses.Response(true);
         }
     }
 }

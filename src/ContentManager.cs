@@ -94,8 +94,10 @@ namespace TestServer
 
             public override void Update()
             {
-                if (File.Exists(Path))
-                    Update(File.ReadAllText(Path));
+                try {
+                    if (File.Exists(Path))
+                        Update(File.ReadAllText(Path));
+                } catch { }
             }
 
             protected abstract void Update(String content);

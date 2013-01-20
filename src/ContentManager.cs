@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -19,6 +20,47 @@ namespace TestServer
 {
     static class ContentManager
     {
+        private class BinaryFile
+        {
+            public String MimeType { get; private set; }
+            public DateTime LastUpdate { get; private set; }
+            public byte[] Data { get; private set; }
+            public byte[] Deflated { get; private set; }
+
+            public BinaryFile(String path)
+            {
+                String ext = Path.GetExtension(path);
+                switch(ext) {
+                    case ".jpg":
+                    case ".jpeg":
+                        MimeType = "image/jpeg"; break;
+                    case ".gif":
+                        MimeType = "image/gif"; break;
+                    case ".ico":
+                        MimeType = "image/icon"; break;
+                }
+            }
+
+            public void SetData(byte[] data)
+            {
+                Data = data;
+
+                var stream = new MemoryStream();
+                var compress = new DeflateStream(stream, CompressionMode.Compress, true);
+                for (int i = 0; i < data.Length; i += 2048) {
+                    compress.Write(data, i, Math.Min(2048, data.Length - i));
+                }
+                compress.Flush();
+
+                stream.Position = 0;
+                Deflated = new byte[stream.Length];
+                stream.Read(Deflated, 0, (int) stream.Length);
+
+                compress.Close();
+                stream.Close();
+            }
+        }
+
         private abstract class Resource
         {
             public readonly String Path;
@@ -287,12 +329,12 @@ public static class {0}
         private static FileSystemWatcher _watcher;
 
         private static Dictionary<String, Page> _sPages;
-        private static Dictionary<String, byte[]> _sContent;
+        private static Dictionary<String, BinaryFile> _sContent;
 
         public static void Initialize(IniSection ini)
         {
             _sPages = new Dictionary<string, Page>();
-            _sContent = new Dictionary<string, byte[]>();
+            _sContent = new Dictionary<string, BinaryFile>();
 
             _sContentDirectory = ini.GetValue("pagesdir") ?? "res";
             _sAllowedExtensions = (ini.GetValue("allowedext") ?? "").Split(',').ToList();
@@ -391,7 +433,9 @@ public static class {0}
             String formatted = FormatPath(path);
 
             if (!_sContent.ContainsKey(formatted)) {
-                _sContent.Add(formatted, File.ReadAllBytes(path));
+                var file = new BinaryFile(path);
+                file.SetData(File.ReadAllBytes(path));
+                _sContent.Add(formatted, file);
                 Console.Write("+ ".PadLeft(2 + depth * 2));
             } else {
                 if (File.Exists(path)) {
@@ -399,7 +443,7 @@ public static class {0}
                     DateTime start = DateTime.Now;
                     while ((DateTime.Now - start).TotalSeconds < 1.0) {
                         try {
-                            _sContent[formatted] = File.ReadAllBytes(path);
+                            _sContent[formatted].SetData(File.ReadAllBytes(path));
                             break;
                         } catch (IOException) {
                             Thread.Sleep(10);
@@ -436,8 +480,16 @@ public static class {0}
                     return;
                 }
             } else if (_sContent.ContainsKey(path)) {
-                byte[] content = _sContent[path];
-                context.Response.OutputStream.Write(content, 0, content.Length);
+                context.Response.AddHeader("Content-Type", _sContent[path].MimeType);
+                context.Response.AddHeader("Cache-Control", "max-age=290304000, public");
+                if (context.Request.Headers["Accept-Encoding"].Contains("deflate")) {
+                    context.Response.AddHeader("Content-Encoding", "deflate");
+                    byte[] content = _sContent[path].Deflated;
+                    context.Response.OutputStream.Write(content, 0, content.Length);
+                } else {
+                    byte[] content = _sContent[path].Data;
+                    context.Response.OutputStream.Write(content, 0, content.Length);
+                }
                 return;
             }
 

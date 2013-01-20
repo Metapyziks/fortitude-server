@@ -15,7 +15,7 @@ SRC = \
 	$(SRCDIR)/Requests/*.cs \
 	$(SRCDIR)/Responses/*.cs \
 	$(SRCDIR)/APIManager.cs \
-	$(SRCDIR)/ActivationCode.cs \
+	$(SRCDIR)/EmailValidationCode.cs \
 	$(SRCDIR)/AuthSession.cs \
 	$(SRCDIR)/ContentManager.cs \
 	$(SRCDIR)/DatabaseManager.cs \

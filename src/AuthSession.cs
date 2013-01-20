@@ -78,5 +78,10 @@ namespace TestServer
         {
             LastRefresh = DateTime.Now;
         }
+
+        public void Remove()
+        {
+            Remove(AccountID);
+        }
     }
 }

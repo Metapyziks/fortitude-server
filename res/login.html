@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<?
+	
+?>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8" />
+        <title>Fortitude Server Prototype - Login</title>
+<? if( session == null ) { ?>
+        <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
+        <script type="text/javascript">
+            function hash( string )
+            {
+                return CryptoJS.MD5("7¬`j8,#@ytIsQ9$Od" + string + "%fI4\"0lPQz^~U&An4:9£k").toString();
+            }
+        </script>
+<? } ?>
+    </head>
+    <body>
+        <center>
+            <h1>Login</h1>
+<? if( error != null ) { ?>
+            We could not log you in :(<br />
+            Reason: {$error.Message}<br /><br />
+            <a href="/login.html?uname={$uname}&email={$email}" >Retry</a>
+<?} else if( session == null ) { ?>
+      
+            <form name="regForm" action="/register.html" method="post" onsubmit="if( pword.value.length > 0 ) phash.value = hash(pword.value); pword.value = ''">
+                <input type="hidden" name="phash" />
+                <table>
+                <tr><td>Username:</td> <td><input type="text"     name="uname" value="{$uname}" /></td></tr>
+                <tr><td>Email:   </td> <td><input type="email"    name="email" value="{$email}" /></td></tr>
+                <tr><td>Password:</td> <td><input type="password" name="pword" /></td></tr>
+                <tr><td colspan ="2">
+                </td></tr>
+                
+                <tr><td colspan="2"><input type="submit" value="Register" /></td></tr>
+                </table>
+            </form>
+<? } else { ?>
+            <h2>Login Successful!</h2>
+            You are logged in and can do stuff. <br />
+<? } ?>
+            <br />
+            <br />
+            <a href="/index.html">Home</a>
+        </center>
+    </body>
+</html>

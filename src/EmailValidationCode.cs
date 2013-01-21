@@ -82,9 +82,10 @@ namespace TestServer
         }
 
         public static Responses.ErrorResponse AttemptGet(EmailValidationType type,
-            String email, String code, out EmailValidationCode valid)
+            String email, String code, out EmailValidationCode valid, out Account account)
         {
             valid = null;
+            account = null;
 
             if (email == null || email.Length == 0)
                 return new Responses.ErrorResponse("no email address given");
@@ -98,7 +99,7 @@ namespace TestServer
             if (!Account.IsPasswordHashValid(code))
                 return new Responses.ErrorResponse("invalid validation code");
 
-            var account = DatabaseManager.SelectFirst<Account>(x => x.Email == email);
+            account = DatabaseManager.SelectFirst<Account>(x => x.Email == email);
 
             if (account == null)
                 return new Responses.ErrorResponse("invalid email address");
@@ -115,7 +116,7 @@ namespace TestServer
                 return new Responses.ErrorResponse("expired validation code");
             }
 
-            return account.Activate(code);
+            return null;
         }
 
         public static void Remove(EmailValidationType type, Account account)

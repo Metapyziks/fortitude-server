@@ -79,6 +79,7 @@
     <Compile Include="src\EmailManager.cs" />
     <Compile Include="src\Entities\Player.cs" />
     <Compile Include="src\Program.cs" />
+    <Compile Include="src\Requests\PasswordResetRequest.cs" />
     <Compile Include="src\TestServer.AssemblyInfo.cs" />
     <Compile Include="src\Requests\SendActivationRequest.cs" />
     <Compile Include="src\Requests\StartSessionRequest.cs" />

@@ -45,6 +45,28 @@ namespace TestServer
             return code;
         }
 
+        public static Responses.ErrorResponse AttemptCreate(EmailValidationType type,
+            String email, out EmailValidationCode valid)
+        {
+            valid = null;
+
+            if (email == null || email.Length == 0)
+                return new Responses.ErrorResponse("no email address given");
+
+            if (!Account.IsEmailValid(email))
+                return new Responses.ErrorResponse("invalid email address");
+
+            Account account = DatabaseManager.SelectFirst<Account>(x => x.Email == email);
+
+            if (account == null)
+                return new Responses.ErrorResponse("invalid email address");
+
+            valid = EmailValidationCode.Create(type, account);
+            valid.SendEmail(account);
+
+            return null;
+        }
+
         public static EmailValidationCode Get(EmailValidationType type, Account account)
         {
             if (stCodes[type].ContainsKey(account.AccountID)) {
@@ -57,6 +79,43 @@ namespace TestServer
             }
 
             return null;
+        }
+
+        public static Responses.ErrorResponse AttemptGet(EmailValidationType type,
+            String email, String code, out EmailValidationCode valid)
+        {
+            valid = null;
+
+            if (email == null || email.Length == 0)
+                return new Responses.ErrorResponse("no email address given");
+
+            if (!Account.IsEmailValid(email))
+                return new Responses.ErrorResponse("invalid email address");
+
+            if (code == null || code.Length == 0)
+                return new Responses.ErrorResponse("no validation code given");
+
+            if (!Account.IsPasswordHashValid(code))
+                return new Responses.ErrorResponse("invalid validation code");
+
+            var account = DatabaseManager.SelectFirst<Account>(x => x.Email == email);
+
+            if (account == null)
+                return new Responses.ErrorResponse("invalid email address");
+
+            valid = EmailValidationCode.Get(type, account);
+
+            if (valid == null || !code.EqualsCharArray(valid.Code)) {
+                valid = null;
+                return new Responses.ErrorResponse("invalid validation code");
+            }
+
+            if (valid.IsExpired) {
+                valid = null;
+                return new Responses.ErrorResponse("expired validation code");
+            }
+
+            return account.Activate(code);
         }
 
         public static void Remove(EmailValidationType type, Account account)
@@ -87,12 +146,20 @@ namespace TestServer
 
         public void SendEmail(Account account)
         {
-            EmailManager.Send(account.Email, "TestServer account activation", String.Format(
+            var subject = string.Empty;
+            switch (Type) {
+                case EmailValidationType.Activate:
+                    subject = "Foritude account activation"; break;
+                case EmailValidationType.ResetPassword:
+                    subject = "Foritude password reset"; break;
+            }
+
+            EmailManager.Send(account.Email, subject, String.Format(
 @"Hey {0},
 
-To finish the registration process just click this link: {1}activate?email={2}&code={3}
+To finish the registration process just click this link: {1}{2}?email={3}&code={4}
 
-Have fun!", account.Username, Program.ServerAddress, account.Email, new String(Code)));
+Have fun!", account.Username, Program.ServerAddress, Type.ToString().ToLower(), account.Email, new String(Code)));
         }
     }
 }

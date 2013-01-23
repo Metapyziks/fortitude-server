@@ -513,6 +513,9 @@ public static class {0}
                 path += ".html";
 
             if (path.EndsWith(".html") || path.EndsWith(".js") || path.EndsWith(".css")) {
+                if (!path.EndsWith(".html")) {
+                    context.Response.AddHeader("Cache-Control", "max-age=290304000, public");
+                }
                 if (_sPages.ContainsKey(path)) {
                     _sPages[path].ServeRequest(context);
                     return;

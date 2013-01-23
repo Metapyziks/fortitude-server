@@ -30,12 +30,13 @@
             <a href="/register.html" >Retry</a>
 <?} else if( !hasCreds ) { ?>
       
-            <form name="regForm" action="/register.html" method="post" onsubmit="submitPassword(regForm);">
+            <form name="regForm" action="/register.html" method="post" onsubmit="return submitPassword(regForm);">
                 <input type="hidden" name="phash" />
                 <table>
                 <tr><td>Username:</td> <td><input type="text"     name="uname" value="{$uname}" /></td></tr>
                 <tr><td>Email:   </td> <td><input type="email"    name="email" value="{$email}" /></td></tr>
                 <tr><td>Password:</td> <td><input type="password" name="pword" /></td></tr>
+                <tr><td>Retype Password:</td> <td><input type="password" name="rpword" /></td></tr>
                 <tr><td colspan ="2">
                 </td></tr>
                 

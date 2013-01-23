@@ -31,8 +31,11 @@ function hash(string)
 
 function submitPassword(form)
 {
-	if(validatePassword(form.pword.value, form.pword.value))
-		form.phash.value = hash(form.pword.value);
+	var valid = validatePassword(form.pword.value, form.rpword.value);
+	if (valid) form.phash.value = hash(form.pword.value);
 
 	form.pword.value = "";
+	form.rpword.value = "";
+
+	return valid;
 }

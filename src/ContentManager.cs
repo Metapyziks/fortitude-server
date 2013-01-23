@@ -477,7 +477,7 @@ public static class {0}
 
             if (path.Length == 1)
                 path = "/index.html";
-
+            
             if (!path.Contains('.'))
                 path += ".html";
 

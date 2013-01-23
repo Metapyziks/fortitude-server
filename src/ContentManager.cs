@@ -394,7 +394,7 @@ public static class {0}
         private static void UpdateFile(String path, int depth = 0)
         {
             String ext = Path.GetExtension(path).ToLower();
-            if (ext == ".html")
+            if (ext == ".html" || ext == ".js")
                 UpdatePage(path, depth);
             else if (_sAllowedExtensions.Contains(ext))
                 UpdateContent(path, depth);
@@ -405,7 +405,12 @@ public static class {0}
             String formatted = FormatPath(path);
 
             if (!_sPages.ContainsKey(formatted)) {
-                _sPages.Add(formatted, new ScriptedPage(path));
+                if (path.EndsWith(".html")) {
+                    _sPages.Add(formatted, new ScriptedPage(path));
+                } else {
+                    _sPages.Add(formatted, new StaticPage(path));
+                }
+
                 Console.Write("+ ".PadLeft(2 + depth * 2));
             } else {
                 if (File.Exists(path)) {
@@ -476,7 +481,7 @@ public static class {0}
             if (!path.Contains('.'))
                 path += ".html";
 
-            if (path.EndsWith(".html")) {
+            if (path.EndsWith(".html") || path.EndsWith(".js")) {
                 if (_sPages.ContainsKey(path)) {
                     _sPages[path].ServeRequest(context);
                     return;

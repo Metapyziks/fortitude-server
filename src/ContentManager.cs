@@ -48,7 +48,7 @@ namespace TestServer
             {
                 Data = data;
 
-                var stream = new MemoryStream();
+                /*var stream = new MemoryStream();
                 var compress = new DeflateStream(stream, CompressionMode.Compress, true);
                 for (int i = 0; i < data.Length; i += 2048) {
                     compress.Write(data, i, Math.Min(2048, data.Length - i));
@@ -62,7 +62,7 @@ namespace TestServer
                 compress.Close();
                 stream.Close();
 
-                if (Deflated.Length == 0)
+                if (Deflated.Length == 0)*/
                     Deflated = null;
             }
         }

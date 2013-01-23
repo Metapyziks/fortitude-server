@@ -1,3 +1,15 @@
 <div class="topbar">
-	Here will be some information about stuff or things I guess
+<?
+	if (session == null) {
+?>
+	<a href="/login.html">Login</a> :: <a href="/register.html">Register</a> 
+<?
+	} else {
+		var account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == session.AccountID);
+		var player = Player.GetPlayer(account);
+?>
+	{$account.Username} :: {$player.Balance} Units :: <a href="/account.html">My Account</a> :: <a href="/logout.html">Logout</a>
+<?
+	}
+?>
 </div>

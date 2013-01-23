@@ -4,11 +4,13 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Fortitude Server Prototype - User List</title>
+		<link rel="stylesheet" type="text/css" href="/styles.css">
 	</head>
 	<body>
-		<center>
+<? Include("topbar.html"); ?>
+		<div class="mainbox">
 			<h1>User List</h1>
-			<table border="1">
+			<table border="0" cellpadding="4">
 				<tr>
 					<th>ID</th>
 					<th>Username</th>
@@ -18,16 +20,16 @@
 	List<Account> users = DatabaseManager.SelectAll<Account>();
 	foreach ( Account acc in users )
 	{ ?>
-				  	<tr>
-						<td>{$acc.AccountID}</td>
-						<td>{$acc.Username}</td>
-						<td>{$acc.Rank}</td>
-						<td>{$acc.RegistrationDate.ToShortDateString()}</td>
-					</tr><?
+			  	<tr>
+					<td>{$acc.AccountID}</td>
+					<td>{$acc.Username}</td>
+					<td>{$acc.Rank}</td>
+					<td>{$acc.RegistrationDate.ToShortDateString()}</td>
+				</tr><?
 	} ?>
 			</table>
 			<br />
 			<a href="/index.html">Home</a>
-		</center>
+		</div>
 	</body>
 </html>

@@ -2,26 +2,21 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-	    <meta charset="utf-8" />
-	    <title>Fortitude Server Prototype</title>
-	    <link rel="stylesheet" type="text/css" href="/styles.css">
+		<meta charset="utf-8" />
+		<title>Fortitude Server Prototype</title>
+		<link rel="stylesheet" type="text/css" href="/styles.css">
 	</head>
 	<body>
 		<? Include("topbar.html"); ?>
-		<center>
-			<img src="/images/logo-shaded.jpg" />
-			<br />
-		    <h1>Fortitude</h1>
-
-		    <a href="/userlist.html">User List</a><br />
-		    <a href="/register.html">Register</a><br />
-<? if (session == null) { ?>
-		    <a href="/login.html">Login</a><br />
-<? } else { ?>
-		    <a href="/account.html">My Account</a><br />
-		    <a href="/logout.html">Logout</a><br />
-<? } ?>
-		    <a href="/badlink.html">Bad link</a>
-		</center>
+		<div class="mainbox">
+			<h1>Fortitude</h1>
+			Welcome to the Fortitude prototype!
+			This is a demonstration of how the game will appear if nothing works
+			and all the code is hastily cobbled together. <br />
+			Have fun!
+			<br /><br />
+			<a href="/userlist.html">User List</a><br />
+			<a href="/badlink.html">Bad link</a>
+		</div>
 	</body>
 </html>

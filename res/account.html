@@ -16,9 +16,11 @@
 	<head>
 	    <meta charset="utf-8" />
 	    <title>Fortitude Server Prototype - My Account</title>
+		<link rel="stylesheet" type="text/css" href="/styles.css">
 	</head>
 	<body>
-		<center>
+<? Include("topbar.html"); ?>
+		<div class="mainbox">
 		    <h1>My Account</h1>
 
 		    You are currently logged in as {$account.Username}!
@@ -28,6 +30,6 @@
 
 		    <br /><br />
 		    <a href="/index.html">Home</a>
-		</center>
+		</div>
 	</body>
 </html>

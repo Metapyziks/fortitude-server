@@ -8,9 +8,11 @@
     <head>
         <meta charset="utf-8" />
         <title>Fortitude Server Prototype - Account Activation</title>
+        <link rel="stylesheet" type="text/css" href="/styles.css">
     </head>
     <body>
-        <center>
+<? Include("topbar.html"); ?>
+        <div class="mainbox">
             <h1>Account Activation</h1>
 <? if( error != null ) { ?>
             <h2>An error has occurred :(</h2>
@@ -24,6 +26,6 @@
             <br />
             <br />
             <a href="/index.html">Home</a>
-        </center>
+        </div>
     </body>
 </html>

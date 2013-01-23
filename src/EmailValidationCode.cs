@@ -147,20 +147,25 @@ namespace TestServer
 
         public void SendEmail(Account account)
         {
+            var link = string.Format("{0}{1}?email={2}&code={3}",
+                Program.ServerAddress, Type.ToString().ToLower(), account.Email, new String(Code));
+
             var subject = string.Empty;
+            var message = string.Empty;
             switch (Type) {
                 case EmailValidationType.Activate:
-                    subject = "Foritude account activation"; break;
+                    subject = "Foritude account activation";
+                    message = "To finish the registration process just click this link: {0}\n\nHave fun!";
+                    break;
                 case EmailValidationType.ResetPassword:
-                    subject = "Foritude password reset"; break;
+                    subject = "Foritude password reset";
+                    message = "To finish the password reset process just click this link: {0}\n\nHave fun!";
+                    break;
             }
 
-            EmailManager.Send(account.Email, subject, String.Format(
-@"Hey {0},
+            message = String.Format(message, link);
 
-To finish the registration process just click this link: {1}{2}?email={3}&code={4}
-
-Have fun!", account.Username, Program.ServerAddress, Type.ToString().ToLower(), account.Email, new String(Code)));
+            EmailManager.Send(account.Email, subject, String.Format("Hey {0},\n{1}", account.Username, message ));
         }
     }
 }

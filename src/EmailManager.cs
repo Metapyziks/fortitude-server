@@ -43,7 +43,7 @@ namespace TestServer
 
         public static void Send(String to, String subject, String message)
         {
-            stClient.SendMailAsync(stAdminEmail, to, subject, message);
+            stClient.SendAsync(stAdminEmail, to, subject, message, null);
         }
     }
 }

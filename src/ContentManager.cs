@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace TestServer
                     case ".jpg":
                     case ".jpeg":
                         MimeType = "image/jpeg"; break;
+                    case ".png":
+                        MimeType = "image/png"; break;
                     case ".gif":
                         MimeType = "image/gif"; break;
                     case ".ico":
@@ -58,6 +61,9 @@ namespace TestServer
 
                 compress.Close();
                 stream.Close();
+
+                if (Deflated.Length == 0)
+                    Deflated = null;
             }
         }
 
@@ -130,9 +136,11 @@ using System;
 using System.Net;
 using System.Web;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 using System.IO;
+using System.Reflection;
 
 using TestServer;
 using TestServer.Entities;
@@ -141,27 +149,25 @@ using TestServer.Responses;
 
 public static class {0}
 {
-    public static void ServeRequest( HttpListenerContext context )
+    public static void ServeRequest(HttpListenerContext context, String body,
+        NameValueCollection post, AuthSession session, StreamWriter writer,
+        Dictionary<String, MethodInfo> __includes__)
     {
         var request = context.Request;
         var response = context.Response;
         var get = request.QueryString;
 
-        var body = new StreamReader( request.InputStream ).ReadToEnd();
-        var post = HttpUtility.ParseQueryString( body );
+        Action<String> Include = path => {
+            if (!path.StartsWith(""/"")) path = ""/"" + path;
+            try {
+                __includes__[path].Invoke(null, new object[] { context, body, post, session, writer, __includes__ } );
+            } catch (Exception e) {
+                writer.Write(""Failed to include "" + path + ""!<br />"");
+                writer.Write(e.ToString());
+            }
+        };
 
-        AuthSession session = null;
-        if (request.Cookies[""auth-uid""] != null && request.Cookies[""auth-session""] != null) {
-            var uid = Int32.Parse(request.Cookies[""auth-uid""].Value);
-            var sid = request.Cookies[""auth-session""].Value;
-            session = AuthSession.Get(uid);
-            if (session != null && !sid.EqualsCharArray(session.SessionCode)) session = null;
-        }
-
-        var writer = new StreamWriter( response.OutputStream );
-
-        writer.Write( ""{1}"" );
-        writer.Flush();
+        writer.Write(""{1}"");
     }
 }
 ";
@@ -298,24 +304,47 @@ public static class {0}
 
                 _assembly = results.CompiledAssembly;
                 Type type = _assembly.GetType(_className);
-                if (type != null)
+                if (type != null) {
                     _serveMethod = type.GetMethod("ServeRequest", BindingFlags.Static | BindingFlags.Public);
+                    if (_serveMethod != null) {
+                        var path = FormatPath(Path);
+                        if (!_sIncludes.ContainsKey(path))
+                            _sIncludes.Add(path, _serveMethod);
+                        else
+                            _sIncludes[path] = _serveMethod;
+                    }
+                }
             }
 
             public override void ServeRequest(HttpListenerContext context)
             {
                 if (_serveMethod != null) {
+                    var request = context.Request;
+                    var response = context.Response;
+                    var get = request.QueryString;
+
+                    var body = new StreamReader( request.InputStream ).ReadToEnd();
+                    var post = HttpUtility.ParseQueryString( body );
+
+                    AuthSession session = null;
+                    if (request.Cookies["auth-uid"] != null && request.Cookies["auth-session"] != null) {
+                        var uid = Int32.Parse(request.Cookies["auth-uid"].Value);
+                        var sid = request.Cookies["auth-session"].Value;
+                        session = AuthSession.Get(uid);
+                        if (session != null && !sid.EqualsCharArray(session.SessionCode)) session = null;
+                    }
+
+                    var writer = new StreamWriter( response.OutputStream );
 #if !DEBUG
                     try {
 #endif
-                        _serveMethod.Invoke(null, new object[] { context });
+                        _serveMethod.Invoke(null, new object[] { context, body, post, session, writer, _sIncludes });
 #if !DEBUG
                     } catch {
-                        StreamWriter writer = new StreamWriter(context.Response.OutputStream);
                         writer.WriteLine("Internal server error :(");
-                        writer.Flush();
                     }
 #endif
+                    writer.Flush();
                 }
             }
 
@@ -332,11 +361,13 @@ public static class {0}
 
         private static Dictionary<String, Page> _sPages;
         private static Dictionary<String, BinaryFile> _sContent;
+        private static Dictionary<String, MethodInfo> _sIncludes;
 
         public static void Initialize(IniSection ini)
         {
             _sPages = new Dictionary<string, Page>();
             _sContent = new Dictionary<string, BinaryFile>();
+            _sIncludes = new Dictionary<string, MethodInfo>();
 
             _sContentDirectory = ini.GetValue("pagesdir") ?? "res";
             _sAllowedExtensions = (ini.GetValue("allowedext") ?? "").Split(',').ToList();
@@ -394,7 +425,7 @@ public static class {0}
         private static void UpdateFile(String path, int depth = 0)
         {
             String ext = Path.GetExtension(path).ToLower();
-            if (ext == ".html" || ext == ".js")
+            if (ext == ".html" || ext == ".js" || ext == ".css")
                 UpdatePage(path, depth);
             else if (_sAllowedExtensions.Contains(ext))
                 UpdateContent(path, depth);
@@ -481,7 +512,7 @@ public static class {0}
             if (!path.Contains('.'))
                 path += ".html";
 
-            if (path.EndsWith(".html") || path.EndsWith(".js")) {
+            if (path.EndsWith(".html") || path.EndsWith(".js") || path.EndsWith(".css")) {
                 if (_sPages.ContainsKey(path)) {
                     _sPages[path].ServeRequest(context);
                     return;
@@ -489,7 +520,7 @@ public static class {0}
             } else if (_sContent.ContainsKey(path)) {
                 context.Response.AddHeader("Content-Type", _sContent[path].MimeType);
                 context.Response.AddHeader("Cache-Control", "max-age=290304000, public");
-                if (context.Request.Headers["Accept-Encoding"].Contains("deflate")) {
+                if (_sContent[path].Deflated != null && context.Request.Headers["Accept-Encoding"].Contains("deflate")) {
                     context.Response.AddHeader("Content-Encoding", "deflate");
                     byte[] content = _sContent[path].Deflated;
                     context.Response.OutputStream.Write(content, 0, content.Length);

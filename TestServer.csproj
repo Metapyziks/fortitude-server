@@ -50,7 +50,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>res\favicon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Nini, Version=1.1.0.0, Culture=neutral, PublicKeyToken=691faec150a7fa7b, processorArchitecture=MSIL">
@@ -99,17 +100,6 @@
     <Compile Include="src\Serialization.cs" />
     <Compile Include="src\Tools.cs" />
     <Compile Include="src\EmailValidationCode.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="res\404.html" />
-    <Content Include="res\activate.html" />
-    <Content Include="res\favicon.ico" />
-    <Content Include="res\images\cats.jpg" />
-    <Content Include="res\index.html" />
-    <Content Include="res\images\logo-shaded.jpg" />
-    <Content Include="res\login.html" />
-    <Content Include="res\register.html" />
-    <Content Include="res\userlist.html" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -507,7 +507,7 @@ public static class {0}
             path = path.Substring(0, pathEnd);
 
             if (path.Length == 1)
-                path = "/index.html";
+                path = "/index";
             
             if (!path.Contains('.'))
                 path += ".html";
@@ -535,7 +535,7 @@ public static class {0}
             }
 
             if (_sPages.ContainsKey("/404.html"))
-                context.Response.Redirect("/404.html");
+                context.Response.Redirect("/404");
         }
     }
 }

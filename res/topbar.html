@@ -2,13 +2,13 @@
 <?
 	if (session == null) {
 ?>
-	<a href="/login.html">Login</a> :: <a href="/register.html">Register</a> 
+	<a href="login">Login</a> :: <a href="register">Register</a> 
 <?
 	} else {
 		var account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == session.AccountID);
 		var player = Player.GetPlayer(account);
 ?>
-	{$account.Username} :: {$player.Balance} Units :: <a href="/account.html">My Account</a> :: <a href="/logout.html">Logout</a>
+	{$account.Username} :: {$player.Balance} Units :: <a href="account">My Account</a> :: <a href="logout">Logout</a>
 <?
 	}
 ?>

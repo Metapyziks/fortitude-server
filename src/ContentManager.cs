@@ -357,6 +357,8 @@ public static class {0}
         private static String _sContentDirectory;
         private static List<String> _sAllowedExtensions;
 
+        public static String ContentDir { get { return _sContentDirectory; } }
+
         private static FileSystemWatcher _watcher;
 
         private static Dictionary<String, Page> _sPages;

@@ -44,6 +44,9 @@ namespace TestServer
                 ContentManager.Initialize( ini.Sections["webserver"] );
             }
 
+            CacheNamer cacheNamer = new CacheNamer();
+            cacheNamer.test(12);
+
             DatabaseManager.ConnectLocal();
 
             Thread clientThread = new Thread( async () =>

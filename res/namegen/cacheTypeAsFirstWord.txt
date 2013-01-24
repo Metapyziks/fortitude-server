@@ -1,0 +1,6 @@
+Camp
+Castle
+Fort
+Palace
+Port
+Tower

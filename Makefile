@@ -22,6 +22,7 @@ SRC = \
 	$(SRCDIR)/EmailManager.cs \
 	$(SRCDIR)/Program.cs \
 	$(SRCDIR)/Serialization.cs \
+	$(SRCDIR)/CacheNamer.cs \
 	$(SRCDIR)/Tools.cs
 
 DEBUGBINDIR = $(BINDIR)/debug

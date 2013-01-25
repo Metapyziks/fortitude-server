@@ -41,4 +41,5 @@ a:active { color: #51A515; text-decoration: none; }
 	margin-bottom: 32px;
 	margin-left: 64px;
 	margin-right: 64px;
+	text-shadow: 1px 1px #000000;
 }

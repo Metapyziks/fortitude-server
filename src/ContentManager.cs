@@ -481,12 +481,12 @@ public static class {0}
                 if (File.Exists(path)) {
                     Console.Write("= ".PadLeft(2 + depth * 2));
                     DateTime start = DateTime.Now;
-                    while ((DateTime.Now - start).TotalSeconds < 1.0) {
+                    while ((DateTime.Now - start).TotalSeconds < 5.0) {
                         try {
                             _sContent[formatted].SetData(File.ReadAllBytes(path));
                             break;
                         } catch (IOException) {
-                            Thread.Sleep(10);
+                            Thread.Sleep(100);
                         }
                     }
                 } else {

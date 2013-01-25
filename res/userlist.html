@@ -17,7 +17,7 @@
 					<th>Rank</th>
 					<th>Join Date</th>
 				</tr><?
-	List<Account> users = DatabaseManager.SelectAll<Account>();
+	var users = DatabaseManager.SelectAll<Account>();
 	foreach ( Account acc in users )
 	{ ?>
 			  	<tr>

@@ -14,58 +14,63 @@ namespace TestServer
      * @author Emma 
      * @version 24/01/2013
      */
-    public class CacheNamer
+    public static class CacheNamer
     {
-        private List<String> placeNamePrefix = new List<String>();
-        private List<String> placeNameSuffix = new List<String>();
-        private List<String> cacheNameAsFirstWord = new List<String>();
-        private List<String> cacheNameAsSecondWord = new List<String>();
-        private List<String> cacheTypeAsFirstWord = new List<String>();
-        private List<String> cacheTypeAsSecondWord = new List<String>();
-        private List<String> cacheFullName = new List<String>();
+        private static List<String> placeNamePrefix = new List<String>();
+        private static List<String> placeNameSuffix = new List<String>();
+        private static List<String> cacheNameAsFirstWord = new List<String>();
+        private static List<String> cacheNameAsSecondWord = new List<String>();
+        private static List<String> cacheTypeAsFirstWord = new List<String>();
+        private static List<String> cacheTypeAsSecondWord = new List<String>();
+        private static List<String> cacheFullName = new List<String>();
 
-        Random randomNumbers = new Random();
+        private static Random randomNumbers = new Random();
 
 
 
         /**
          * Load _all_ the data! All text files stored in subfolder of this folder.
          */
-        public CacheNamer()
+        static CacheNamer()
         {
             String contentDir = ContentManager.ContentDir + "/namegen/";
-            loadFileToArray(contentDir + "placeNamePrefix.txt", placeNamePrefix);
-            loadFileToArray(contentDir + "placeNameSuffix.txt", placeNameSuffix);
-            loadFileToArray(contentDir + "cacheNameAsFirstWord.txt", cacheNameAsFirstWord);
-            loadFileToArray(contentDir + "cacheNameAsSecondWord.txt", cacheNameAsSecondWord);
-            loadFileToArray(contentDir + "cacheTypeAsFirstWord.txt", cacheTypeAsFirstWord);
-            loadFileToArray(contentDir + "cacheTypeAsSecondWord.txt", cacheTypeAsSecondWord);
-            loadFileToArray(contentDir + "cacheFullName.txt", cacheFullName);
+            LoadFileToArray(contentDir + "placeNamePrefix.txt", placeNamePrefix);
+            LoadFileToArray(contentDir + "placeNameSuffix.txt", placeNameSuffix);
+            LoadFileToArray(contentDir + "cacheNameAsFirstWord.txt", cacheNameAsFirstWord);
+            LoadFileToArray(contentDir + "cacheNameAsSecondWord.txt", cacheNameAsSecondWord);
+            LoadFileToArray(contentDir + "cacheTypeAsFirstWord.txt", cacheTypeAsFirstWord);
+            LoadFileToArray(contentDir + "cacheTypeAsSecondWord.txt", cacheTypeAsSecondWord);
+            LoadFileToArray(contentDir + "cacheFullName.txt", cacheFullName);
         }
 
         /**
          * Generates a cache name of random format (eg placename-type, or type-cachename etc)
          */
 
-        public String generateRandomName()
+        public static String GenerateRandomName()
         {
             String name = "";
 
             // Use chooseFormat as not every format has the same likelihood of being generated.
-            int nameFormat = chooseFormat(randomNumbers.Next(101));
+            int nameFormat = ChooseFormat(randomNumbers.Next(101));
 
             switch (nameFormat) {
-                case 0: name = getNameFromLists(cacheTypeAsFirstWord, cacheNameAsSecondWord);
+                case 0: name = GetNameFromLists(cacheTypeAsFirstWord, cacheNameAsSecondWord);
                     break;
-                case 1: name = getNameFromLists(cacheNameAsFirstWord, cacheTypeAsSecondWord);
+                case 1: name = GetNameFromLists(cacheNameAsFirstWord, cacheTypeAsSecondWord);
                     break;
-                case 2: name = getNameFromPlace();
+                case 2: name = GetNameFromPlace();
                     break;
-                case 3: name = getRandom(cacheFullName);
+                case 3: name = GetRandom(cacheFullName);
                     break;
             }
 
             return name;
+        }
+
+        public static IEnumerable<String> GenerateRandomNames(int count)
+        {
+            return Enumerable.Range(0, count).Select(x => GenerateRandomName());
         }
 
         /**
@@ -73,7 +78,7 @@ namespace TestServer
          * the likelihood of each name format being generated.
          */
 
-        private int chooseFormat(int input)
+        private static int ChooseFormat(int input)
         {
             int chosenFormat = 3; // Default format, if not changed below, is set to FullName
 
@@ -91,14 +96,14 @@ namespace TestServer
          * Generates a cache name with the format placename-cacheType
          */
 
-        private String getNameFromPlace()
+        private static String GetNameFromPlace()
         {
             String name = "";
 
-            name += getRandom(placeNamePrefix);
-            name += getRandom(placeNameSuffix);
+            name += GetRandom(placeNamePrefix);
+            name += GetRandom(placeNameSuffix);
             name += " ";
-            name += getRandom(cacheTypeAsSecondWord);
+            name += GetRandom(cacheTypeAsSecondWord);
 
             return name;
         }
@@ -107,13 +112,13 @@ namespace TestServer
          * Generates a cache name with words chosen from two given array lists.
          */
 
-        private String getNameFromLists(List<String> firstWord, List<String> secondWord)
+        private static String GetNameFromLists(List<String> firstWord, List<String> secondWord)
         {
             String name = "";
 
-            name += getRandom(firstWord);
+            name += GetRandom(firstWord);
             name += " ";
-            name += getRandom(secondWord);
+            name += GetRandom(secondWord);
 
             return name;
         }
@@ -123,7 +128,7 @@ namespace TestServer
          * Returns a random entry from the given array lists.
          */
 
-        private String getRandom(List<String> array)
+        private static String GetRandom(List<String> array)
         {
             int index = randomNumbers.Next(array.Count);
             return array[index];
@@ -134,7 +139,7 @@ namespace TestServer
          * file to the array list as a string.
          */
 
-        private void loadFileToArray(String fileName, List<String> array)
+        private static void LoadFileToArray(String fileName, List<String> array)
         {
             array.AddRange(File.ReadAllLines(fileName).Where(x => x.Trim().Length > 0));
         }
@@ -144,20 +149,20 @@ namespace TestServer
          * Test the cacheNamer
          */
 
-        public void test(int numberOfTests)
+        public static void Test(int numberOfTests)
         {
             List<String> names = new List<String>();
 
-            for (int i = 0; i < numberOfTests; i++) { names.Add(generateRandomName()); }
+            for (int i = 0; i < numberOfTests; i++) { names.Add(GenerateRandomName()); }
 
-            printArray(names);
+            PrintArray(names);
         }
 
         /**
          * Print an array to the console. Used to test methods.
          */
 
-        private void printArray(List<String> array)
+        private static void PrintArray(List<String> array)
         {
             int entryCounter = 0;
 

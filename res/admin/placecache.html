@@ -1,0 +1,52 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+    	response.Redirect("404");
+	}
+
+	bool success = false;
+	double latitude = 0;
+	double longitude = 0;
+	int units = 0;
+	string error = null;
+	if (post["action"] == "placecache") {
+		try {
+			var coords = post["coords"].Split(',');
+			latitude = Double.Parse(coords[0].Trim());
+			longitude = Double.Parse(coords[1].Trim());
+			units = Int32.Parse(post["units"]);
+
+			var cache = new Cache {
+				AccountID = session.AccountID,
+				Name = CacheNamer.GenerateRandomName(),
+				Latitude = latitude,
+				Longitude = longitude,
+				Balance = units
+			};
+			DatabaseManager.Insert(cache);
+
+			success = true;
+		} catch {
+			error = String.Format("Failed to place a cache at ({0}, {1}) :(", post["lat"], post["lon"]);
+		}
+	}
+?>
+
+<h2>Place Cache</h2>
+<form name="placeCacheForm" action="/admin" method="post">
+    <input type="hidden" name="action" value="placecache" />
+    <table>
+    <tr><td>Lat, Lon:</td> <td><input type="text" name="coords" value="0.000, 0.000" /></td></tr>
+	<tr><td>Units:</td> <td><input type="number" name="units" min="1" max="65535" value="10" /><input type="submit" value="Apply" /></td></tr>
+<?
+	if (success) {
+?>
+	<tr><td colspan ="2">Placed a cache at ({$latitude}, {$longitude})!</td></tr>
+<?
+	} else if (error != null) {
+?>
+	<tr><td colspan ="2">{$error}</td></tr>
+<?
+	}
+?>
+    </table>
+</form

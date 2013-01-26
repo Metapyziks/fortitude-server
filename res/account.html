@@ -8,8 +8,8 @@
 
 	var account = DatabaseManager.SelectFirst<Account>(x =>
 		x.AccountID == session.AccountID);
-
 	var player = Player.GetPlayer(account);
+	var caches = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID);
 ?>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -25,11 +25,37 @@
 
 		    You are currently logged in as {$account.Username}!
 			<br />
-		    Current balance: {$player.Balance}
+		    Total units: {$(player.Balance + caches.Sum(x => x.Balance))}
 		    <br />
-
-		    <br /><br />
-		    <a href="index">Home</a>
+		    <h2>My Caches</h2>
+<?
+	if (caches.Count == 0) {
+?>
+			You own no caches :(
+<?
+	} else {
+?>
+			<table border="0" cellpadding="4">
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Position</th>
+					<th>Garrison</th>
+				</tr>
+<?
+		foreach ( var cache in caches )
+		{ ?>
+				<tr>
+					<td>{$cache.CacheID}</td>
+					<td>{$cache.Name}</td>
+					<td>{$cache.Latitude}, {$cache.Longitude}</td>
+					<td>{$cache.Balance}</td>
+				</tr><?
+		} ?>
+			</table>
+<?
+	}
+?>
 		</div>
 	</body>
 </html>

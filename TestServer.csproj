@@ -82,7 +82,9 @@
     <Compile Include="src\Entities\Player.cs" />
     <Compile Include="src\CacheNamer.cs" />
     <Compile Include="src\Program.cs" />
+    <Compile Include="src\Requests\NearbyCachesRequest.cs" />
     <Compile Include="src\Requests\PasswordResetRequest.cs" />
+    <Compile Include="src\Responses\CacheInfoResponse.cs" />
     <Compile Include="src\TestServer.AssemblyInfo.cs" />
     <Compile Include="src\Requests\SendActivationRequest.cs" />
     <Compile Include="src\Requests\StartSessionRequest.cs" />

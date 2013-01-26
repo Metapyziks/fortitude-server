@@ -9,6 +9,20 @@ namespace TestServer.Entities
     [JSONSerializable, DatabaseEntity]
     public class Cache
     {
+        /// <param name="radius">Measured in metres</param>
+        public static IEnumerable<Cache> FindNearby(double lat, double lon, double radius)
+        {
+            double bound = (radius / 6371009.0) * 180.0 / Math.PI;
+            var caches = DatabaseManager.Select<Cache>(x =>
+                x.Latitude >= lat - bound && x.Latitude <= lat + bound &&
+                x.Longitude >= lon - bound && x.Longitude <= lon + bound);
+            return caches.Where(x => {
+                double dlat = lat - x.Latitude;
+                double dlon = lon - x.Longitude;
+                return dlat * dlat + dlon * dlon <= bound * bound;
+            });
+        }
+
         [Serialize("cacheid")]
         [PrimaryKey, AutoIncrement]
         public int CacheID { get; set; }
@@ -29,7 +43,6 @@ namespace TestServer.Entities
         [NotNull, Capacity(10, 7)]
         public double Longitude { get; set; }
 
-        [Serialize("balance")]
         [NotNull]
         public int Balance { get; set; }
     }

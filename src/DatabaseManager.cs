@@ -342,6 +342,10 @@ namespace TestServer
                     Expression<Func<int,String>> toString = x => x.ToString();
                     return String.Format("'{0}'", Expression.Lambda<Func<String>>(
                         Expression.Invoke(toString, exp)).Compile()());
+                } else if (exp.Type == typeof(double)) {
+                    Expression<Func<double,String>> toString = x => x.ToString();
+                    return String.Format("'{0}'", Expression.Lambda<Func<String>>(
+                        Expression.Invoke(toString, exp)).Compile()());
                 } else
                     return String.Format("'{0}'", Expression.Lambda<Func<Object>>(exp).Compile()());
             }

@@ -7,13 +7,17 @@ namespace TestServer.Responses
     [JSONSerializable]
     public class UserBalanceResponse : Response
     {
-        [Serialize( "balance" )]
+        [Serialize("balance")]
         public readonly int Balance;
 
-        public UserBalanceResponse( Player ply )
-            : base( true )
+        [Serialize("garrison")]
+        public readonly int Garrison;
+
+        public UserBalanceResponse(int balance, int garrison)
+            : base(true)
         {
-            Balance = ply.Balance;
+            Balance = balance;
+            Garrison = garrison;
         }
     }
 }

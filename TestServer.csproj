@@ -78,6 +78,7 @@
     <Compile Include="src\Entities\Account.cs" />
     <Compile Include="src\DatabaseManager.cs" />
     <Compile Include="src\EmailManager.cs" />
+    <Compile Include="src\Entities\Cache.cs" />
     <Compile Include="src\Entities\Player.cs" />
     <Compile Include="src\CacheNamer.cs" />
     <Compile Include="src\Program.cs" />

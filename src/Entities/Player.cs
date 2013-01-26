@@ -5,12 +5,6 @@ namespace TestServer.Entities
     [JSONSerializable, DatabaseEntity]
     public class Player
     {
-        public struct Fields
-        {
-            public const String AccountID = "AccountID";
-            public const String Balance = "Balance";
-        }
-
         public static Player GetPlayer(Account acc)
         {
             return GetPlayer(acc.AccountID);

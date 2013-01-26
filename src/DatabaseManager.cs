@@ -424,7 +424,13 @@ namespace TestServer
         public static bool TableExists(Type t)
         {
             DatabaseTable table = GetTable(t);
-            String statement = String.Format("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{0}'", table.Name);
+#if LINUX
+            String statement = String.Format("SELECT * FROM sqlite_master " +
+                "WHERE type = 'table' AND name = '{0}'", table.Name);
+#else
+            String statement = String.Format("SELECT * FROM INFORMATION_SCHEMA.TABLES " +
+                "WHERE TABLE_NAME = '{0}'", table.Name);
+#endif
             DBCommand cmd = new DBCommand(statement, _sConnection);
             using (var reader = cmd.ExecuteReader()) {
                 return reader.Read();

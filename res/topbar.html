@@ -1,4 +1,5 @@
 <div class="topbar">
+	<a href="/">Home</a> ::
 <?
 	if (session == null) {
 ?>
@@ -8,7 +9,7 @@
 		var account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == session.AccountID);
 		var player = Player.GetPlayer(account);
 ?>
-	{$account.Username} :: {$player.Balance} Units :: <a href="account">My Account</a> :: <a href="logout">Logout</a>
+	{$account.Username} :: {$player.Balance} Units :: <a href="account">My Account</a> :: <? if (session.Rank == Rank.Owner) { ?><a href="admin">Admin Panel</a> :: <? } ?><a href="logout">Logout</a>
 <?
 	}
 ?>

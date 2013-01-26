@@ -1,0 +1,50 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+    	response.Redirect("404");
+	}
+
+	bool success = false;
+	string uname = "";
+	int count = 0;
+	string error = null;
+	if (post["action"] == "giveunits") {
+		try {
+			uname = post["uname"];
+			count = Int32.Parse(post["units"]);
+
+			if (Account.IsUsernameValid(uname)) {
+				var account = DatabaseManager.SelectFirst<Account>(x => x.Username == uname);
+				if (account != null && account.Rank != Rank.Unverified) {
+					var player = Player.GetPlayer(account);
+					player.Balance += count;
+					DatabaseManager.Update(player);
+					success = true;
+				} else {
+					error = String.Format("I can't find a user called {0} :(", uname);
+				}
+			}
+		} catch {
+			error = String.Format("Failed to give {0} units to {1} :(", post["uname"], post["units"]);
+		}
+	}
+?>
+
+<h2>Give Units</h2>
+<form name="giveUnitsForm" action="/admin" method="post">
+    <input type="hidden" name="action" value="giveunits" />
+    <table>
+    <tr><td>Username:</td> <td><input type="text" name="uname" /></td></tr>
+    <tr><td>Units:</td> <td><input type="number" name="units" min="1" max="65535" value="10" /><input type="submit" value="Apply" /></td></tr>
+<?
+	if (success) {
+?>
+	<tr><td colspan ="2">Gave {$count} units to {$uname}!</td></tr>
+<?
+	} else if (error != null) {
+?>
+	<tr><td colspan ="2">{$error}</td></tr>
+<?
+	}
+?>
+    </table>
+</form

@@ -19,7 +19,8 @@ namespace TestServer
             AuthSession sess = new AuthSession() {
                 AccountID = account.AccountID,
                 SessionCode = Tools.GenerateHash(16),
-                LastRefresh = DateTime.Now
+                LastRefresh = DateTime.Now,
+                Rank = account.Rank
             };
 
             if (stSessions.ContainsKey(account.AccountID))
@@ -68,6 +69,7 @@ namespace TestServer
         public int AccountID { get; private set; }
         public DateTime LastRefresh { get; private set; }
         public char[] SessionCode { get; private set; }
+        public Rank Rank { get; private set; }
 
         public bool IsExpired
         {

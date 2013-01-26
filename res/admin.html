@@ -1,0 +1,24 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+    	response.Redirect("404");
+	}
+?>
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8" />
+		<title>Fortitude Server Prototype - Admin Panel</title>
+		<link rel="stylesheet" type="text/css" href="styles.css">
+	</head>
+	<body>
+		<? Include("topbar.html"); ?>
+		<div class="mainbox">
+			<h1>Admin Panel</h1>
+			Try not to break everything.
+
+			<? Include("admin/giveunits.html"); ?>
+		</div>
+	</body>
+</html>

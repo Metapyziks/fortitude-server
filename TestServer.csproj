@@ -84,6 +84,7 @@
     <Compile Include="src\Program.cs" />
     <Compile Include="src\Requests\NearbyCachesRequest.cs" />
     <Compile Include="src\Requests\PasswordResetRequest.cs" />
+    <Compile Include="src\Requests\UserCachesRequest.cs" />
     <Compile Include="src\Responses\CacheInfoResponse.cs" />
     <Compile Include="src\TestServer.AssemblyInfo.cs" />
     <Compile Include="src\Requests\SendActivationRequest.cs" />

@@ -14,13 +14,11 @@ namespace TestServer.Requests
     {
         public override Responses.Response Respond(NameValueCollection args)
         {
-            /*
             Account acc;
             Responses.ErrorResponse error;
 
             if (!this.CheckAuth(args, out acc, out error, true))
                 return error;
-            */
 
             double lat, lon, radius;
             if (!Double.TryParse(args["lat"], out lat) || !Double.TryParse(args["lon"], out lon)) {
@@ -31,7 +29,9 @@ namespace TestServer.Requests
                 return new Responses.ErrorResponse("invalid radius");
             }
 
-            return new Responses.CacheInfoResponse(Cache.FindNearby(lat, lon, radius).ToList());
+            var caches = Cache.FindNearby(lat, lon, radius).ToList();
+            caches.Where(x => x.AccountID != acc.AccountID).ToList().ForEach(x => x.Balance = -1);
+            return new Responses.CacheInfoResponse(caches);
         }
     }
 }

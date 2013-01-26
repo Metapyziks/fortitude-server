@@ -43,6 +43,7 @@ namespace TestServer.Entities
         [NotNull, Capacity(10, 7)]
         public double Longitude { get; set; }
 
+        [Serialize("garrison")]
         [NotNull]
         public int Balance { get; set; }
     }

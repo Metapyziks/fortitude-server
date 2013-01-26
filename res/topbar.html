@@ -1,15 +1,14 @@
 <div class="topbar">
-	<a href="/">Home</a> ::
 <?
 	if (session == null) {
 ?>
-	<a href="login">Login</a> :: <a href="register">Register</a> 
+	<a href="/">Home</a> :: <a href="login">Login</a> :: <a href="register">Register</a> 
 <?
 	} else {
 		var account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == session.AccountID);
 		var player = Player.GetPlayer(account);
 ?>
-	{$account.Username} :: {$player.Balance} Units :: <a href="account">My Account</a> :: <? if (session.Rank == Rank.Owner) { ?><a href="admin">Admin Panel</a> :: <? } ?><a href="logout">Logout</a>
+	{$account.Username} ({$player.Balance} Units) :: <a href="/">Home</a> :: <a href="account">My Account</a> :: <? if (session.Rank == Rank.Owner) { ?><a href="admin">Admin Panel</a> :: <? } ?><a href="logout">Logout</a> 
 <?
 	}
 ?>

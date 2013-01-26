@@ -83,7 +83,8 @@ namespace TestServer.Entities
                 PasswordHash = phash.ToCharArray(),
                 Email = email,
                 Rank = Rank.Unverified,
-                RegistrationDate = DateTime.Now
+                RegistrationDate = DateTime.Now,
+                AvatarID = 2130837506
             };
 
             DatabaseManager.Insert(account);
@@ -190,6 +191,10 @@ namespace TestServer.Entities
         [Serialize("rank")]
         [NotNull]
         public Rank Rank { get; set; }
+
+        [Serialize("avatarid")]
+        [NotNull]
+        public int AvatarID { get; set; }
 
         public bool IsVerified
         {

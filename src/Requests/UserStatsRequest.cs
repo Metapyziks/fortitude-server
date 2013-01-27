@@ -5,8 +5,8 @@ using TestServer.Entities;
 
 namespace TestServer.Requests
 {
-    [RequestTypeName("balance")]
-    class UserBalanceRequest : Request
+    [RequestTypeName("userstats")]
+    class UserStatsRequest : Request
     {
         public override Responses.Response Respond(NameValueCollection args)
         {
@@ -19,7 +19,7 @@ namespace TestServer.Requests
             Player ply = Player.GetPlayer(acc);
             var caches = DatabaseManager.Select<Cache>(x => x.AccountID == acc.AccountID);
 
-            return new Responses.UserBalanceResponse(ply.Balance, caches.Sum(x => x.Balance));
+            return new Responses.UserStatsResponse(ply.Balance, caches.Count, caches.Sum(x => x.Balance));
         }
     }
 }

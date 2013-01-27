@@ -89,7 +89,7 @@
     <Compile Include="src\TestServer.AssemblyInfo.cs" />
     <Compile Include="src\Requests\SendActivationRequest.cs" />
     <Compile Include="src\Requests\StartSessionRequest.cs" />
-    <Compile Include="src\Requests\UserBalanceRequest.cs" />
+    <Compile Include="src\Requests\UserStatsRequest.cs" />
     <Compile Include="src\Requests\UserInfoRequest.cs" />
     <Compile Include="src\Requests\RegisterRequest.cs" />
     <Compile Include="src\Requests\ActivationRequest.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="src\Responses\EchoResponse.cs" />
     <Compile Include="src\Responses\ErrorResponse.cs" />
     <Compile Include="src\Responses\SessionInfoResponse.cs" />
-    <Compile Include="src\Responses\UserBalanceResponse.cs" />
+    <Compile Include="src\Responses\UserStatsResponse.cs" />
     <Compile Include="src\Responses\UserInfoResponse.cs" />
     <Compile Include="src\ContentManager.cs" />
     <Compile Include="src\Serialization.cs" />

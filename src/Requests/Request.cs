@@ -65,16 +65,27 @@ namespace TestServer.Requests
             account = null;
 
             String sessionCode = args["session"];
-            String username = args["uname"];
             String passwordHash = args["phash"];
+            String username = null;
+            int userid = -1;
 
-            if (username == null || username.Length == 0) {
-                error = new Responses.ErrorResponse("auth error: no username given");
-                return false;
-            }
-
-            if (!Account.IsUsernameValid(username)) {
-                error = new Responses.ErrorResponse("auth error: invalid username or password");
+            if (args["uname"] != null) {
+                username = args["uname"];
+                if (username.Length == 0) {
+                    error = new Responses.ErrorResponse("auth error: no username given");
+                    return false;
+                }
+                if (!Account.IsUsernameValid(username)) {
+                    error = new Responses.ErrorResponse("auth error: invalid username");
+                    return false;
+                }
+            } else if (args["uid"] != null) {
+                if (!Int32.TryParse(args["uid"], out userid)) {
+                    error = new Responses.ErrorResponse("auth error: invalid userid");
+                    return false;
+                }
+            } else {
+                error = new Responses.ErrorResponse("auth error: no username or user id given");
                 return false;
             }
 
@@ -85,7 +96,7 @@ namespace TestServer.Requests
                 }
             } else if (passwordHash != null && passwordHash.Length > 0) {
                 if (!Account.IsPasswordHashValid(passwordHash)) {
-                    error = new Responses.ErrorResponse("auth error: invalid username or password");
+                    error = new Responses.ErrorResponse("auth error: invalid password");
                     return false;
                 }
             } else {
@@ -97,16 +108,20 @@ namespace TestServer.Requests
                 return false;
             }
 
-            account = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
+            if (username != null) {
+                account = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
+            } else {
+                account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == userid);
+            }
 
             if (account == null) {
-                error = new Responses.ErrorResponse("auth error: unrecognised username");
+                error = new Responses.ErrorResponse("auth error: incorrect credentials");
                 return false;
             }
 
             if (passwordHash != null && passwordHash.Length != 0) {
                 if (!passwordHash.EqualsCharArray(account.PasswordHash)) {
-                    error = new Responses.ErrorResponse("auth error: incorrect password");
+                    error = new Responses.ErrorResponse("auth error: incorrect credentials");
                     return false;
                 }
             } else {

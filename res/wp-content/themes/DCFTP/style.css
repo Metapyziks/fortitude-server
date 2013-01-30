@@ -1,0 +1,604 @@
+/*
+Theme Name: DCFTP - Durham City Fair Trade Partnership
+Author: Emma Nugee
+Description: A website based on the blue and green of fair trade colours,
+			 designed for Durham City Fair Trade Partnership.
+			 Note - The website is not designed to support blog posts, only static pages.
+*/
+
+	/*	-------------------------------------------------------------------------
+	*	Basic page layout. All content is contained in a wrapper div.
+	*	-------------------------------------------------------------------------	*/
+
+	body {
+		margin: 0;
+		padding: 0;
+		background: #444 !important;
+		color: #000;
+		font: 9pt verdana;
+		text-align: justify;
+	}
+
+	#wrapper {
+		/* Restricts content to certain width, centers content in page. */
+		width: 1000px;
+		margin: 10px auto;
+		background: #7fdcf2;
+		border: 1px solid #000;
+		-moz-box-shadow: 0 0 10px 1px #222;
+		-webkit-box-shadow: 0 0 10px 1px #222;
+		box-shadow: 0 0 10px 1px #222;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	The header, with divs to contain the fair trade images that comprise it.
+	*	-------------------------------------------------------------------------	*/
+	
+	#header {
+		/*	Image based, consisting of many fair trade images. */
+		z-index: 1;
+		width: 100%;
+		height: 250px;
+		background: #444; /* Temporary */
+	}
+	
+	.header-image-landscape {
+		/*	A container for a single landscape image in the header. A mixture of these and portraits
+			form the mosaic of images in the header image. */
+		width: 100%; /* Of header-image-landscape-wrapper, see below. */
+		height: 50%;
+	}
+	
+	.header-image-portrait {
+		/*	A container for a single portrait image in the header. A mixture of these and landscapes
+			form the mosaic of images in the header image. */
+		width: 17%;
+		height: 100%;
+	}
+		
+	.header-image-landscape, .header-image-portrait, .header-image-landscape-wrapper {
+		float: left;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		overflow: hidden;
+	}
+	
+	.header-image-landscape-wrapper {
+		/*	This groups two images in the same column, ensuring they float properly with the portrait
+			images. */
+		width: 22%;
+		height: 100%;
+	}
+	
+	#header img {
+		/*	Resize the images in the header to fit their respective sections */
+		max-width: 100%;
+	}
+
+	/*	-------------------------------------------------------------------------
+	*	The site title, appearing just below the header.
+	*
+	*	Because the ability to load a predefined font does not work in pre-css3 browsers, 
+	*	this uses an image to form the title.
+	*	-------------------------------------------------------------------------	*/	
+	
+	#site-title {
+		margin: 0px;
+		padding: 0px;
+		z-index: 1;
+		width: 100%;
+		height: 50px;
+		background: #000;
+		text-align: right;
+	}
+		
+	#site-title img {
+		margin: 10px 30px 0 0;
+		}
+	
+	/*	-------------------------------------------------------------------------
+	*	The navigation. This is contained in a pale green bar to the left of the
+	*	main content. The top and bottom borders are split off into separate
+	*	sections, so that the middle section can stretch to exactly match the
+	*	main content in height.
+	*
+	*	Link styling appears further down the style sheet.
+	*	-------------------------------------------------------------------------	*/	
+
+	#nav-top, #nav-bottom {
+		float: left;
+		z-index: 2;
+		width: 200px;
+		background: #cade33;
+		border: 1px solid #000;
+	}
+	
+	#nav-top {
+	/*	This section of the navigation bar hovers over the header, and contains the logo. */
+		height: 270px; 
+		margin: -270px 0 0 30px;
+		border-bottom: 0; /* For join with middle section */
+		border-radius: 25px 25px 0 0; /* No rounded corners at base */
+		-moz-border-radius: 25px 25px 0 0; /* Old Firefox */
+	}
+	
+	#nav-bottom {
+		height: 25px;
+		margin: -10px 0 0 30px; /* The -10 matches the margin bottom of #main */
+		border-top: 0; /* For join with middle section */
+		border-radius: 0 0 25px 25px; /* No rounded corners at base */
+		-moz-border-radius: 0 0 25px 25px; /* Old Firefox */
+	}
+	
+	#nav {
+		display: table-cell;
+		vertical-align: top;
+		width: 200px;
+		background: #cade33;
+		border: solid #000;
+		border-width: 0 1px;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	The margins either side of the navigation and main sections, and the
+	*	main section itself.
+	*	-------------------------------------------------------------------------	*/
+	
+	.nav-margin {
+		/* required because margin does not apply to #nav as it is styled as a table-cell */
+		display: table-cell;
+		width: 30px;
+	}
+	
+	.main-margin {
+		/* required because margin does not apply to #main as it is styled as a table-cell */
+		display: table-cell;
+		width: 10px;
+	}
+	
+	#main-section {
+		/*	Spans whole width. Blue background which fades into image. */
+		z-index: 1;
+		width: 100%;
+		display: table; /* Used to make #nav and #main match height */
+		margin-bottom: 10px;
+	}
+	
+	#main {
+		/*	Spans partial width leaving sidebar untouched. */
+		display: table-cell;
+		vertical-align: top;
+		width: 748px;
+	}
+	
+	#footer {
+		/*	Contains image credits and copyright. */
+		width: 100%;
+		margin: -2px 0 0 0; /* The -2 makes it line up properly with the image */
+		border: solid #000;
+		border-width: 1px 0;
+		background: #111;
+		color: #fff;
+		text-align: center;
+		font-size: 8pt;
+	}
+
+	/*	-------------------------------------------------------------------------
+	*	Positioning divs. These replace the <center> tags and the padding: ##; property.
+	*	Use nested divs with margin to simulate padding; this makes sure page renders 
+	*	correctly in both chrome (padding additional to width) and IE (padding included 
+	*	in width).
+	*	-------------------------------------------------------------------------	*/
+	
+	.center {
+		margin: 0 auto;
+	}
+	
+	.padding-10 {
+		/* Adds 10px of padding to all sides */
+		margin: 10px;
+	}
+	
+	.padding-4 {
+		/* Adds 4px of padding to all sides */
+		margin: 4px;
+	}
+
+	/*	-------------------------------------------------------------------------
+	*	Styling the navigation menu and links.
+	*	-------------------------------------------------------------------------	*/
+	
+	#nav ul {
+		padding: 0;
+		margin: 0;
+	}
+	
+	#nav li ul {
+		margin: 0 0 8px 10px; /* Set margin for submenus */
+	}	
+	
+	#nav li {
+		list-style: none; /* Removes the bullet points */
+		display: block;
+		margin: 4px;
+		font: 9pt verdana;
+		text-align: left;
+	}
+	
+	#nav a, #nav a:visited {
+		display: block;
+		width: 100%;
+		height: 100%;
+		padding: 8px 4px;
+		border-bottom: 1px dotted #559d0b;
+		text-decoration: none;
+		color: #284f00;
+	}
+	
+	#nav a:hover {
+		color: #000;
+		border-bottom: 1px solid #559d0b;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	Making the submenus appear and disappear as required.
+	*	-------------------------------------------------------------------------	*/
+	
+	#nav ul ul,
+	#nav .current_page_item ul ul,
+	#nav .current_page_ancestor ul ul,
+	#nav .current_page_ancestor .current_page_item ul ul,
+	#nav .current_page_ancestor .current_page_ancestor ul ul {
+		display: none;
+	}
+
+	#nav .current_page_item ul,
+	#nav .current_page_ancestor ul,
+	#nav .current_page_ancestor .current_page_item ul,
+	#nav .current_page_ancestor .current_page_ancestor ul,
+	#nav .current_page_ancestor .current_page_ancestor .current_page_item ul,
+	#nav .current_page_ancestor .current_page_ancestor .current_page_ancestor ul {
+		display: block;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	Styling headers and the page title.
+	*	
+	*	Note - headers in the aside on the home page are styled separately below
+	*	-------------------------------------------------------------------------	*/
+	
+	#page-title {
+		padding: 0 0 5px 0;
+		margin: 15px 0;
+		text-align: center;
+		font: 20pt georgia;
+		font-variant: small-caps;
+		border-bottom: 3px double #444;
+	}
+	
+	h1, h2, h3, h4 {
+		font: 15pt georgia;
+		font-weight: lighter;
+		width: 100%;
+	}
+	
+	h5, h6 {
+		font: 12pt georgia;
+		font-weight: normal;
+		margin: 3px;
+	}
+	
+	h1 {
+		border-bottom: 1px solid #000;
+	}
+	
+	h2 {
+		border-bottom: 1px dotted #000;
+		font-style: italic;
+	}
+	
+	h4, h6 {
+		font-style: italic;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	Styling links in the main section - navigation and aside are styled
+	*	separately. The hover hand applies to all links, and is used for
+	*	<a> elements used to call php or javascript functions.
+	*	-------------------------------------------------------------------------	*/	
+		
+	a, a:hover {
+		cursor: hand; 
+		cursor: pointer;
+	}
+	
+	#main a, #main a:visited {
+		text-decoration: none;
+		color: #444;
+		border-bottom: 1px dotted #444;
+	}
+	
+	#main a:hover, #main a:active {
+		border-bottom: 1px solid #000;
+		color: #000;
+	}
+	
+	#footer a, #footer a:visited {
+		text-decoration: none;
+		color: #bbb;
+		border-bottom: 1px dotted #bbb;
+	}
+	
+	#footer a:hover, #footer a:active {
+		border-bottom: 1px solid #fff;
+		color: #fff;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	The side section on the homepage containing news and key links.
+	*	-------------------------------------------------------------------------	*/
+	
+	#aside {
+		float: right;
+		width: 200px;
+		margin-top: 0;
+		font: 8pt verdana;
+		text-align: left;
+	}
+	
+	#aside h1 {
+		font: 10pt verdana;
+		color: #000;
+		text-align: center;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		line-height: 10px;
+		border-bottom: 1px dashed #000;
+		padding: 4px;
+		margin: 8px 0;
+	}
+	
+	#aside h2, #aside  h3, #aside  h4, #aside  h5, #aside  h6 {
+		font: 8pt verdana;
+		color: #003845;
+		text-align: center;
+		letter-spacing: 2px;
+		line-height: 7px;
+		border-bottom: 1px solid #003845;
+		padding: 4px !important;
+		margin-bottom: 4px;
+		width: 162px;
+	}
+	
+	#key-links h2, #key-links h3, #key-links h4, #key-links h5, #key-links h6 {
+		text-align: left;
+	}
+		
+	/*	-------------------------------------------------------------------------
+	*	The marquee contains recent news items, and scrolls vertically.
+	*	If the marquee is clicked, the scroll will pause.
+	*	-------------------------------------------------------------------------	*/
+	
+	marquee {
+		height: 160px;
+		width: 100%;
+		margin-bottom: 10px;
+		border: 1px solid #003845;
+		background: #9added;
+		font: 8pt verdana;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	The key links section.
+	*	-------------------------------------------------------------------------	*/	
+	
+	#key-links a, #key-links a:visited {
+		font-weight: bold;
+		color: #297283;
+		padding: 2px;
+		border-bottom: 1px dotted #297283;
+		line-height: 20px;
+		margin-bottom: 0;
+	}
+	
+	#key-links a:hover, #key-links a:active {
+		color: #003845;
+		border-bottom: 1px dotted #003845;
+	}
+	
+	#key-links p {
+		margin: 3px 0 0 10px;
+		color: #444;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	Other parts of the homepage
+	*	-------------------------------------------------------------------------	*/	
+	
+	#main-with-aside {
+		/*	A wrapper div to condense the content of the main div when using the aside,
+			such that features from the main div cannot overlow into the aside. In particular,
+			the 100% h1 and h2 underlines were doing this. */
+		width: 520px;
+	}
+	
+	#social-buttons img {
+	/*	The twitter and facebook buttons in the aside. */
+	float: right;
+	margin: 0 0 10px 15px;
+	border: none;
+	}
+	
+	
+	/*	-------------------------------------------------------------------------
+	*	Styling the comments and the leave comment form.
+	*	-------------------------------------------------------------------------	*/	
+	
+	ol.commentlist {
+		margin: 0;
+		padding: 0;
+	}
+
+	.commentlist li, #leaveComment {
+		margin: 10px auto;
+		background: #1bbfe0;
+		color: #000;
+		border: 1px solid #045161;
+		list-style: none;
+		width: 90%;
+	}
+	
+	#leaveComment {
+		margin-top: 15px;
+		width: 60%;
+	}
+
+	.commentlist .commenttext {
+		padding: 20px;
+	}
+	
+	#respondPadding {
+		margin: 20px;
+	}
+
+	.commentlist cite, #respondLeaveComment {
+		display: block;
+		color: #126F82;
+		text-transform: uppercase;
+		font-style: normal;
+		border-bottom: 2px dashed #045161;
+		padding-bottom: 6px;
+		font-size: 16px;
+	}
+	
+	#respond label {
+		display: block;
+		width: 100%;
+		height: 18px;
+		border-bottom: 1px solid #222;
+		line-height: 14px;
+		font-size: 14px;
+		margin: 10px 0 4px 0;
+	}
+
+	.commentlist a, .commentlist a:visited {
+		color: #045161 !important;
+		border-bottom: none !important;
+	}
+
+	.commentlist a:hover, .commentlist a:active {
+		color: #FFF;
+	}
+	
+	.awaiting_moderation {
+		margin: 15px;
+	}
+	
+	#reply-title {
+		display: none;
+	}
+	
+	.required {
+		margin-left: 5px;
+	}
+	
+	.form-submit {
+		margin: 0 auto;
+		width: 130px;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	Styling the directory and each entry of the directory.
+	*	-------------------------------------------------------------------------	*/	
+	
+	.entry {
+		width: 90%;
+		margin: 10px auto;
+		border: 1px solid #000;
+		background: #ccc;
+		overflow: auto; /* used to clear the floats */
+	}
+	
+	.entry-left {
+		width: 73%;
+		float: left;
+		margin: 1%;
+	}
+	
+	.entry-right {
+		width: 23%;
+		float: right;
+		margin: 1%;
+	}
+	
+	.entry-name {
+		width: 100%;
+		height: 30px;
+		border-bottom: 1px solid #222;
+		line-height: 30px;
+		font: 16pt georgia;
+	}
+	
+	.entry-rating {
+		float: right;
+		overflow: auto;
+	}
+	
+	.entry-rating img {
+		float: left;
+		height: 20px;
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	The map divs. The map-wrapper acts as a place holder to ensure the layout
+	*	does not shift as the map loads. The map div locates the map for the javascript
+	*	commands, and also ensures the map is layered below the map commands.
+	*	-------------------------------------------------------------------------	*/	
+	
+	#map-wrapper {
+		width: 600px;
+		height: 300px;
+		margin: 10px auto;
+	}
+	
+	#map {
+		z-index: 1;
+		margin-top: -70px; /* Move map up underneath map controls. */
+	}
+	
+	#map-controls {
+		z-index: 2;
+		position: relative;
+		top: 10px;
+		left: 10px;
+		height: 70px;
+	}
+	
+	#map-controls img {
+		height: 20px;
+		margin-bottom: 10px;
+		cursor: hand;
+		cursor: pointer; /* Required to let the user know these buttons activate commands. */
+	}
+	
+	/*	-------------------------------------------------------------------------
+	*	Styling buttons; these appear on the directory page and any comments sections.
+	*	-------------------------------------------------------------------------	*/	
+	
+	.button, #submit {
+		border: 1px solid #b4b4b4;
+		background: #e9e9e9;
+		border-radius: 4px;
+		-webkit-box-shadow: inset 0 1px 3px #fff, inset 0 -15px #dedede, 0 0 3px #b4b4b4;
+		color: #707070;
+		text-shadow: 0 1px #fff;
+		padding: 5px 30px;
+		text-decoration: none;
+		cursor: hand;
+		cursor: pointer;
+    }
+	
+	.button:active {
+		-webkit-transform: translate(0px,2px);
+	}

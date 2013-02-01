@@ -82,6 +82,7 @@
     <Compile Include="src\Entities\Player.cs" />
     <Compile Include="src\CacheNamer.cs" />
     <Compile Include="src\Program.cs" />
+    <Compile Include="src\Requests\LocationalRequest.cs" />
     <Compile Include="src\Requests\NearbyCachesRequest.cs" />
     <Compile Include="src\Requests\PasswordResetRequest.cs" />
     <Compile Include="src\Requests\UserCachesRequest.cs" />

@@ -50,6 +50,8 @@ namespace TestServer
                 ContentManager.Initialize(ini.Sections["webserver"]);
             }
 
+            Cache.MaxInteractionDistance = 250d;
+
             DatabaseManager.ConnectLocal();
 
             if (ownerList != null) {

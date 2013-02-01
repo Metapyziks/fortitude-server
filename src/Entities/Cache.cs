@@ -9,6 +9,8 @@ namespace TestServer.Entities
     [JSONSerializable, DatabaseEntity]
     public class Cache
     {
+        public static double MaxInteractionDistance { get; internal set; }
+
         /// <param name="radius">Measured in metres</param>
         public static IEnumerable<Cache> FindNearby(double lat, double lon, double radius)
         {

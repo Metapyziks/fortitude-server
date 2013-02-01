@@ -69,11 +69,12 @@ namespace TestServer
         public static double GetDistance(double latA, double lngA, double latB, double lngB)
         {
             const double radius = 6371009d;
+            const double toRad = Math.PI / 180d;
 
-            latA *= Math.PI / 180;
-            lngA *= Math.PI / 180;
-            latB *= Math.PI / 180;
-            lngB *= Math.PI / 180;
+            latA *= toRad;
+            lngA *= toRad;
+            latB *= toRad;
+            lngB *= toRad;
 
             double dLat = (latB - latA);
             double dLng = (lngB - lngA);

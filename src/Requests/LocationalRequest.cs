@@ -22,9 +22,12 @@ namespace TestServer.Requests
             }
         }
 
-        public bool CheckLocation(NameValueCollection args, out Responses.ErrorResponse error)
+        public bool CheckLocation(NameValueCollection args, out Responses.ErrorResponse error,
+            out double lat, out double lng)
         {
             error = new Responses.ErrorResponse("invalid location info");
+            lat = 0d;
+            lng = 0d;
 
             String latitude = args["latitude"] ?? "";
             String longitude = args["longitude"] ?? "";
@@ -34,7 +37,7 @@ namespace TestServer.Requests
                 return false;
             }
 
-            String locationHash = args["lochash"].ToLower();
+            String locationHash = (args["lochash"] ?? "").ToLower();
 
             if (!Account.IsPasswordHashValid(locationHash)) {
                 return false;
@@ -62,7 +65,7 @@ namespace TestServer.Requests
                 }
             }
 
-            return true;
+            return double.TryParse(latitude, out lat) && double.TryParse(longitude, out lng);
         }
     }
 }

@@ -65,5 +65,26 @@ namespace TestServer
                 return Extends(type.BaseType, other);
             return false;
         }
+
+        public static double GetDistance(double latA, double lngA, double latB, double lngB)
+        {
+            const double radius = 6371009d;
+
+            latA *= Math.PI / 180;
+            lngA *= Math.PI / 180;
+            latB *= Math.PI / 180;
+            lngB *= Math.PI / 180;
+
+            double dLat = (latB - latA);
+            double dLng = (lngB - lngA);
+
+            double dLatS = Math.Sin(dLat / 2d);
+            double dLngS = Math.Sin(dLng / 2d);
+
+            double a =  dLatS * dLatS + dLngS * dLngS * Math.Cos(latA) * Math.Cos(latB);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+            return radius * c;
+        }
     }
 }

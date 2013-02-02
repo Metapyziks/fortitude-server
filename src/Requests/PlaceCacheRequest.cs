@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using TestServer.Entities;
 using TestServer.Responses;
@@ -46,7 +43,7 @@ namespace TestServer.Requests
                 return new ErrorResponse("too close to another cache");
             }
 
-            ply.Balance -= Cache.PlacementCost;
+            ply.Balance -= units;
             DatabaseManager.Update(ply);
 
             var cache = new Cache {

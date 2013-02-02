@@ -20,11 +20,7 @@ namespace TestServer.Entities
             var caches = DatabaseManager.Select<Cache>(x =>
                 x.Latitude >= lat - bound && x.Latitude <= lat + bound &&
                 x.Longitude >= lon - bound && x.Longitude <= lon + bound);
-            return caches.Where(x => {
-                double dlat = lat - x.Latitude;
-                double dlon = lon - x.Longitude;
-                return dlat * dlat + dlon * dlon <= bound * bound;
-            });
+            return caches.Where(x => Tools.GetDistance(lat, lon, x.Latitude, x.Longitude) <= radius);
         }
 
         [Serialize("cacheid")]

@@ -44,6 +44,7 @@ namespace TestServer
                 int.TryParse(general.GetValue("localport"), out LocalPort);
                 ownerList = general.GetValue("owners").Split(new char[] { ',' },
                     StringSplitOptions.RemoveEmptyEntries);
+                DatabaseManager.FileName = general.GetValue("database") ?? DatabaseManager.FileName;
 
                 EmailManager.CreateClient(ini.Sections["smtp"]);
 

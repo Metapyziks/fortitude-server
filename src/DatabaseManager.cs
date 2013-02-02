@@ -226,7 +226,7 @@ namespace TestServer
     {
         public static CultureInfo CultureInfo = new CultureInfo("en-US");
 
-        private static readonly String _sFileName = "Database.db";
+        public static String FileName = "Database.db";
         private static DBConnection _sConnection;
 
         private static List<DatabaseTable> _sTables = new List<DatabaseTable>();
@@ -267,10 +267,10 @@ namespace TestServer
 //            DropDatabase();
 //#endif
 
-            if (!File.Exists(_sFileName))
-                CreateDatabase("Data Source={0};", _sFileName);
+            if (!File.Exists(FileName))
+                CreateDatabase("Data Source={0};", FileName);
             else
-                Connect("Data Source={0};", _sFileName);
+                Connect("Data Source={0};", FileName);
         }
 
         public static void DropDatabase()
@@ -278,8 +278,8 @@ namespace TestServer
             if (_sConnection != null)
                 Disconnect();
 
-            if (File.Exists(_sFileName))
-                File.Delete(_sFileName);
+            if (File.Exists(FileName))
+                File.Delete(FileName);
         }
 
         private static void CreateDatabase(String connStrFormat, params String[] args)

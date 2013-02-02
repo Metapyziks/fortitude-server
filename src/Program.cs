@@ -31,6 +31,10 @@ namespace TestServer
             Console.Title = "Fortitude Server Prototype";
             stActive = true;
 
+            Cache.MaxInteractionDistance = 30d;
+            Cache.PlacementCost = 5;
+            Cache.MinPlacementDistance = 300d;
+
             String iniPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "config.ini");
             String[] ownerEmails = null;
 
@@ -50,8 +54,6 @@ namespace TestServer
                 EmailManager.CreateClient(ini.Sections["smtp"]);
                 ContentManager.Initialize(ini.Sections["webserver"]);
             }
-
-            Cache.MaxInteractionDistance = 250d;
 
             DatabaseManager.ConnectLocal();
 

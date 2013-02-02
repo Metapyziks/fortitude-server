@@ -32,8 +32,10 @@ namespace TestServer.Requests
             String latitude = args["lat"] ?? "";
             String longitude = args["lng"] ?? "";
 
+            String timestampStr = args["time"];
+
             int timestamp;
-            if (!int.TryParse(args["time"], out timestamp)) {
+            if (!int.TryParse(timestampStr, out timestamp)) {
                 return false;
             }
 
@@ -43,14 +45,14 @@ namespace TestServer.Requests
                 return false;
             }
 
-            var bytes = new byte[latitude.Length + longitude.Length + 4 + _sSalt.Length];
+            var bytes = new byte[latitude.Length + longitude.Length + timestampStr.Length + _sSalt.Length];
             Array.Copy(_sSalt, 0, bytes, 0, 2);
             UnicodeEncoding.UTF8.GetBytes(latitude, 0, latitude.Length, bytes, 2);
             Array.Copy(_sSalt, 2, bytes, 2 + latitude.Length, 2);
             UnicodeEncoding.UTF8.GetBytes(longitude, 0, longitude.Length, bytes, 4 + latitude.Length);
             Array.Copy(_sSalt, 4, bytes, 4 + latitude.Length + longitude.Length, 1);
-            Array.Copy(BitConverter.GetBytes(timestamp), 0, bytes, 5 + latitude.Length + longitude.Length, 4);
-            Array.Copy(_sSalt, 5, bytes, 9 + latitude.Length + longitude.Length, 2);
+            UnicodeEncoding.UTF8.GetBytes(timestampStr, 0, timestampStr.Length, bytes, 5 + latitude.Length + longitude.Length);
+            Array.Copy(_sSalt, 5, bytes, 5 + latitude.Length + longitude.Length + timestampStr.Length, 2);
 
             var md5 = new MD5CryptoServiceProvider();
             var hash = String.Join("", md5.ComputeHash(bytes).Select(x => x.ToString("X2"))).ToLower();

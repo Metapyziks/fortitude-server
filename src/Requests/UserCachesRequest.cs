@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 
 using TestServer.Entities;
+using TestServer.Responses;
 
 namespace TestServer.Requests
 {
@@ -11,14 +12,14 @@ namespace TestServer.Requests
         public override Responses.Response Respond(NameValueCollection args)
         {
             Account acc;
-            Responses.ErrorResponse error;
+            ErrorResponse error;
 
             if (!this.CheckAuth(args, out acc, out error, true))
                 return error;
 
             var caches = DatabaseManager.Select<Cache>(x => x.AccountID == acc.AccountID);
 
-            return new Responses.CacheInfoResponse(caches);
+            return new CacheInfoResponse(caches.ToArray());
         }
     }
 }

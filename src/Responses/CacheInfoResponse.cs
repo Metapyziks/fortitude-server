@@ -9,9 +9,9 @@ namespace TestServer.Responses
     public class CacheInfoResponse : Response
     {
         [Serialize("caches")]
-        public readonly List<Cache> Caches;
+        public readonly Cache[] Caches;
 
-        public CacheInfoResponse(List<Cache> caches)
+        public CacheInfoResponse(params Cache[] caches)
             : base(true)
         {
             Caches = caches;

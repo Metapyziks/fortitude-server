@@ -85,6 +85,7 @@
     <Compile Include="src\Requests\LocationalRequest.cs" />
     <Compile Include="src\Requests\NearbyCachesRequest.cs" />
     <Compile Include="src\Requests\PasswordResetRequest.cs" />
+    <Compile Include="src\Requests\PlaceCacheRequest.cs" />
     <Compile Include="src\Requests\QueryCacheRequest.cs" />
     <Compile Include="src\Requests\UserCachesRequest.cs" />
     <Compile Include="src\Responses\CacheInfoResponse.cs" />

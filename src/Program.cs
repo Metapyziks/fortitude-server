@@ -32,22 +32,22 @@ namespace TestServer
             stActive = true;
 
             String iniPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "config.ini");
-
-            String[] ownerList = null;
+            String[] ownerEmails = null;
 
             if (!File.Exists(iniPath)) {
                 Console.WriteLine("WARNING: config.ini not found, some features may not function");
             } else {
                 IniDocument ini = new IniDocument(iniPath);
                 IniSection general = ini.Sections["general"];
+
                 ServerAddress = general.GetValue("address");
                 int.TryParse(general.GetValue("localport"), out LocalPort);
-                ownerList = general.GetValue("owners").Split(new char[] { ',' },
+
+                ownerEmails = general.GetValue("owners").Split(new char[] { ',' },
                     StringSplitOptions.RemoveEmptyEntries);
+
                 DatabaseManager.FileName = general.GetValue("database") ?? DatabaseManager.FileName;
-
                 EmailManager.CreateClient(ini.Sections["smtp"]);
-
                 ContentManager.Initialize(ini.Sections["webserver"]);
             }
 
@@ -55,14 +55,8 @@ namespace TestServer
 
             DatabaseManager.ConnectLocal();
 
-            if (ownerList != null) {
-                var owners = DatabaseManager.Select<Account>(ownerList.Select(
-                    x => (AccountPred) (acc => acc.Email == x)).ToArray());
-
-                foreach (var owner in owners.Where(x => x.Rank != Rank.Unverified && x.Rank != Rank.Owner)) {
-                    owner.Rank = Rank.Owner;
-                    DatabaseManager.Update(owner);
-                }
+            if (ownerEmails != null) {
+                Account.AddOwnerEmails(ownerEmails);
             }
 
             Thread clientThread = new Thread(async () => {

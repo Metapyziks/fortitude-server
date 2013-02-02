@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 using System.Text.RegularExpressions;
 
 namespace TestServer.Entities
 {
+    using AccountPred = Expression<Func<Account, bool>>;
+
     public enum Rank : byte
     {
         Unverified = 0,
@@ -16,20 +20,35 @@ namespace TestServer.Entities
     [JSONSerializable, DatabaseEntity]
     public class Account
     {
-        private static readonly Regex stUsernameRegex;
-        private static readonly Regex stEmailRegex;
-        private static readonly Regex stPasswordHashRegex;
+        private static List<String> _sOwnerEmails = new List<string>();
+
+        public static void AddOwnerEmails(params String[] emails)
+        {
+            _sOwnerEmails.AddRange(emails);
+
+            var owners = DatabaseManager.Select<Account>(emails.Select(
+                    x => (AccountPred) (acc => acc.Email == x)).ToArray());
+
+            foreach (var owner in owners.Where(x => x.Rank != Rank.Unverified && x.Rank != Rank.Owner)) {
+                owner.Rank = Rank.Owner;
+                DatabaseManager.Update(owner);
+            }
+        }
+
+        private static readonly Regex _sUsernameRegex;
+        private static readonly Regex _sEmailRegex;
+        private static readonly Regex _sPasswordHashRegex;
 
         static Account()
         {
-            stUsernameRegex = new Regex("^[a-zA-Z0-9_-]([ a-zA-Z0-9_-]{1,31})$");
-            stEmailRegex = new Regex("^[a-z0-9._%-]+@[a-z0-9.-]+\\.[a-z]{2,4}$");
-            stPasswordHashRegex = new Regex("^[0-9a-f]{32}$");
+            _sUsernameRegex = new Regex("^[a-zA-Z0-9_-]([ a-zA-Z0-9_-]{1,31})$");
+            _sEmailRegex = new Regex("^[a-z0-9._%-]+@[a-z0-9.-]+\\.[a-z]{2,4}$");
+            _sPasswordHashRegex = new Regex("^[0-9a-f]{32}$");
         }
 
         public static bool IsUsernameValid(String username)
         {
-            return stUsernameRegex.IsMatch(username);
+            return _sUsernameRegex.IsMatch(username);
         }
 
         public static bool IsEmailValid(String email)
@@ -37,12 +56,12 @@ namespace TestServer.Entities
             if (email.Length > 64)
                 return false;
 
-            return stEmailRegex.IsMatch(email);
+            return _sEmailRegex.IsMatch(email);
         }
 
         public static bool IsPasswordHashValid(String hash)
         {
-            return stPasswordHashRegex.IsMatch(hash);
+            return _sPasswordHashRegex.IsMatch(hash);
         }
 
         public static Responses.ErrorResponse AttemptRegister(String uname, String email, String phash)
@@ -99,8 +118,9 @@ namespace TestServer.Entities
         {
             Account account = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
 
-            if (account == null)
+            if (account == null) {
                 return new Responses.ErrorResponse("username not recognised");
+            }
 
             return account.Activate();
         }
@@ -224,9 +244,13 @@ namespace TestServer.Entities
             if (request != null)
                 request.Remove();
 
-            Rank = Rank.Verified;
+            if (_sOwnerEmails.Exists(x => x == Email)) {
+                Rank = Rank.Owner;
+            } else {
+                Rank = Rank.Verified;
+            }
+            
             DatabaseManager.Update(this);
-
             return null;
         }
 

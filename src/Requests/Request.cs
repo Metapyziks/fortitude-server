@@ -26,8 +26,10 @@ namespace TestServer.Requests
             stRegistered = new Dictionary<String, Request>();
 
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes()) {
-                if (type.BaseType == typeof(Request)) {
+                if (type.Extends(typeof(Request))) {
                     ConstructorInfo cons = type.GetConstructor(new Type[0]);
+                    if (cons == null) continue;
+
                     Request inst = (Request) cons.Invoke(new object[0]);
 
                     String name;

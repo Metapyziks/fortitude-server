@@ -29,15 +29,15 @@ namespace TestServer.Requests
             lat = 0d;
             lng = 0d;
 
-            String latitude = args["latitude"] ?? "";
-            String longitude = args["longitude"] ?? "";
+            String latitude = args["lat"] ?? "";
+            String longitude = args["lng"] ?? "";
 
             int timestamp;
-            if (!int.TryParse(args["timestamp"], out timestamp)) {
+            if (!int.TryParse(args["time"], out timestamp)) {
                 return false;
             }
 
-            String locationHash = (args["lochash"] ?? "").ToLower();
+            String locationHash = (args["hash"] ?? "").ToLower();
 
             if (!Account.IsPasswordHashValid(locationHash)) {
                 return false;
@@ -53,16 +53,10 @@ namespace TestServer.Requests
             Array.Copy(_sSalt, 5, bytes, 9 + latitude.Length + longitude.Length, 2);
 
             var md5 = new MD5CryptoServiceProvider();
-            var hash = md5.ComputeHash(bytes);
+            var hash = String.Join("", md5.ComputeHash(bytes).Select(x => x.ToString("X2"))).ToLower();
 
-            for (int i = 15; i >= 0; --i) {
-                var b = hash[i];
-                if (locationHash[(i << 1) + 1] != _sCharMap[b & 0xf]) {
-                    return false;
-                }
-                if (locationHash[i << 1] != _sCharMap[(b >> 4) & 0xf]) {
-                    return false;
-                }
+            if (hash != locationHash) {
+                return false;
             }
 
             return double.TryParse(latitude, out lat) && double.TryParse(longitude, out lng);

@@ -7,6 +7,7 @@ using TestServer.Entities;
 
 namespace TestServer.Requests
 {
+    [RequestTypeName("scout")]
     class QueryCacheRequest : LocationalRequest
     {
         public override Responses.Response Respond(System.Collections.Specialized.NameValueCollection args)
@@ -24,7 +25,7 @@ namespace TestServer.Requests
             }
 
             int cacheid;
-            if (!int.TryParse(args["cacheid"] ?? "0", out cacheid)) {
+            if (!int.TryParse(args["cacheid"] ?? "0", out cacheid) || cacheid <= 0) {
                 return new Responses.ErrorResponse("invalid cache id");
             }
 
@@ -35,7 +36,7 @@ namespace TestServer.Requests
 
             double dist = Tools.GetDistance(lat, lng, cache.Latitude, cache.Longitude);
             if (dist > Cache.MaxInteractionDistance) {
-                return new Responses.ErrorResponse("too far away from cache ({0})", dist.ToString("F2"));
+                return new Responses.ErrorResponse("too far away from cache ({0}m)", dist.ToString("F2"));
             }
 
             return new Responses.CacheInfoResponse(new List<Cache>(){ cache });

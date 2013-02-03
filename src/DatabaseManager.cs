@@ -34,6 +34,17 @@ namespace TestServer
     public class UniqueAttribute : NotNullAttribute { }
 
     [AttributeUsage(AttributeTargets.Property)]
+    public class ForeignKeyAttribute : ColumnAttribute
+    {
+        public readonly Type ForeignEntityType;
+
+        public ForeignKeyAttribute(Type foreignEntityType)
+        {
+            ForeignEntityType = foreignEntityType;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
     public class PrimaryKeyAttribute : UniqueAttribute { }
 
     [AttributeUsage(AttributeTargets.Property)]
@@ -64,9 +75,12 @@ namespace TestServer
 
         public bool NotNull { get; private set; }
         public bool Unique { get; private set; }
+        public bool ForeignKey { get; private set; }
         public bool PrimaryKey { get; private set; }
         public bool AutoIncrement { get; private set; }
         public bool FixedLength { get; private set; }
+
+        public DatabaseTable[] ForeignTables { get; private set; }
 
         public int Capacity { get; private set; }
         public int Capacity2 { get; private set; }
@@ -77,10 +91,11 @@ namespace TestServer
 
             NotNull = property.IsDefined<NotNullAttribute>();
             Unique = property.IsDefined<UniqueAttribute>();
+            ForeignKey = property.IsDefined<ForeignKeyAttribute>();
             PrimaryKey = property.IsDefined<PrimaryKeyAttribute>();
             AutoIncrement = property.IsDefined<AutoIncrementAttribute>();
             FixedLength = property.IsDefined<FixedLengthAttribute>();
-
+            
             if (property.IsDefined<CapacityAttribute>()) {
                 CapacityAttribute val = property.GetCustomAttribute<CapacityAttribute>();
                 Capacity = val.Value;
@@ -88,6 +103,16 @@ namespace TestServer
             } else {
                 Capacity = 0;
                 Capacity2 = 0;
+            }
+        }
+
+        internal void ResolveForeignKeys()
+        {
+            if (ForeignKey) {
+                ForeignTables = (
+                    from attrib in _property.GetCustomAttributes<ForeignKeyAttribute>()
+                    select DatabaseManager.GetTable(attrib.ForeignEntityType)
+                ).ToArray();
             }
         }
 
@@ -190,11 +215,9 @@ namespace TestServer
         public DatabaseTable(Type type)
         {
             _type = type;
-
-            BuildColumns();
         }
 
-        private void BuildColumns()
+        internal void BuildColumns()
         {
             int count = _type.GetProperties().Count(x => x.IsDefined<ColumnAttribute>());
             Columns = new DatabaseColumn[count];
@@ -203,6 +226,13 @@ namespace TestServer
             foreach (PropertyInfo property in _type.GetProperties())
                 if (property.IsDefined<ColumnAttribute>())
                     Columns[i++] = new DatabaseColumn(property);
+        }
+
+        internal void ResolveForeignKeys()
+        {
+            foreach (var col in Columns) {
+                col.ResolveForeignKeys();
+            }
         }
 
         public String GenerateDefinitionStatement()
@@ -244,21 +274,25 @@ namespace TestServer
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes()) {
                 if (type.IsDefined<DatabaseEntityAttribute>()) {
                     DatabaseTable table = CreateTable(type);
+                    table.BuildColumns();
                     Console.WriteLine("- Initialized table {0}", table.Name);
-
-                    if (!TableExists(type)) {
-                        Console.WriteLine("  Table does not exist!");
-                        Console.WriteLine("  Creating table {0}...", table.Name);
-                        DBCommand cmd = new DBCommand(table.GenerateDefinitionStatement(), _sConnection);
-#if DEBUG
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.WriteLine(cmd.CommandText);
-                        Console.ResetColor();
-#endif
-                        cmd.ExecuteNonQuery();
-                    }
                 }
             }
+            
+            foreach (var table in _sTables) {
+                table.ResolveForeignKeys();
+                if (!TableExists(table)) {
+                    Console.WriteLine("  Creating table {0}...", table.Name);
+                    DBCommand cmd = new DBCommand(table.GenerateDefinitionStatement(), _sConnection);
+#if DEBUG
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine(cmd.CommandText);
+                    Console.ResetColor();
+#endif
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
         }
 
         public static void ConnectLocal()
@@ -422,12 +456,16 @@ namespace TestServer
 
         public static bool TableExists<T>()
         {
-            return TableExists(typeof(T));
+            return TableExists(GetTable(typeof(T)));
         }
 
         public static bool TableExists(Type t)
         {
-            DatabaseTable table = GetTable(t);
+            return TableExists(GetTable(t));
+        }
+
+        public static bool TableExists(DatabaseTable table)
+        {
 #if LINUX
             String statement = String.Format("SELECT * FROM sqlite_master " +
                 "WHERE type = 'table' AND name = '{0}'", table.Name);
@@ -468,6 +506,43 @@ namespace TestServer
             return new DBCommand(builder.ToString(), _sConnection);
         }
 
+        private static DBCommand GenerateSelectCommand<T0, T1>(DatabaseTable table0,
+            DatabaseTable table1, params Expression<Func<T0, T1, bool>>[] predicates)
+            where T0 : new()
+            where T1 : new()
+        {
+            for (int i = 1; i < predicates.Length; ++i) {
+                if (predicates[i].Parameters[0].Name != predicates[0].Parameters[0].Name
+                    || predicates[i].Parameters[1].Name != predicates[0].Parameters[1].Name) {
+                    throw new Exception("All predicates must use the same parameter name");
+                }
+            }
+
+            var alias0 = predicates[0].Parameters[0].Name;
+            var alias1 = predicates[0].Parameters[1].Name;
+
+            var columns = String.Join(",\n  ", table0.Columns.Select(x => alias0 + "." + x.Name))
+                + ",\n " + String.Join(",\n  ", table1.Columns.Select(x => alias1 + "." + x.Name));
+
+            var joinOn = String.Format("{0}.{1} = {2}.{3}", alias0,
+                table0.Columns.First(x => x.PrimaryKey).Name, alias1,
+                table1.Columns.First(x => x.ForeignTables.Contains(table0)));
+
+            var builder = new StringBuilder();
+            builder.AppendFormat("SELECT\n  {0}\nFROM {1} AS {2}\n  INNER JOIN {3} AS {4} ON {5}", columns,
+                table0.Name, alias0, table1.Name, alias1, joinOn);
+
+            builder.AppendFormat("WHERE {0}", String.Join("\n  OR ",
+                predicates.Select(x => SerializeExpression(x.Body))));
+
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
+            return new DBCommand(builder.ToString(), _sConnection);
+        }
+
         private static T ReadEntity<T>(this DBDataReader reader, DatabaseTable table)
             where T : new()
         {
@@ -478,6 +553,25 @@ namespace TestServer
 
                 foreach (DatabaseColumn col in table.Columns)
                     col.SetValue(entity, reader[col.Name]);
+            }
+
+            return entity;
+        }
+
+        private static Tuple<T0, T1> ReadEntity<T0, T1>(this DBDataReader reader, DatabaseTable table0, DatabaseTable table1)
+            where T0 : new()
+            where T1 : new()
+        {
+            Tuple<T0, T1> entity = null;
+
+            if (reader.Read()) {
+                entity = new Tuple<T0, T1>(new T0(), new T1());
+
+                foreach (DatabaseColumn col in table0.Columns)
+                    col.SetValue(entity.Item1, reader[col.Name]);
+
+                foreach (DatabaseColumn col in table1.Columns)
+                    col.SetValue(entity.Item2, reader[col.Name]);
             }
 
             return entity;
@@ -506,6 +600,24 @@ namespace TestServer
             using (DBDataReader reader = cmd.ExecuteReader()) {
                 T entity;
                 while ((entity = reader.ReadEntity<T>(table)) != null)
+                    entities.Add(entity);
+            }
+
+            return entities;
+        }
+
+        public static List<Tuple<T0, T1>> Select<T0, T1>(params Expression<Func<T0, T1, bool>>[] predicates)
+            where T0 : new()
+            where T1 : new()
+        {
+            var table0 = GetTable<T0>();
+            var table1 = GetTable<T1>();
+            var cmd = GenerateSelectCommand(table0, table1, predicates);
+
+            var entities = new List<Tuple<T0, T1>>();
+            using (DBDataReader reader = cmd.ExecuteReader()) {
+                Tuple<T0, T1> entity;
+                while ((entity = reader.ReadEntity<T0, T1>(table0, table1)) != null)
                     entities.Add(entity);
             }
 

@@ -27,7 +27,7 @@ namespace TestServer.Entities
         }
 
         [Serialize("accountid")]
-        [PrimaryKey]
+        [PrimaryKey, ForeignKey(typeof(Account))]
         public int AccountID { get; set; }
 
         [Serialize("balance")]

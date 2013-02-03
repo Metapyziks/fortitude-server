@@ -30,7 +30,7 @@ namespace TestServer.Entities
         public int CacheID { get; set; }
 
         [Serialize("ownerid")]
-        [NotNull]
+        [ForeignKey(typeof(Account))]
         public int AccountID { get; set; }
 
         public bool HasOwner { get { return AccountID > 0; } }

@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="src\APIManager.cs" />
     <Compile Include="src\AuthSession.cs" />
+    <Compile Include="src\Responses\BattleReport.cs" />
     <Compile Include="src\Entities\Account.cs" />
     <Compile Include="src\DatabaseManager.cs" />
     <Compile Include="src\EmailManager.cs" />
@@ -82,13 +83,15 @@
     <Compile Include="src\Entities\Player.cs" />
     <Compile Include="src\CacheNamer.cs" />
     <Compile Include="src\Program.cs" />
+    <Compile Include="src\Requests\AttackCacheRequest.cs" />
     <Compile Include="src\Requests\LocationalRequest.cs" />
     <Compile Include="src\Requests\NearbyCachesRequest.cs" />
     <Compile Include="src\Requests\PasswordResetRequest.cs" />
     <Compile Include="src\Requests\PlaceCacheRequest.cs" />
-    <Compile Include="src\Requests\QueryCacheRequest.cs" />
+    <Compile Include="src\Requests\ScoutCacheRequest.cs" />
     <Compile Include="src\Requests\UserCachesRequest.cs" />
     <Compile Include="src\Responses\CacheInfoResponse.cs" />
+    <Compile Include="src\Responses\ScoutCacheResponse.cs" />
     <Compile Include="src\TestServer.AssemblyInfo.cs" />
     <Compile Include="src\Requests\SendActivationRequest.cs" />
     <Compile Include="src\Requests\StartSessionRequest.cs" />

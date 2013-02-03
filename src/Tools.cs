@@ -48,6 +48,16 @@ namespace TestServer
             return true;
         }
 
+        public static double Random()
+        {
+            return stRand.NextDouble();
+        }
+
+        public static bool CoinToss(double weight = 0.5)
+        {
+            return stRand.NextDouble() < weight;
+        }
+
         public static char[] GenerateHash(int length = 32)
         {
             char[] str = new char[length];

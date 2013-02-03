@@ -110,8 +110,8 @@ namespace TestServer
         {
             if (ForeignKey) {
                 ForeignTables = (
-                    from attrib in _property.GetCustomAttributes<ForeignKeyAttribute>()
-                    select DatabaseManager.GetTable(attrib.ForeignEntityType)
+                    from attrib in _property.GetCustomAttributes(typeof(ForeignKeyAttribute), false)
+                    select DatabaseManager.GetTable(((ForeignKeyAttribute)attrib).ForeignEntityType)
                 ).ToArray();
             }
         }

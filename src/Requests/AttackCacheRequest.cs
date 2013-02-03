@@ -47,6 +47,10 @@ namespace TestServer.Requests
                 return new ErrorResponse("cache does not exist");
             }
 
+            if (cache.AccountID == acc.AccountID) {
+                return new ErrorResponse("unable to attack a cache owned by you");
+            }
+
             if (!cache.HasOwner) {
                 return new ErrorResponse("can't attack a cache with no owner");
             }

@@ -341,6 +341,9 @@ namespace TestServer
 
         private static bool RequiresParam(Expression exp)
         {
+            if (exp is UnaryExpression)
+                return RequiresParam(((UnaryExpression) exp).Operand);
+
             if (exp is BinaryExpression) {
                 BinaryExpression bExp = (BinaryExpression) exp;
                 return RequiresParam(bExp.Left) || RequiresParam(bExp.Right);
@@ -391,6 +394,8 @@ namespace TestServer
                 switch (exp.NodeType) {
                     case ExpressionType.Not:
                         return String.Format("(NOT {0})", oper);
+                    case ExpressionType.Convert:
+                        return SerializeExpression(uExp.Operand, removeParam);
                     default:
                         throw new Exception("Cannot convert an expression of type "
                             + exp.NodeType + " to SQL");
@@ -522,14 +527,14 @@ namespace TestServer
             var alias1 = predicates[0].Parameters[1].Name;
 
             var columns = String.Join(",\n  ", table0.Columns.Select(x => alias0 + "." + x.Name))
-                + ",\n " + String.Join(",\n  ", table1.Columns.Select(x => alias1 + "." + x.Name));
+                + ",\n  " + String.Join(",\n  ", table1.Columns.Select(x => alias1 + "." + x.Name));
 
             var joinOn = String.Format("{0}.{1} = {2}.{3}", alias0,
                 table0.Columns.First(x => x.PrimaryKey).Name, alias1,
-                table1.Columns.First(x => x.ForeignTables.Contains(table0)));
+                table1.Columns.First(x => x.ForeignTables != null && x.ForeignTables.Contains(table0)).Name);
 
             var builder = new StringBuilder();
-            builder.AppendFormat("SELECT\n  {0}\nFROM {1} AS {2}\n  INNER JOIN {3} AS {4} ON {5}", columns,
+            builder.AppendFormat("SELECT\n  {0}\nFROM {1} AS {2}\nINNER JOIN {3} AS {4}\nON {5}\n", columns,
                 table0.Name, alias0, table1.Name, alias1, joinOn);
 
             builder.AppendFormat("WHERE {0}", String.Join("\n  OR ",
@@ -590,6 +595,21 @@ namespace TestServer
             return entity;
         }
 
+        public static Tuple<T0, T1> SelectFirst<T0, T1>(params Expression<Func<T0, T1, bool>>[] predicates)
+            where T0 : new()
+            where T1 : new()
+        {
+            var table0 = GetTable<T0>();
+            var table1 = GetTable<T1>();
+            var cmd = GenerateSelectCommand(table0, table1, predicates);
+
+            Tuple<T0, T1> entity;
+            using (DBDataReader reader = cmd.ExecuteReader())
+                entity = reader.ReadEntity<T0, T1>(table0, table1);
+
+            return entity;
+        }
+
         public static List<T> Select<T>(params Expression<Func<T, bool>>[] predicates)
             where T : new()
         {
@@ -628,6 +648,13 @@ namespace TestServer
             where T : new()
         {
             return Select<T>(x => true);
+        }
+
+        public static List<Tuple<T0, T1>> SelectAll<T0, T1>()
+            where T0 : new()
+            where T1 : new()
+        {
+            return Select<T0, T1>((x, y) => true);
         }
 
         public static int Insert<T>(T entity)

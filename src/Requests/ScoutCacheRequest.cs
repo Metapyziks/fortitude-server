@@ -53,6 +53,9 @@ namespace TestServer.Requests
             }
 
             int survivors = Enumerable.Range(0, units).Count(x => Tools.CoinToss(0.8));
+            ply.Balance -= units - survivors;
+
+            DatabaseManager.Update(survivors);
 
             return new ScoutCacheResponse {
                 CacheID = cache.CacheID,

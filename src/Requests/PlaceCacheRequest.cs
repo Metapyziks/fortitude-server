@@ -45,7 +45,6 @@ namespace TestServer.Requests
 
             ply.Balance -= units;
             units -= Cache.PlacementCost - 1;
-            DatabaseManager.Update(ply);
 
             var cache = new Cache {
                 AccountID = acc.AccountID,
@@ -54,6 +53,8 @@ namespace TestServer.Requests
                 Longitude = lng,
                 Name = CacheNamer.GenerateRandomName()
             };
+
+            DatabaseManager.Update(ply);
             DatabaseManager.Insert(cache);
 
             return new CacheInfoResponse(cache);

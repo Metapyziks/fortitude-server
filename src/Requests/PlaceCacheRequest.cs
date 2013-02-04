@@ -44,12 +44,12 @@ namespace TestServer.Requests
             }
 
             ply.Balance -= units;
-            units -= Cache.PlacementCost;
+            units -= Cache.PlacementCost - 1;
             DatabaseManager.Update(ply);
 
             var cache = new Cache {
                 AccountID = acc.AccountID,
-                Balance = Math.Max(units, 1),
+                Balance = units,
                 Latitude = lat,
                 Longitude = lng,
                 Name = CacheNamer.GenerateRandomName()

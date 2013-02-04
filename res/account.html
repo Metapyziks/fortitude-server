@@ -4,8 +4,6 @@
 		return;
 	}
 
-	var account = DatabaseManager.SelectFirst<Account>(x =>
-		x.AccountID == session.AccountID);
 	var player = Player.GetPlayer(account);
 	var caches = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID);
 ?>

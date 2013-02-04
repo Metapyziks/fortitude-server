@@ -19,7 +19,7 @@ using TestServer.Entities;
 
 namespace TestServer
 {
-    static class ContentManager
+    public static class ContentManager
     {
         private class BinaryFile
         {
@@ -150,7 +150,7 @@ using TestServer.Responses;
 public static class {0}
 {
     public static void ServeRequest(HttpListenerContext context, String body,
-        NameValueCollection post, AuthSession session, StreamWriter writer,
+        NameValueCollection post, AuthSession session, Account account, StreamWriter writer,
         Dictionary<String, MethodInfo> __includes__)
     {
         var request = context.Request;
@@ -160,7 +160,7 @@ public static class {0}
         Action<String> Include = path => {
             if (!path.StartsWith(""/"")) path = ""/"" + path;
             try {
-                __includes__[path].Invoke(null, new object[] { context, body, post, session, writer, __includes__ } );
+                __includes__[path].Invoke(null, new object[] { context, body, post, session, account, writer, __includes__ } );
             } catch (Exception e) {
                 writer.Write(""Failed to include "" + path + ""!<br />"");
                 writer.Write(e.ToString());
@@ -327,18 +327,20 @@ public static class {0}
                     var post = HttpUtility.ParseQueryString( body );
 
                     AuthSession session = null;
+                    Account account = null;
                     if (request.Cookies["auth-uid"] != null && request.Cookies["auth-session"] != null) {
                         var uid = Int32.Parse(request.Cookies["auth-uid"].Value);
                         var sid = request.Cookies["auth-session"].Value;
                         session = AuthSession.Get(uid);
                         if (session != null && !sid.EqualsCharArray(session.SessionCode)) session = null;
+                        if (session != null) account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == uid);
                     }
 
                     var writer = new StreamWriter( response.OutputStream );
 #if !DEBUG
                     try {
 #endif
-                        _serveMethod.Invoke(null, new object[] { context, body, post, session, writer, _sIncludes });
+                        _serveMethod.Invoke(null, new object[] { context, body, post, session, account, writer, _sIncludes });
 #if !DEBUG
                     } catch {
                         writer.WriteLine("Internal server error :(");

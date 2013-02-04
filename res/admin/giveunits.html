@@ -4,18 +4,17 @@
 	}
 
 	bool success = false;
-	string uname = "";
+	string uname = post["uname"] ?? account.Username;
 	int count = 0;
 	string error = null;
 	if (post["action"] == "giveunits") {
 		try {
-			uname = post["uname"];
 			count = Int32.Parse(post["units"]);
 
 			if (Account.IsUsernameValid(uname)) {
-				var account = DatabaseManager.SelectFirst<Account>(x => x.Username == uname);
-				if (account != null && account.Rank != Rank.Unverified) {
-					var player = Player.GetPlayer(account);
+				var acc = DatabaseManager.SelectFirst<Account>(x => x.Username == uname);
+				if (acc != null && acc.Rank != Rank.Unverified) {
+					var player = Player.GetPlayer(acc);
 					player.Balance += count;
 					DatabaseManager.Update(player);
 					success = true;
@@ -33,7 +32,7 @@
 <form name="giveUnitsForm" action="/admin" method="post">
     <input type="hidden" name="action" value="giveunits" />
     <table>
-    <tr><td>Username:</td> <td><input type="text" name="uname" /></td></tr>
+    <tr><td>Username:</td> <td><input type="text" name="uname" value="{$uname}" /></td></tr>
     <tr><td>Units:</td> <td><input type="number" name="units" min="1" max="65535" value="10" /><input type="submit" value="Apply" /></td></tr>
 <?
 	if (success) {

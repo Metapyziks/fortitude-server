@@ -15,15 +15,17 @@
 					<th>ID</th>
 					<th>Username</th>
 					<th>Rank</th>
+					<th>Caches</th>
 					<th>Join Date</th>
 				</tr><?
 	var users = DatabaseManager.SelectAll<Account>();
-	foreach ( Account acc in users )
-	{ ?>
+	var caches = DatabaseManager.SelectAll<Cache>();
+	foreach (Account acc in users) { ?>
 			  	<tr>
 					<td>{$acc.AccountID}</td>
 					<td>{$acc.Username}</td>
 					<td>{$acc.Rank}</td>
+					<td>{$caches.Count(x => x.AccountID == acc.AccountID)}</td>
 					<td>{$acc.RegistrationDate.ToShortDateString()}</td>
 				</tr><?
 	} ?>

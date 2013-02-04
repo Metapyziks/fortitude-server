@@ -12,8 +12,10 @@
         <title>Fortitude Server Prototype - Console</title>
         <link rel="stylesheet" type="text/css" href="styles.css">
         <script type="text/javascript">
-            var log = document.getElementById("log");
-            log.scrollTop = log.scrollHeight;
+            window.onload = function() {
+                var log = document.getElementById("log");
+                log.scrollTop = log.scrollHeight;
+            }
         </script>
     </head>
     <body>

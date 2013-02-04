@@ -57,6 +57,8 @@ namespace TestServer
 
             DatabaseManager.ConnectLocal();
 
+            DatabaseManager.Delete<Cache>(x => x.CacheID == 1);
+
             if (ownerEmails != null) {
                 Account.AddOwnerEmails(ownerEmails);
             }

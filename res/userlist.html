@@ -18,8 +18,9 @@
 					<th>Caches</th>
 					<th>Join Date</th>
 				</tr><?
-	var users = DatabaseManager.SelectAll<Account>();
+	IEnumerable<Account> users = DatabaseManager.SelectAll<Account>();
 	var caches = DatabaseManager.SelectAll<Cache>();
+	users = users.OrderByDescending(x => caches.Count(y => y.AccountID == x.AccountID)).ToArray();
 	foreach (Account acc in users) { ?>
 			  	<tr>
 					<td>{$acc.AccountID}</td>

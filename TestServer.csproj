@@ -75,7 +75,7 @@
   <ItemGroup>
     <Compile Include="src\APIManager.cs" />
     <Compile Include="src\AuthSession.cs" />
-    <Compile Include="src\Responses\BattleReport.cs" />
+    <Compile Include="src\Responses\BattleReportResponse.cs" />
     <Compile Include="src\Entities\Account.cs" />
     <Compile Include="src\DatabaseManager.cs" />
     <Compile Include="src\EmailManager.cs" />

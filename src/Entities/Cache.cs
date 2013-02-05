@@ -51,7 +51,7 @@ namespace TestServer.Entities
         [NotNull]
         public int Balance { get; set; }
 
-        public BattleReport Attack(Player attacker, int units)
+        public BattleReportResponse Attack(Player attacker, int units)
         {
             if (!HasOwner) {
                 throw new Exception("Can't attack a cache with no owner");
@@ -59,15 +59,15 @@ namespace TestServer.Entities
 
             double weight = 0.4 + Math.Min((units - Balance) / (double) Balance, 2.0) * 0.05;
 
-            var report = new BattleReport {
+            var report = new BattleReportResponse {
                 Cache = this,
                 AttackerID = attacker.AccountID,
                 DefenderID = AccountID,
-                Attackers = new BattleReport.UnitReport {
+                Attackers = new BattleReportResponse.UnitReport {
                     Initial = units,
                     Survivors = units
                 },
-                Defenders = new BattleReport.UnitReport {
+                Defenders = new BattleReportResponse.UnitReport {
                     Initial = Balance,
                     Survivors = Balance
                 }

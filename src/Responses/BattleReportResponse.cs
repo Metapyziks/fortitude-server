@@ -9,7 +9,7 @@ using TestServer.Entities;
 namespace TestServer.Responses
 {
     [JSONSerializable]
-    public class BattleReport : Response
+    public class BattleReportResponse : Response
     {
         [JSONSerializable]
         public class UnitReport
@@ -45,7 +45,7 @@ namespace TestServer.Responses
         [Serialize("victory")]
         public bool IsVictory { get; set; }
 
-        public BattleReport()
+        public BattleReportResponse()
             : base(true) { }
     }
 }

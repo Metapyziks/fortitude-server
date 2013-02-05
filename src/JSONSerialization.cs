@@ -20,6 +20,20 @@ namespace TestServer
         }
     }
 
+    public class SerializedTuple : List<Object> { }
+
+    public class SerializedNamedValue
+    {
+        public readonly String Name;
+        public readonly Object Value;
+
+        public SerializedNamedValue(String name, Object value)
+        {
+            Name = name;
+            Value = value;
+        }
+    }
+
     public static class JSONSerializer
     {
         public static String Serialize(Object obj)
@@ -31,10 +45,20 @@ namespace TestServer
 
         private static void SerializeObj(Object obj, StringBuilder builder)
         {
-            if (obj is KeyValuePair<String, Object>) {
-                KeyValuePair<String, Object> pair = (KeyValuePair<String, Object>) obj;
-                builder.Append("\"" + pair.Key + "\":");
+            if (obj is SerializedNamedValue) {
+                var pair = (SerializedNamedValue) obj;
+                builder.Append("\"" + pair.Name + "\":");
                 Serialize(pair.Value, builder);
+                return;
+            }
+
+            if (obj is SerializedTuple) {
+                var tuple = (SerializedTuple) obj;
+                bool first = true;
+                foreach (var item in tuple) {
+                    if (!first) builder.Append(","); else first = false;
+                    SerializeObj(item, builder);
+                }
                 return;
             }
 
@@ -103,7 +127,8 @@ namespace TestServer
 
             if (obj is KeyValuePair<String, Object>
                 || obj.GetType().IsDefined(typeof(JSONSerializableAttribute), true)
-                || obj is IEnumerable<KeyValuePair<String, Object>>) {
+                || obj is IEnumerable<KeyValuePair<String, Object>>
+                || obj is SerializedTuple) {
                 builder.Append("{");
                 SerializeObj(obj, builder);
                 builder.Append("}");

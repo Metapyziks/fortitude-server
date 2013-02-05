@@ -4,16 +4,18 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 
+using TestServer.Responses;
 using TestServer.Entities;
 
 namespace TestServer.Requests
 {
     using AccountPred = Expression<Func<Account, bool>>;
+    using CachePred = Expression<Func<Cache, bool>>;
 
     [RequestTypeName("userinfo")]
     class UserInfoRequest : Request
     {
-        public override Responses.Response Respond(NameValueCollection args)
+        public override Response Respond(NameValueCollection args)
         {
             String[] usernames = null;
             int[] userids = null;
@@ -35,7 +37,6 @@ namespace TestServer.Requests
             }
 
             List<Account> users;
-
             if (usernames != null) {
                 users = DatabaseManager.Select(usernames.Select(
                     x => (AccountPred) (acc => acc.Username == x)).ToArray());
@@ -44,7 +45,10 @@ namespace TestServer.Requests
                     x => (AccountPred) (acc => acc.AccountID == x)).ToArray());
             }
 
-            return new Responses.UserInfoResponse(users);
+            List<Cache> caches = DatabaseManager.Select<Cache>(users.Select(
+                x => (CachePred) (cache => cache.AccountID == x.AccountID)).ToArray());
+
+            return new UserInfoResponse(users, users.Select(x => caches.Count(y => y.AccountID == x.AccountID)).ToList());
         }
     }
 }

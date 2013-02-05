@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using TestServer.Entities;
 
@@ -8,13 +9,18 @@ namespace TestServer.Responses
     [JSONSerializable]
     public class UserInfoResponse : Response
     {
-        [Serialize( "users" )]
-        public readonly List<Account> Users;
+        [Serialize("users")]
+        public readonly Object Users;
 
-        public UserInfoResponse( List<Account> users )
-            : base( true )
+        public UserInfoResponse(List<Account> users, List<int> cacheCounts = null)
+            : base(true)
         {
-            Users = users;
+            if (cacheCounts == null) {
+                Users = users;
+            } else {
+                Users = users.Select((x, i) =>
+                    new SerializedTuple { x, new SerializedNamedValue("caches", cacheCounts[i]) } );
+            }
         }
     }
 }

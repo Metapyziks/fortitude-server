@@ -108,7 +108,7 @@
     <Compile Include="src\Responses\UserStatsResponse.cs" />
     <Compile Include="src\Responses\UserInfoResponse.cs" />
     <Compile Include="src\ContentManager.cs" />
-    <Compile Include="src\Serialization.cs" />
+    <Compile Include="src\JSONSerialization.cs" />
     <Compile Include="src\Tools.cs" />
     <Compile Include="src\EmailValidationCode.cs" />
   </ItemGroup>

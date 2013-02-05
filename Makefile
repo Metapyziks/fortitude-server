@@ -21,7 +21,7 @@ SRC = \
 	$(SRCDIR)/DatabaseManager.cs \
 	$(SRCDIR)/EmailManager.cs \
 	$(SRCDIR)/Program.cs \
-	$(SRCDIR)/Serialization.cs \
+	$(SRCDIR)/JSONSerialization.cs \
 	$(SRCDIR)/CacheNamer.cs \
 	$(SRCDIR)/Tools.cs
 

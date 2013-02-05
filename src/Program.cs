@@ -17,6 +17,7 @@ using TestServer.Entities;
 namespace TestServer
 {
     using AccountPred = Expression<Func<Account, bool>>;
+    using System.Diagnostics;
 
     public class Program
     {
@@ -115,6 +116,17 @@ namespace TestServer
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(format, args);
             Console.ResetColor();
+        }
+
+        public static void Restart()
+        {
+            Console.Write("Attempting to restart... ");
+            try {
+                Process.Start("nohup", "../../update.sh >/dev/null 2>&1 &");
+                Console.WriteLine("Goodbye!");
+            } catch (Exception e) {
+                Console.WriteLine("Failed!");
+            }
         }
 
         static void ProcessCommand(String command, String[] args)

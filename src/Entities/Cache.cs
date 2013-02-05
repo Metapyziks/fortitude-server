@@ -57,6 +57,8 @@ namespace TestServer.Entities
                 throw new Exception("Can't attack a cache with no owner");
             }
 
+            var defender = DatabaseManager.SelectFirst<Player>(x => x.AccountID == this.AccountID);
+
             double weight = 0.4 + Math.Min((units - Balance) / (double) Balance, 2.0) * 0.05;
 
             var report = new BattleReportResponse {
@@ -96,11 +98,13 @@ namespace TestServer.Entities
             } else {
                 report.Defenders.Deserters = 0;
                 report.Attackers.Deserters = (int) (report.Attackers.Fatalities * (Tools.Random() * 0.1 + 0.05));
-                Balance = report.Defenders.Survivors + report.Attackers.Deserters;
+                Balance = report.Defenders.Survivors;
+                defender.Balance += report.Attackers.Deserters;
             }
 
             DatabaseManager.Update(this);
             DatabaseManager.Update(attacker);
+            DatabaseManager.Update(defender);
 
             return report;
         }

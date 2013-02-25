@@ -167,6 +167,10 @@ public static class {0}
             }
         };
 
+        Action<String> Echo = str => {
+            writer.Write(str);  
+        };
+
         writer.Write(""{1}"");
     }
 }

@@ -1,23 +1,222 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Fortitude
+	</title>
+	<link rel="stylesheet" type="text/css" href="stylesheet.css">
+	<!-- <script type="text/javascript" src="script.js"></script> -->
+</head>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta charset="utf-8" />
-		<title>Fortitude Server Prototype</title>
-		<link rel="stylesheet" type="text/css" href="styles.css">
-	</head>
-	<body>
-		<? Include("topbar.html"); ?>
-		<div class="mainbox">
-			<h1>Fortitude</h1>
-			Welcome to the Fortitude prototype!
-			This is a demonstration of how the game will appear if nothing works
-			and all the code is hastily cobbled together. <br />
-			Have fun!
-			<br /><br />
-			<a href="userlist">User List</a><br />
-			<a href="namegentest">Cache Name Generator</a><br />
-			<a href="maptest">Map Test</a>
-		</div>
-	</body>
-</html>
+<body>
+	<div id = "topbar">
+		<a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> 
+	</div>
+	<div id = "wrapper">
+		<div id = "header">
+			<ul>
+				<li> 
+					<a href="#">Home</a> 
+				</li>
+				<li> 
+					<a href="#">Map</a>  
+					<ul>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+					</ul>
+				</li>
+				<li> 
+					<a href="#">Account</a>  
+					<ul>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+					</ul>
+				</li>
+				<li> 
+					<a href="#">Messages</a>  
+					<ul>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+					</ul>
+				</li>
+				<li> 
+					<a href="#">Boards</a>  
+					<ul>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+					</ul>
+				</li>
+				<li> 
+					<a href="#">News</a>  
+					<ul>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+					</ul>
+				</li>
+				<li> 
+					<a href="#">Help</a>  
+					<ul>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+						<a href="#">» Sub section</a>
+					</ul>
+				</li>
+				<li> 
+					<a href="#">Signout</a>  
+				</li>
+		  </ul>
+		</div> <!-- header -->
+		
+		<div id = "sidebar">
+			<ul>
+				<li class = "sidebar_section">
+					<h1>Username</h1>
+					<img src="/images/avatars/1-normal.gif" class="avatar" />
+					<br />
+					<span>
+						Elite warlorld
+					</span>
+					<p>	
+						12,338 soldiers<br />
+						12 caches
+					</p>
+					<div style="clear: both;"></div>
+				</li> <!-- username (account summary) -->
+				<li class = "sidebar_section">
+					<h1>Search</h1>
+					<form>
+						<input type="text"></input>
+						<button>&gt;&gt;</button>
+						<div style="clear: both;"></div>
+					</form>					
+				</li> <!-- search -->
+				<li class = "sidebar_section">
+					<h1>Caches</h1>
+					<ul>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
+							</p>
+						</li>
+						<li class = "last_child">
+							<p>
+								Showing 5 most active caches.
+							</p>
+							<p>
+								<a href="#">View all caches</a>
+							</p>
+						</li>
+					</ul>
+				</li> <!-- caches -->
+				<li class = "sidebar_section">
+					<h1>Recent News</h1>
+					<ul>
+						<li>
+							<span>Username</span>
+							<p>
+								<a href="#">
+									RE: This very interesting topic
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								<a href="#">
+									A cache has been conquered!
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								<a href="#">
+									A cache was successfully defended!
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Username</span>
+							<p>
+								<a href="#">
+									RE: This very interesting topic
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								<a href="#">
+									A cache was successfully defended!
+								</a>
+							</p>
+						</li>
+						<li class = "last_child">
+							<p>
+								Showing 5 most recent events.
+							</p>
+							<p>
+								<a href="#">View all events</a>
+							</p>
+						</li>						
+					</ul>
+				</li> <!-- recent news -->
+			</ul>	
+		</div> <!-- sidebar -->
+		
+		<div id = "content">
+			<h1>Page Title</h1>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut eros turpis, ac adipiscing lorem. Sed semper, quam ac commodo lacinia, orci sapien venenatis sapien, quis dictum orci nisl sed nunc. Sed vitae gravida nisl. Donec lacinia sollicitudin dolor in imperdiet. Maecenas scelerisque, ipsum sed tempus vulputate, magna ligula venenatis velit, sit amet tempor dui erat porttitor urna. Sed justo nisl, aliquam eget accumsan vitae, molestie vel orci. In dictum mi id sem fermentum quis egestas arcu gravida. Nulla facilisi. Duis bibendum, elit sed tempus dignissim, risus tellus sodales lacus, vitae faucibus dolor orci eu ante. Aenean sollicitudin placerat odio, vel sagittis arcu hendrerit nec. Vestibulum lacinia, quam iaculis vehicula ornare, lectus ipsum porttitor felis, eget adipiscing nibh diam at nisi. Donec vel tortor non tellus convallis hendrerit at faucibus dolor. Aenean eu diam vel eros elementum sagittis nec quis dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+			</p>
+			<p>
+				Vivamus eu quam arcu. Phasellus tempor, arcu eget mollis ultrices, mauris enim facilisis nulla, vitae euismod ipsum lectus et enim. Aenean nunc nibh, pharetra ac vulputate sed, rhoncus et diam. Morbi rutrum ligula ut est ullamcorper nec tempor leo vulputate. Phasellus metus urna, porta et venenatis ac, hendrerit eu risus. Maecenas rhoncus, dui sit amet fermentum eleifend, justo ipsum convallis nisl, id euismod tellus erat id nunc. Donec dapibus mi laoreet felis ullamcorper auctor. Curabitur nunc dolor, faucibus non dignissim id, ullamcorper eget libero. Sed vitae euismod magna. Sed condimentum lobortis facilisis.
+			</p>
+			<p>
+				Pellentesque quis augue purus. Morbi tincidunt ullamcorper ligula sit amet laoreet. Nunc eu elit nec orci mattis tincidunt. Mauris ullamcorper, risus sed fermentum consequat, enim dui pulvinar tellus, id mollis ligula libero et tortor. Praesent tempus fringilla scelerisque. Aliquam erat volutpat. Sed commodo fermentum arcu, et consequat quam sollicitudin in. Sed at magna elit, a congue leo. Fusce semper felis id tortor ullamcorper pulvinar.
+			</p>
+			<p>
+				Vivamus quis nibh sapien. Aliquam mollis velit a dolor interdum et vulputate orci tempor. In pellentesque purus id lectus viverra tempus. Sed pharetra arcu rutrum enim adipiscing nec iaculis libero fringilla. Vivamus posuere fringilla neque, eget posuere turpis auctor sit amet. Etiam tempus pretium accumsan. Aenean vitae eros ac felis placerat pulvinar.
+			</p>
+			<p>
+				Vestibulum pharetra sodales ante sed vestibulum. Sed rutrum, lectus non vulputate aliquam, libero tortor varius ligula, ut facilisis metus dolor sed est. Duis a tellus lacus. Donec consequat rhoncus felis, at pharetra velit dapibus vitae. Mauris interdum scelerisque dui ac malesuada. Vivamus dui purus, fermentum vitae convallis non, interdum non nisi. Donec molestie lorem non nisl volutpat sodales. Vivamus nec pellentesque enim. Suspendisse potenti. Vestibulum laoreet quam nec justo dapibus eu aliquet nibh consectetur. Morbi fermentum bibendum enim sed bibendum. Fusce enim velit, semper sed fringilla sed, aliquet id risus. Suspendisse potenti. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam lacinia tellus ac quam lacinia at aliquet nisi convallis.
+			</p>
+		</div> <!-- content -->
+		
+		<div style = "clear: both;"></div>
+		
+		<div id = "footer">
+		</div> <!-- footer -->
+		
+	</div> <!-- wrapper -->
+</body>

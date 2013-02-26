@@ -432,7 +432,7 @@ public static class {0}
             _sContent = new Dictionary<string, BinaryFile>();
             _sIncludes = new Dictionary<string, MethodInfo>();
 
-            _sContentDirectory = ini.GetValue("pagesdir") ?? "res";
+            _sContentDirectory = FormatPath(Path.GetFullPath(ini.GetValue("pagesdir") ?? "res"));
             _sAllowedExtensions = (ini.GetValue("allowedext") ?? "").Split(',').ToList();
 
             for (int i = 0; i < _sAllowedExtensions.Count; ++i)
@@ -470,7 +470,7 @@ public static class {0}
 
         private static void InitializeDirectory(string dir, int depth = 0)
         {
-            String dirName = dir;
+            String dirName = FormatPath(Path.GetFullPath(dir) + "/");
             Console.WriteLine(dirName);
 
             foreach (String file in Directory.GetFiles(dir))
@@ -482,7 +482,14 @@ public static class {0}
 
         private static String FormatPath(String path)
         {
-            return path.Substring(_sContentDirectory.Length).Replace('\\', '/');
+            if (_sContentDirectory != null) {
+                path = path.Substring(_sContentDirectory.Length);
+            }
+            path = path.Replace('\\', '/');
+            while (path.Contains("//")) {
+                path = path.Replace("//", "/");
+            }
+            return path;
         }
 
         private static void UpdateFile(String path, int depth = 0)

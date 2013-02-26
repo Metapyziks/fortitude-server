@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<body>
 <?
     // This is a function that takes no arguments
     Action testFunction = () =>
@@ -45,17 +43,21 @@
 
     Func<Rank, bool> hasRank = (rank) =>
     {
-        return isSignedIn() && (int) rank >= (int) session.Rank;
+        return isSignedIn() && (int) rank <= (int) session.Rank;
     };
 
-    Func<bool> isValidated = () =>
+    Func<bool> isVerified = () =>
     {
-        return isSignedIn() && hasRank(Rank.Validated);
+        return isSignedIn() && hasRank(Rank.Verified);
     };
 
     Func<bool> isAdmin = () =>
     {
         return isSignedIn() && hasRank(Rank.Admin);
     };
+
+    Func<bool> isOwner = () =>
+    {
+        return isSignedIn() && hasRank(Rank.Owner);
+    };
 ?>
-</body>

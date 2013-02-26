@@ -3,29 +3,30 @@
     	response.Redirect("404");
 	}
 
-	bool success = false;
-	string uname = post["uname"] ?? account.Username;
-	int count = 0;
-	string error = null;
-	if (post["action"] == "giveunits") {
-		try {
-			count = Int32.Parse(post["units"]);
+	{
+		bool success = false;
+		string uname = post["uname"] ?? account.Username;
+		int count = 0;
+		string error = null;
+		if (post["action"] == "giveunits") {
+			try {
+				count = Int32.Parse(post["units"]);
 
-			if (Account.IsUsernameValid(uname)) {
-				var acc = DatabaseManager.SelectFirst<Account>(x => x.Username == uname);
-				if (acc != null && acc.Rank != Rank.Unverified) {
-					var player = Player.GetPlayer(acc);
-					player.Balance += count;
-					DatabaseManager.Update(player);
-					success = true;
-				} else {
-					error = String.Format("I can't find a user called {0} :(", uname);
+				if (Account.IsUsernameValid(uname)) {
+					var acc = DatabaseManager.SelectFirst<Account>(x => x.Username == uname);
+					if (acc != null && acc.Rank != Rank.Unverified) {
+						var ply = Player.GetPlayer(acc);
+						ply.Balance += count;
+						DatabaseManager.Update(ply);
+						success = true;
+					} else {
+						error = String.Format("I can't find a user called {0} :(", uname);
+					}
 				}
+			} catch {
+				error = String.Format("Failed to give {0} units to {1} :(", post["uname"], post["units"]);
 			}
-		} catch {
-			error = String.Format("Failed to give {0} units to {1} :(", post["uname"], post["units"]);
 		}
-	}
 ?>
 
 <h2>Give Units</h2>
@@ -35,15 +36,19 @@
     <tr><td>Username:</td> <td><input type="text" name="uname" value="{$uname}" /></td></tr>
     <tr><td>Units:</td> <td><input type="number" name="units" min="1" max="65535" value="10" /><input type="submit" value="Apply" /></td></tr>
 <?
-	if (success) {
+		if (success) {
 ?>
 	<tr><td colspan ="2">Gave {$count} units to {$uname}!</td></tr>
 <?
-	} else if (error != null) {
+		} else if (error != null) {
 ?>
 	<tr><td colspan ="2">{$error}</td></tr>
 <?
-	}
+		}
 ?>
     </table>
 </form>
+
+<?
+	}
+?>

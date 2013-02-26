@@ -7,7 +7,7 @@
 	List<Cache> caches = null;
 
 	// If the user is logged in and verified
-	if (session != null && session.Rank != Rank.Unverified) {
+	if (isVerified()) {
 		// Find the player data for the user
 		player = DatabaseManager.SelectFirst<Player>(x => x.AccountID == session.AccountID);
 
@@ -27,10 +27,10 @@
 
 <body>
 <?
-	if (session != null && session.Rank >= Rank.Admin) {
+	if (isAdmin()) {
 ?>
 		<div id = "topbar">
-			<a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> 
+			<a href="/admin">Admin Panel</a> 
 		</div>
 <?
 	}
@@ -40,7 +40,7 @@
 
 		<div id = "sidebar">
 			<ul>
-<? if (session != null) { ?>
+<? if (isSignedIn()) { ?>
 				<li class = "sidebar_section">
 					<h1>{$account.Username}</h1>
 					<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
@@ -48,10 +48,12 @@
 					<span>
 						Elite warlorld
 					</span>
+<? if (player != null && caches != null) { ?>
 					<p>	
 						{$caches.Sum(x => x.Balance) + player.Balance} soldiers<br />
 						{$caches.Count} {$pluralify("cache", "caches", caches.Count)}
 					</p>
+<? } ?>
 					<div style="clear: both;"></div>
 				</li> <!-- username (account summary) -->
 <? } ?>
@@ -64,7 +66,7 @@
 					</form>
 				</li> <!-- search -->
 <?  // If the user is logged in and verified...
-	if (session != null && session.Rank != Rank.Unverified) {
+	if (isVerified()) {
 ?>
 				<li class = "sidebar_section">
 					<h1>Caches</h1>

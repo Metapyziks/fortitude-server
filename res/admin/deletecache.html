@@ -3,24 +3,25 @@
     	response.Redirect("404");
 	}
 
-	bool success = false;
-	int cacheID = 0;
-	Cache cache = null;
-	string error = null;
-	if (post["action"] == "deletecache") {
-		try {
-			cacheID = Int32.Parse(post["cacheid"].Trim());
-			cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheID);
-			if (cache != null) {
-				DatabaseManager.Delete(cache);
-				success = true;
-			} else {
-				error = String.Format("Cache #{0} does not exist :(", post["cacheid"]);
+	{
+		bool success = false;
+		int cacheID = 0;
+		Cache cache = null;
+		string error = null;
+		if (post["action"] == "deletecache") {
+			try {
+				cacheID = Int32.Parse(post["cacheid"].Trim());
+				cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheID);
+				if (cache != null) {
+					DatabaseManager.Delete(cache);
+					success = true;
+				} else {
+					error = String.Format("Cache #{0} does not exist :(", post["cacheid"]);
+				}
+			} catch {
+				error = String.Format("Failed to delete cache #{0} :(", post["cacheid"]);
 			}
-		} catch {
-			error = String.Format("Failed to delete cache #{0} :(", post["cacheid"]);
 		}
-	}
 ?>
 
 <h2>Delete Cache</h2>
@@ -29,15 +30,19 @@
     <table>
     <tr><td>Cache ID:</td><td><input type="text" name="cacheid" value="1" style="width: 30%;" />&nbsp;<input type="submit" value="Apply" /></td></tr>
 <?
-	if (success) {
+		if (success) {
 ?>
 	<tr><td colspan ="2">Removed cache #{$cacheID} ({$cache.Name})!</td></tr>
 <?
-	} else if (error != null) {
+		} else if (error != null) {
 ?>
 	<tr><td colspan ="2">{$error}</td></tr>
 <?
-	}
+		}
 ?>
     </table>
 </form>
+
+<?
+	}
+?>

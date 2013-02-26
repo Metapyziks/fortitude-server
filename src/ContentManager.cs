@@ -43,6 +43,7 @@ namespace FortitudeServer
             public void Invalidate()
             {
                 _changed = true;
+                OnInvalidate();
             }
 
             public void Update()
@@ -52,6 +53,8 @@ namespace FortitudeServer
                     OnUpdate();
                 }
             }
+
+            protected virtual void OnInvalidate() { }
 
             protected abstract void OnUpdate();
             protected abstract void OnServeRequest(HttpListenerContext context);
@@ -137,6 +140,18 @@ namespace FortitudeServer
                 writer.Flush();
             }
 
+            protected override void OnInvalidate()
+            {
+                foreach (var page in _sPages.Values) {
+                    if (page is ScriptedPage) {
+                        var sPage = (ScriptedPage) page;
+                        if (sPage.Dependencies.Contains(this)) {
+                            sPage.Invalidate();
+                        }
+                    }
+                }
+            }
+
             protected override void OnUpdate()
             {
                 try {
@@ -144,7 +159,7 @@ namespace FortitudeServer
                         OnUpdate(File.ReadAllText(FilePath));
                 } catch { }
             }
-
+            
             protected abstract void OnUpdate(String content);
             protected abstract void OnWriteContent(StreamWriter writer);
         }
@@ -238,6 +253,8 @@ public static class {0}
                 _compiler = new CSharpCodeProvider(providerOptions);
             }
 
+            public List<Page> Dependencies { get; private set; }
+
             private String _className;
             private String _rawCode;
             private String _generatedCode;
@@ -245,7 +262,10 @@ public static class {0}
             private MethodInfo _serveMethod;
 
             public ScriptedPage(String path)
-                : base(path) { }
+                : base(path)
+            {
+                Dependencies = new List<Page>();
+            }
 
             private String FormatHTMLBlock(String block)
             {
@@ -273,6 +293,7 @@ public static class {0}
             // TODO: Make this at least slightly acceptable
             private String GenerateCode(String content)
             {
+                Dependencies.Clear();
                 try {
                     StringBuilder builder = new StringBuilder();
                     int j = 0;
@@ -316,6 +337,7 @@ public static class {0}
                                 builder.Append("Echo(\"");
                                 if (_sPages.ContainsKey(file)) {
                                     Page page = _sPages[file];
+                                    Dependencies.Add(page);
                                     page.Update();
                                     if (page is ScriptedPage) {
                                         ScriptedPage sPage = (ScriptedPage) page;

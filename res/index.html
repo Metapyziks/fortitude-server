@@ -1,4 +1,19 @@
 <!DOCTYPE html>
+
+<? 
+	Player player = null;
+	List<Cache> caches = null;
+
+	// If the user is logged in and verified
+	if (session != null && session.Rank != Rank.Unverified) {
+		// Find the player data for the user
+		player = DatabaseManager.SelectFirst<Player>(x => x.AccountID == session.AccountID);
+
+		// Get a list of all caches owned by the user (i.e. have a matching AccountID)
+		caches = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID);
+	}
+?>
+
 <html>
 <head>
 	<title>
@@ -9,128 +24,68 @@
 </head>
 
 <body>
-	<div id = "topbar">
-		<a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> 
-	</div>
+<?
+	if (session != null && session.Rank >= Rank.Admin) {
+?>
+		<div id = "topbar">
+			<a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> :: <a href="#">Admin links</a> 
+		</div>
+<?
+	}
+?>
 	<div id = "wrapper">
-		<div id = "header">
-			<ul>
-				<li> 
-					<a href="#">Home</a> 
-				</li>
-				<li> 
-					<a href="#">Map</a>  
-					<ul>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-					</ul>
-				</li>
-				<li> 
-					<a href="#">Account</a>  
-					<ul>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-					</ul>
-				</li>
-				<li> 
-					<a href="#">Messages</a>  
-					<ul>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-					</ul>
-				</li>
-				<li> 
-					<a href="#">Boards</a>  
-					<ul>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-					</ul>
-				</li>
-				<li> 
-					<a href="#">News</a>  
-					<ul>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-					</ul>
-				</li>
-				<li> 
-					<a href="#">Help</a>  
-					<ul>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-						<a href="#">&gt;&gt; Sub section</a>
-					</ul>
-				</li>
-				<li> 
-					<a href="#">Signout</a>  
-				</li>
-		  </ul>
-		</div> <!-- header -->
-		
+<? Include("/header.html"); ?>
+
 		<div id = "sidebar">
 			<ul>
+<? if (session != null) { ?>
 				<li class = "sidebar_section">
-					<h1>Username</h1>
-					<img src="/images/avatars/1-normal.gif" class="avatar" />
+					<h1>{$account.Username}</h1>
+					<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
 					<br />
 					<span>
 						Elite warlorld
 					</span>
 					<p>	
-						12,338 soldiers<br />
-						12 caches
+						{$caches.Sum(x => x.Balance) + player.Balance} soldiers<br />
+						{$caches.Count} cache{$(caches.Count != 1 ? "s" : "")}
 					</p>
 					<div style="clear: both;"></div>
 				</li> <!-- username (account summary) -->
+<? } ?>
 				<li class = "sidebar_section">
 					<h1>Search</h1>
 					<form>
 						<input type="text"></input>
 						<button>&gt;&gt;</button>
 						<div style="clear: both;"></div>
-					</form>					
+					</form>
 				</li> <!-- search -->
+<?  // If the user is logged in and verified...
+	if (session != null && session.Rank != Rank.Unverified) {
+?>
 				<li class = "sidebar_section">
 					<h1>Caches</h1>
 					<ul>
+<?
+		// Loop through the first 5 caches and display their info
+		int count = 0;
+		foreach (var cache in caches) {
+?>
 						<li>
-							<span>Fort Bastion</span>
+							<span>{$cache.Name}</span>
 							<p>
-								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
+								{$cache.Balance} soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
 							</p>
 						</li>
-						<li>
-							<span>Fort Bastion</span>
-							<p>
-								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
-							</p>
-						</li>
-						<li>
-							<span>Fort Bastion</span>
-							<p>
-								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
-							</p>
-						</li>
-						<li>
-							<span>Fort Bastion</span>
-							<p>
-								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
-							</p>
-						</li>
-						<li>
-							<span>Fort Bastion</span>
-							<p>
-								156 soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
-							</p>
-						</li>
+<?
+			count = count + 1;
+			if (count == 5) break;
+		}
+?>
 						<li class = "last_child">
 							<p>
-								Showing 5 most active caches.
+								Showing {$Math.Min(5, caches.Count)} most active caches.
 							</p>
 							<p>
 								<a href="#">View all caches</a>
@@ -191,6 +146,9 @@
 						</li>						
 					</ul>
 				</li> <!-- recent news -->
+<?
+	}
+?>
 			</ul>	
 		</div> <!-- sidebar -->
 		

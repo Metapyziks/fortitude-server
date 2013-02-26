@@ -189,8 +189,7 @@ using FortitudeServer.Responses;
 public static class {0}
 {
     public static void ServeRequest(HttpListenerContext context, String body,
-        NameValueCollection post, AuthSession session, Account account, StreamWriter writer,
-        Action<String> Include)
+        NameValueCollection post, AuthSession session, Account account, StreamWriter writer)
     {
         var request = context.Request;
         var response = context.Response;
@@ -200,7 +199,7 @@ public static class {0}
             writer.Write(str);  
         };
 
-        writer.Write(""{1}"");
+        Echo(""{1}"");
     }
 }
 ";
@@ -240,6 +239,7 @@ public static class {0}
             }
 
             private String _className;
+            private String _rawCode;
             private String _generatedCode;
             private Assembly _assembly;
             private MethodInfo _serveMethod;
@@ -253,57 +253,117 @@ public static class {0}
                     .Replace("\t", "\\t").Replace("\"", "\\\"");
             }
 
+            private static void SkipWhitespace(String str, ref int index)
+            {
+                while (index < str.Length && char.IsWhiteSpace(str[index]))
+                    ++index;
+            }
+
+            private static bool MatchNext(String str, int index, String match)
+            {
+                if (str.Length < index + match.Length) return false;
+
+                foreach (char c in match) {
+                    if (str[index++] != c) return false;
+                }
+
+                return true;
+            }
+
             // TODO: Make this at least slightly acceptable
             private String GenerateCode(String content)
             {
-                StringBuilder builder = new StringBuilder();
-                int j = 0;
-                int i = 0;
-                bool script = false;
-                while (i < content.Length) {
-                    if (!script) {
-                        if (content[i] == '<' && i < content.Length - 1 && content[i + 1] == '?') {
-                            builder.Append(FormatHTMLBlock(content.Substring(j, i - j)));
-                            builder.Append("\");");
-                            i += 2;
-                            j = i;
-                            script = true;
-                            continue;
+                try {
+                    StringBuilder builder = new StringBuilder();
+                    int j = 0;
+                    int i = 0;
+                    bool script = false;
+                    while (i < content.Length) {
+                        if (!script) {
+                            if (MatchNext(content, i, "<?")) {
+                                builder.Append(FormatHTMLBlock(content.Substring(j, i - j)));
+                                builder.Append("\");");
+                                i += 2;
+                                j = i;
+                                script = true;
+                                continue;
+                            }
+
+                            if (MatchNext(content, i, "{$")) {
+                                builder.Append(FormatHTMLBlock(content.Substring(j, i - j)));
+                                j = i + 2;
+                                builder.Append("\" + (");
+                                while (++i < content.Length && content[i] != '}') ;
+                                builder.AppendFormat("{0}).ToString() + \"", content.Substring(j, i - j));
+                                j = ++i;
+                            }
+                        } else {
+                            if (MatchNext(content, i, "Include")) {
+                                int k = i;
+                                i += 7;
+                                SkipWhitespace(content, ref i);
+                                if (!MatchNext(content, i++, "(")) continue;
+                                SkipWhitespace(content, ref i);
+                                if (!MatchNext(content, i++, "\"")) continue;
+                                int start = i;
+                                while (i < content.Length && content[i++] != '"') ;
+                                String file = FormatPath(content.Substring(start, i - start - 1));
+                                SkipWhitespace(content, ref i);
+                                if (!MatchNext(content, i++, ")")) continue;
+                                SkipWhitespace(content, ref i);
+                                if (!MatchNext(content, i++, ";")) continue;
+
+                                builder.Append("Echo(\"");
+                                if (_sPages.ContainsKey(file)) {
+                                    Page page = _sPages[file];
+                                    page.Update();
+                                    if (page is ScriptedPage) {
+                                        ScriptedPage sPage = (ScriptedPage) page;
+                                        builder.Append(sPage._rawCode);
+                                    }
+                                } else {
+                                    builder.AppendFormat("Unable to include file {0}, file does not exist!", file);
+                                }
+                                builder.Append("\");");
+
+                                builder.Append(content.Substring(j, k - j));
+                                j = ++i;
+                                continue;
+                            }
+
+                            if (MatchNext(content, i, "?>")) {
+                                builder.Append(content.Substring(j, i - j));
+                                builder.Append("Echo(\"");
+                                i += 2;
+                                j = i;
+                                script = false;
+                                continue;
+                            }
+
+                            if (MatchNext(content, i, "//")) {
+                                while (++i < content.Length && content[i] != '\n') ;
+                            }
+
+                            if (content[i] == '"') {
+                                while (++i < content.Length && content[i] != '"') ;
+                            } else if (content[i] == '\'') {
+                                while (++i < content.Length && content[i] != '\'') ;
+                            }
                         }
 
-                        if (content[i] == '{' && i < content.Length && content[i + 1] == '$') {
-                            builder.Append(FormatHTMLBlock(content.Substring(j, i - j)));
-                            j = i + 2;
-                            builder.Append("\" + ");
-                            while (++i < content.Length && content[i] != '}') ;
-                            builder.AppendFormat("{0}.ToString() + \"", content.Substring(j, i - j));
-                            j = ++i;
-                        }
-                    } else {
-                        if (content[i] == '?' && i < content.Length - 1 && content[i + 1] == '>') {
-                            builder.Append(content.Substring(j, i - j));
-                            builder.Append("writer.Write(\"");
-                            i += 2;
-                            j = i;
-                            script = false;
-                            continue;
-                        }
-
-                        if (content[i] == '"')
-                            while (++i < content.Length && content[i] != '"') ;
-                        else if (content[i] == '\'')
-                            while (++i < content.Length && content[i] != '\'') ;
+                        ++i;
                     }
+                    builder.Append(FormatHTMLBlock(content.Substring(j, i - j)));
 
+                    _rawCode = builder.ToString();
 
-                    ++i;
+                    String formatted = FormatPath(FilePath);
+                    _className = "PageScript" + formatted.Replace('/', '_').Substring(0, formatted.IndexOf('.'));
+
+                    return _sTemplate.Replace("{0}", _className).Replace("{1}", _rawCode);
+                } catch (Exception e) {
+                    throw;
                 }
-                builder.Append(FormatHTMLBlock(content.Substring(j, i - j)));
-
-                String formatted = FormatPath(FilePath);
-                _className = "PageScript" + formatted.Replace('/', '_').Substring(0, formatted.IndexOf('.'));
-
-                return _sTemplate.Replace("{0}", _className).Replace("{1}", builder.ToString());
             }
 
             protected override void OnUpdate(String content)
@@ -373,7 +433,7 @@ public static class {0}
 #if !DEBUG
                     try {
 #endif
-                    OnServeRequest(context, body, post, session, account, writer);
+                    _serveMethod.Invoke(null, new object[] { context, body, post, session, account, writer });
 #if !DEBUG
                     } catch {
                         writer.WriteLine("Internal server error :(");
@@ -381,32 +441,6 @@ public static class {0}
 #endif
                     writer.Flush();
                 }
-            }
-
-            private void OnServeRequest(HttpListenerContext context, String body, NameValueCollection post,
-                AuthSession session, Account account, StreamWriter writer)
-            {
-                Action<String> include = path => {
-                    if (!path.StartsWith("/")) path = "/" + path;
-                    if (!_sPages.ContainsKey(path)) {
-                        writer.Write("Failed to include " + path + "!<br />");
-                        writer.Write("File not found!<br />");
-                        return;
-                    }
-                    try {
-                        Page page = _sPages[path];
-                        if (page is ScriptedPage) {
-                            ((ScriptedPage) page).OnServeRequest(context, body, post, session,
-                                account, writer);
-                        }
-                    } catch (Exception e) {
-                        writer.Write("Failed to include " + path + "!<br />");
-                        writer.Write(e.ToString());
-                    }
-                };
-
-                Update();
-                _serveMethod.Invoke(null, new object[] { context, body, post, session, account, writer, include });
             }
 
             protected override void OnWriteContent(StreamWriter writer)
@@ -482,12 +516,17 @@ public static class {0}
 
         private static String FormatPath(String path)
         {
-            if (_sContentDirectory != null) {
-                path = path.Substring(_sContentDirectory.Length);
-            }
             path = path.Replace('\\', '/');
             while (path.Contains("//")) {
                 path = path.Replace("//", "/");
+            }
+            if (_sContentDirectory != null) {
+                if (path.Length >= _sContentDirectory.Length
+                && path.StartsWith(_sContentDirectory)) {
+                    path = path.Substring(_sContentDirectory.Length);
+                } else if (!path.StartsWith("/")) {
+                    path = "/" + path;
+                }
             }
             return path;
         }

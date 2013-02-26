@@ -1,0 +1,58 @@
+<div id = "header">
+    <ul>
+        <li> 
+            <a href="#">Home</a> 
+        </li>
+        <li> 
+            <a href="/maptest.html">Map</a>
+        </li>
+        <li> 
+            <a href="/account.html">Account</a>
+        </li>
+        <li> 
+            <a href="#">Messages</a>  
+            <ul>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+            </ul>
+        </li>
+        <li> 
+            <a href="#">Boards</a>  
+            <ul>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+            </ul>
+        </li>
+        <li> 
+            <a href="#">News</a>  
+            <ul>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+            </ul>
+        </li>
+        <li> 
+            <a href="#">Help</a>  
+            <ul>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+                <a href="#">&gt;&gt; Sub section</a>
+            </ul>
+        </li>
+        <li> 
+<?
+    if (session != null) {
+?>
+            <a href="/logout.html">Signout</a>
+<?
+    } else {
+?>
+            <a href="/login.html">Signin</a>
+<?
+    }
+?>
+        </li>
+    </ul>
+</div> <!-- header -->

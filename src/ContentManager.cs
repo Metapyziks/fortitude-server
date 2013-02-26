@@ -21,7 +21,43 @@ namespace FortitudeServer
 {
     public static class ContentManager
     {
-        private class BinaryFile
+        private abstract class Resource
+        {
+            private bool _changed;
+
+            public readonly String FilePath;
+
+            protected Resource(String path)
+            {
+                FilePath = path;
+
+                _changed = true;
+            }
+
+            public void ServeRequest(HttpListenerContext context)
+            {
+                Update();
+                OnServeRequest(context);
+            }
+
+            public void Invalidate()
+            {
+                _changed = true;
+            }
+
+            public void Update()
+            {
+                if (_changed) {
+                    _changed = false;
+                    OnUpdate();
+                }
+            }
+
+            protected abstract void OnUpdate();
+            protected abstract void OnServeRequest(HttpListenerContext context);
+        }
+
+        private class BinaryFile : Resource
         {
             public String MimeType { get; private set; }
             public DateTime LastUpdate { get; private set; }
@@ -29,9 +65,10 @@ namespace FortitudeServer
             public byte[] Deflated { get; private set; }
 
             public BinaryFile(String path)
+                : base(path)
             {
                 String ext = Path.GetExtension(path);
-                switch(ext) {
+                switch (ext) {
                     case ".jpg":
                     case ".jpeg":
                         MimeType = "image/jpeg"; break;
@@ -44,7 +81,7 @@ namespace FortitudeServer
                 }
             }
 
-            public void SetData(byte[] data)
+            private void SetData(byte[] data)
             {
                 Data = data;
 
@@ -63,27 +100,25 @@ namespace FortitudeServer
                 stream.Close();
 
                 if (Deflated.Length == 0)*/
-                    Deflated = null;
+                Deflated = null;
             }
-        }
 
-        private abstract class Resource
-        {
-            public readonly String Path;
-
-            protected Resource(String path)
+            protected override void OnUpdate()
             {
-                Path = path;
-                Update();
+                SetData(File.ReadAllBytes(FilePath));
             }
 
-            public virtual void ServeRequest(HttpListenerContext context)
+            protected override void OnServeRequest(HttpListenerContext context)
             {
-                WriteContent(context.Response.OutputStream);
+                context.Response.AddHeader("Content-Type", MimeType);
+                context.Response.AddHeader("Cache-Control", "max-age=290304000, public");
+                if (Deflated != null && context.Request.Headers["Accept-Encoding"].Contains("deflate")) {
+                    context.Response.AddHeader("Content-Encoding", "deflate");
+                    context.Response.OutputStream.Write(Deflated, 0, Deflated.Length);
+                } else {
+                    context.Response.OutputStream.Write(Data, 0, Data.Length);
+                }
             }
-
-            public abstract void Update();
-            public abstract void WriteContent(Stream stream);
         }
 
         private abstract class Page : Resource
@@ -91,23 +126,27 @@ namespace FortitudeServer
             protected Page(String path)
                 : base(path) { }
 
-            public override void WriteContent(Stream stream)
+            protected override void OnServeRequest(HttpListenerContext context)
             {
-                StreamWriter writer = new StreamWriter(stream);
-                WriteContent(writer);
+                if (!FilePath.EndsWith(".html")) {
+                    context.Response.AddHeader("Cache-Control", "max-age=290304000, public");
+                }
+
+                StreamWriter writer = new StreamWriter(context.Response.OutputStream);
+                OnWriteContent(writer);
                 writer.Flush();
             }
 
-            public override void Update()
+            protected override void OnUpdate()
             {
                 try {
-                    if (File.Exists(Path))
-                        Update(File.ReadAllText(Path));
+                    if (File.Exists(FilePath))
+                        OnUpdate(File.ReadAllText(FilePath));
                 } catch { }
             }
 
-            protected abstract void Update(String content);
-            protected abstract void WriteContent(StreamWriter writer);
+            protected abstract void OnUpdate(String content);
+            protected abstract void OnWriteContent(StreamWriter writer);
         }
 
         private class StaticPage : Page
@@ -117,12 +156,12 @@ namespace FortitudeServer
             public StaticPage(String path)
                 : base(path) { }
 
-            protected override void Update(String content)
+            protected override void OnUpdate(String content)
             {
                 Content = content;
             }
 
-            protected override void WriteContent(StreamWriter writer)
+            protected override void OnWriteContent(StreamWriter writer)
             {
                 writer.Write(Content);
             }
@@ -151,21 +190,11 @@ public static class {0}
 {
     public static void ServeRequest(HttpListenerContext context, String body,
         NameValueCollection post, AuthSession session, Account account, StreamWriter writer,
-        Dictionary<String, MethodInfo> __includes__)
+        Action<String> Include)
     {
         var request = context.Request;
         var response = context.Response;
         var get = request.QueryString;
-
-        Action<String> Include = path => {
-            if (!path.StartsWith(""/"")) path = ""/"" + path;
-            try {
-                __includes__[path].Invoke(null, new object[] { context, body, post, session, account, writer, __includes__ } );
-            } catch (Exception e) {
-                writer.Write(""Failed to include "" + path + ""!<br />"");
-                writer.Write(e.ToString());
-            }
-        };
 
         Action<String> Echo = str => {
             writer.Write(str);  
@@ -271,13 +300,13 @@ public static class {0}
                 }
                 builder.Append(FormatHTMLBlock(content.Substring(j, i - j)));
 
-                String formatted = FormatPath(Path);
+                String formatted = FormatPath(FilePath);
                 _className = "PageScript" + formatted.Replace('/', '_').Substring(0, formatted.IndexOf('.'));
 
                 return _sTemplate.Replace("{0}", _className).Replace("{1}", builder.ToString());
             }
 
-            protected override void Update(String content)
+            protected override void OnUpdate(String content)
             {
                 _generatedCode = GenerateCode(content);
 
@@ -287,7 +316,7 @@ public static class {0}
                 bool borked = false;
                 if (results.Errors.Count > 0) {
                     Console.WriteLine("Encountered {0} error{1} or warning{1} while compiling {2}:",
-                        results.Errors.Count, results.Errors.Count != 1 ? "s" : "", Path);
+                        results.Errors.Count, results.Errors.Count != 1 ? "s" : "", FilePath);
 
                     foreach (CompilerError error in results.Errors) {
                         if (error.IsWarning)
@@ -311,7 +340,7 @@ public static class {0}
                 if (type != null) {
                     _serveMethod = type.GetMethod("ServeRequest", BindingFlags.Static | BindingFlags.Public);
                     if (_serveMethod != null) {
-                        var path = FormatPath(Path);
+                        var path = FormatPath(FilePath);
                         if (!_sIncludes.ContainsKey(path))
                             _sIncludes.Add(path, _serveMethod);
                         else
@@ -320,7 +349,7 @@ public static class {0}
                 }
             }
 
-            public override void ServeRequest(HttpListenerContext context)
+            protected override void OnServeRequest(HttpListenerContext context)
             {
                 if (_serveMethod != null) {
                     var request = context.Request;
@@ -340,11 +369,11 @@ public static class {0}
                         if (session != null) account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == uid);
                     }
 
-                    var writer = new StreamWriter( response.OutputStream );
+                    var writer = new StreamWriter(response.OutputStream);
 #if !DEBUG
                     try {
 #endif
-                        _serveMethod.Invoke(null, new object[] { context, body, post, session, account, writer, _sIncludes });
+                    OnServeRequest(context, body, post, session, account, writer);
 #if !DEBUG
                     } catch {
                         writer.WriteLine("Internal server error :(");
@@ -354,7 +383,33 @@ public static class {0}
                 }
             }
 
-            protected override void WriteContent(StreamWriter writer)
+            private void OnServeRequest(HttpListenerContext context, String body, NameValueCollection post,
+                AuthSession session, Account account, StreamWriter writer)
+            {
+                Action<String> include = path => {
+                    if (!path.StartsWith("/")) path = "/" + path;
+                    if (!_sPages.ContainsKey(path)) {
+                        writer.Write("Failed to include " + path + "!<br />");
+                        writer.Write("File not found!<br />");
+                        return;
+                    }
+                    try {
+                        Page page = _sPages[path];
+                        if (page is ScriptedPage) {
+                            ((ScriptedPage) page).OnServeRequest(context, body, post, session,
+                                account, writer);
+                        }
+                    } catch (Exception e) {
+                        writer.Write("Failed to include " + path + "!<br />");
+                        writer.Write(e.ToString());
+                    }
+                };
+
+                Update();
+                _serveMethod.Invoke(null, new object[] { context, body, post, session, account, writer, include });
+            }
+
+            protected override void OnWriteContent(StreamWriter writer)
             {
                 throw new NotImplementedException();
             }
@@ -454,15 +509,7 @@ public static class {0}
             } else {
                 if (File.Exists(path)) {
                     Console.Write("= ".PadLeft(2 + depth * 2));
-                    DateTime start = DateTime.Now;
-                    while ((DateTime.Now - start).TotalSeconds < 1.0) {
-                        try {
-                            _sPages[formatted].Update();
-                            break;
-                        } catch (IOException) {
-                            Thread.Sleep(10);
-                        }
-                    }
+                    _sPages[formatted].Invalidate();
                 } else {
                     Console.Write("- ".PadLeft(2 + depth * 2));
                     _sPages.Remove(formatted);
@@ -479,22 +526,12 @@ public static class {0}
             String formatted = FormatPath(path);
 
             if (!_sContent.ContainsKey(formatted)) {
-                var file = new BinaryFile(path);
-                file.SetData(File.ReadAllBytes(path));
-                _sContent.Add(formatted, file);
+                _sContent.Add(formatted, new BinaryFile(path));
                 Console.Write("+ ".PadLeft(2 + depth * 2));
             } else {
                 if (File.Exists(path)) {
                     Console.Write("= ".PadLeft(2 + depth * 2));
-                    DateTime start = DateTime.Now;
-                    while ((DateTime.Now - start).TotalSeconds < 5.0) {
-                        try {
-                            _sContent[formatted].SetData(File.ReadAllBytes(path));
-                            break;
-                        } catch (IOException) {
-                            Thread.Sleep(100);
-                        }
-                    }
+                    _sContent[formatted].Invalidate();
                 } else {
                     Console.Write("- ".PadLeft(2 + depth * 2));
                     _sContent.Remove(formatted);
@@ -521,24 +558,12 @@ public static class {0}
                 path += ".html";
 
             if (path.EndsWith(".html") || path.EndsWith(".js") || path.EndsWith(".css")) {
-                if (!path.EndsWith(".html")) {
-                    context.Response.AddHeader("Cache-Control", "max-age=290304000, public");
-                }
                 if (_sPages.ContainsKey(path)) {
                     _sPages[path].ServeRequest(context);
                     return;
                 }
             } else if (_sContent.ContainsKey(path)) {
-                context.Response.AddHeader("Content-Type", _sContent[path].MimeType);
-                context.Response.AddHeader("Cache-Control", "max-age=290304000, public");
-                if (_sContent[path].Deflated != null && context.Request.Headers["Accept-Encoding"].Contains("deflate")) {
-                    context.Response.AddHeader("Content-Encoding", "deflate");
-                    byte[] content = _sContent[path].Deflated;
-                    context.Response.OutputStream.Write(content, 0, content.Length);
-                } else {
-                    byte[] content = _sContent[path].Data;
-                    context.Response.OutputStream.Write(content, 0, content.Length);
-                }
+                _sContent[path].ServeRequest(context);
                 return;
             }
 

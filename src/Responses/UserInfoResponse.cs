@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Responses
+namespace FortitudeServer.Responses
 {
     [JSONSerializable]
     public class UserInfoResponse : Response

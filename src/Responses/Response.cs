@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestServer.Responses
+namespace FortitudeServer.Responses
 {
     [JSONSerializable]
     public class Response

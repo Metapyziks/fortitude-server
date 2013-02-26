@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Collections.Specialized;
 
-using TestServer.Entities;
-using TestServer.Responses;
+using FortitudeServer.Entities;
+using FortitudeServer.Responses;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName("caches")]
     class UserCachesRequest : Request

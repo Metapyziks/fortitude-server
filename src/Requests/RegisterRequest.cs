@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName( "register" )]
     class RegisterRequest : Request

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer
+namespace FortitudeServer
 {
     public class AuthSession
     {

@@ -2,10 +2,10 @@
 using System.Collections.Specialized;
 using System.Linq;
 
-using TestServer.Entities;
-using TestServer.Responses;
+using FortitudeServer.Entities;
+using FortitudeServer.Responses;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName("placecache")]
     class PlaceCacheRequest : LocationalRequest

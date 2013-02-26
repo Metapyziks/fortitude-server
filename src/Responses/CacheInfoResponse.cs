@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Responses
+namespace FortitudeServer.Responses
 {
     [JSONSerializable]
     public class CacheInfoResponse : Response

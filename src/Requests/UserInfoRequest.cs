@@ -4,10 +4,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 
-using TestServer.Responses;
-using TestServer.Entities;
+using FortitudeServer.Responses;
+using FortitudeServer.Entities;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     using AccountPred = Expression<Func<Account, bool>>;
     using CachePred = Expression<Func<Cache, bool>>;

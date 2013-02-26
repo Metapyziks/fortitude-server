@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Specialized;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName( "activate" )]
     class ActivationRequest : Request

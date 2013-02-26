@@ -4,9 +4,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TestServer.Requests;
+using FortitudeServer.Requests;
 
-namespace TestServer.src.Requests
+namespace FortitudeServer.src.Requests
 {
     [RequestTypeName("sendpassreset")]
     class PasswordResetRequest : Request

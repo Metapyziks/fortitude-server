@@ -1,8 +1,8 @@
 ﻿using System;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Responses
+namespace FortitudeServer.Responses
 {
     [JSONSerializable]
     public class UserStatsResponse : Response

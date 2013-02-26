@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer
+namespace FortitudeServer
 {
     public enum EmailValidationType
     {

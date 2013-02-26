@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     abstract class LocationalRequest : Request
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace TestServer
+namespace FortitudeServer
 {
     public static class Tools
     {

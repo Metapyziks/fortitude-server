@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer
+namespace FortitudeServer
 {
     [TestClass]
     public class DatabaseTests

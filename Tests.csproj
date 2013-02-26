@@ -55,9 +55,9 @@
     <Compile Include="src\TestServerTests.AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="TestServer.csproj">
+    <ProjectReference Include="FortitudeServer.csproj">
       <Project>{b1c780eb-03df-4ea0-81c1-9d948bbbc1c3}</Project>
-      <Name>TestServer</Name>
+      <Name>FortitudeServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

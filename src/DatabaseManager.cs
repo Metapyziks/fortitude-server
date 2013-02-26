@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace TestServer
+namespace FortitudeServer
 {
 #if LINUX
     using DBConnection = Mono.Data.Sqlite.SqliteConnection;

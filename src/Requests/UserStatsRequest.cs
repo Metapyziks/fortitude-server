@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Collections.Specialized;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName("userstats")]
     class UserStatsRequest : Request

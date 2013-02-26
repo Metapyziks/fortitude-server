@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestServer.Responses;
+using FortitudeServer.Responses;
 
-namespace TestServer.Entities
+namespace FortitudeServer.Entities
 {
     [JSONSerializable, DatabaseEntity]
     public class Cache

@@ -4,9 +4,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName("sendverify")]
     class SendActivationRequest : Request

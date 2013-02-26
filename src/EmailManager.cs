@@ -7,7 +7,7 @@ using System.Text;
 
 using Nini.Ini;
 
-namespace TestServer
+namespace FortitudeServer
 {
     static class EmailManager
     {

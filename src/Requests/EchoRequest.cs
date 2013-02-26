@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName( "echo" )]
     class EchoRequest : Request

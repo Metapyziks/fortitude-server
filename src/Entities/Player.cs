@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestServer.Entities
+namespace FortitudeServer.Entities
 {
     [JSONSerializable, DatabaseEntity]
     public class Player

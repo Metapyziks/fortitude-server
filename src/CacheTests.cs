@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using TestServer;
+using FortitudeServer;
 
 namespace TestServerTests
 {

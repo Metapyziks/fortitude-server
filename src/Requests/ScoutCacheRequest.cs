@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestServer.Entities;
-using TestServer.Responses;
+using FortitudeServer.Entities;
+using FortitudeServer.Responses;
 
-namespace TestServer.Requests
+namespace FortitudeServer.Requests
 {
     [RequestTypeName("scout")]
     class QueryCacheRequest : LocationalRequest

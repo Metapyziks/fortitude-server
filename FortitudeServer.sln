@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer", "TestServer.csproj", "{B1C780EB-03DF-4EA0-81C1-9D948BBBC1C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FortitudeServer", "FortitudeServer.csproj", "{B1C780EB-03DF-4EA0-81C1-9D948BBBC1C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServerTests", "TestServerTests.csproj", "{2564A8A1-221B-47BA-986D-2E6A3B38A3DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests.csproj", "{2564A8A1-221B-47BA-986D-2E6A3B38A3DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

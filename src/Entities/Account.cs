@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 using System.Text.RegularExpressions;
 
-namespace TestServer.Entities
+namespace FortitudeServer.Entities
 {
     using AccountPred = Expression<Func<Account, bool>>;
 

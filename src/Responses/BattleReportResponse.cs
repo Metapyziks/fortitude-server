@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer.Responses
+namespace FortitudeServer.Responses
 {
     [JSONSerializable]
     public class BattleReportResponse : Response

@@ -12,9 +12,9 @@ using System.Linq.Expressions;
 
 using Nini.Ini;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer
+namespace FortitudeServer
 {
     using AccountPred = Expression<Func<Account, bool>>;
     using System.Diagnostics;

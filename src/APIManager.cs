@@ -2,10 +2,10 @@
 using System.IO;
 using System.Net;
 
-using TestServer.Requests;
-using TestServer.Responses;
+using FortitudeServer.Requests;
+using FortitudeServer.Responses;
 
-namespace TestServer
+namespace FortitudeServer
 {
     static class APIManager
     {

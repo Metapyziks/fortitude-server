@@ -15,9 +15,9 @@ using Microsoft.CSharp;
 
 using Nini.Ini;
 
-using TestServer.Entities;
+using FortitudeServer.Entities;
 
-namespace TestServer
+namespace FortitudeServer
 {
     public static class ContentManager
     {
@@ -142,10 +142,10 @@ using System.Linq.Expressions;
 using System.IO;
 using System.Reflection;
 
-using TestServer;
-using TestServer.Entities;
-using TestServer.Requests;
-using TestServer.Responses;
+using FortitudeServer;
+using FortitudeServer.Entities;
+using FortitudeServer.Requests;
+using FortitudeServer.Responses;
 
 public static class {0}
 {

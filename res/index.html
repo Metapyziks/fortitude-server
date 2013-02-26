@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
 <? 
+	Include("functions.html");
+
 	Player player = null;
 	List<Cache> caches = null;
 
@@ -48,7 +50,7 @@
 					</span>
 					<p>	
 						{$caches.Sum(x => x.Balance) + player.Balance} soldiers<br />
-						{$caches.Count} cache{$(caches.Count != 1 ? "s" : "")}
+						{$caches.Count} {$pluralify("cache", "caches", caches.Count)}
 					</p>
 					<div style="clear: both;"></div>
 				</li> <!-- username (account summary) -->
@@ -85,7 +87,7 @@
 ?>
 						<li class = "last_child">
 							<p>
-								Showing {$Math.Min(5, caches.Count)} most active caches.
+								Showing {$Math.Min(5, caches.Count)} most active {$pluralify("cache", "caches", caches.Count)}.
 							</p>
 							<p>
 								<a href="#">View all caches</a>

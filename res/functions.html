@@ -1,13 +1,15 @@
+<!DOCTYPE html>
+<body>
 <?
     // This is a function that takes no arguments
-    Action TestFunction = () =>
+    Action testFunction = () =>
     {
         // You can print things to the page with 'Echo'
-        Echo("Hello world! Blah blah! <br />");
+        Echo("Hello world! <br />");
     };
 
     // This function takes in one integer and calls it 'arg' inside the function
-    Action<int> AnotherFunction = (arg) =>
+    Action<int> anotherFunction = (arg) =>
     {
         // You can concatenate strings with '+', like Java
         Echo("Your number: " + arg + "<br />");
@@ -24,4 +26,36 @@
             It even works with more complex things, like {$Math.Sqrt(arg) / 2.0}
         <?
     };
+
+    // This function returns something, a String
+    Func<String, String, int, String> pluralify = (singular, plural, count) =>
+    {
+        if (count == 1) {
+            return singular;  
+        } else {
+            return plural;
+        } 
+    };
+
+    // This function returns a boolean, but takes no arguments
+    Func<bool> isSignedIn = () =>
+    {
+        return session != null;
+    };
+
+    Func<Rank, bool> hasRank = (rank) =>
+    {
+        return isSignedIn() && (int) rank >= (int) session.Rank;
+    };
+
+    Func<bool> isValidated = () =>
+    {
+        return isSignedIn() && hasRank(Rank.Validated);
+    };
+
+    Func<bool> isAdmin = () =>
+    {
+        return isSignedIn() && hasRank(Rank.Admin);
+    };
 ?>
+</body>

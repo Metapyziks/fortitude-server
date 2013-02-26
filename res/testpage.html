@@ -1,6 +1,12 @@
 <?
     Include("functions.html");
 
-    TestFunction();
-    AnotherFunction(56);
+    testFunction();
+
+    int num;
+    if (get["number"] != null && int.TryParse(get["number"], out num)) {
+        anotherFunction(num);
+    } else {
+        Echo("You didn't give me a number!");
+    }
 ?>

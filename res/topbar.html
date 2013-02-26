@@ -1,14 +1,16 @@
 <div class="topbar">
 <?
+    Player player = null;
+
 	if (session == null) {
 ?>
 	<a href="/">Home</a> :: <a href="login">Login</a> :: <a href="register">Register</a> 
 <?
 	} else if (account != null) {
-		var player = Player.GetPlayer(account);
+		player = Player.GetPlayer(account);
 ?>
 	{$account.Username} ({$player.Balance} Units) :: <a href="/">Home</a> :: <a href="account">My Account</a> :: <? if (session.Rank == Rank.Owner) { ?><a href="admin">Admin Panel</a> :: <? } ?><a href="logout">Logout</a> 
-<?
+<? 
 	}
 ?>
 </div>

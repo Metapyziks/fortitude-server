@@ -43,7 +43,13 @@ namespace FortitudeServer
 
         public static void Send(String to, String subject, String message)
         {
-            stClient.SendAsync(stAdminEmail, to, subject, message, null);
+            try {
+                stClient.SendAsync(stAdminEmail, to, subject, message, null);
+            } catch {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Email not sent because of reasons");
+                Console.ResetColor();
+            }
         }
     }
 }

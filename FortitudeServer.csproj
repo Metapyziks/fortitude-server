@@ -7,8 +7,8 @@
     <ProjectGuid>{B1C780EB-03DF-4EA0-81C1-9D948BBBC1C3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestServer</RootNamespace>
-    <AssemblyName>TestServer</AssemblyName>
+    <RootNamespace>FortitudeServer</RootNamespace>
+    <AssemblyName>FortitudeServer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="src\APIManager.cs" />
     <Compile Include="src\AuthSession.cs" />
+    <Compile Include="src\Requests\CacheTransactionRequest.cs" />
     <Compile Include="src\Responses\BattleReportResponse.cs" />
     <Compile Include="src\Entities\Account.cs" />
     <Compile Include="src\DatabaseManager.cs" />

@@ -271,7 +271,22 @@ namespace FortitudeServer
             _sConnection = new DBConnection(connectionString);
             _sConnection.Open();
 
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes()) {
+            Type[] types;
+
+            try {
+                types = Assembly.GetExecutingAssembly().GetTypes();
+            } catch (ReflectionTypeLoadException e) {
+                Console.ForegroundColor = ConsoleColor.Red;
+                foreach (var ex in e.LoaderExceptions) {
+                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine(ex.StackTrace);
+                }
+                Console.ResetColor();
+
+                throw;
+            }
+
+            foreach (Type type in types) {
                 if (type.IsDefined<DatabaseEntityAttribute>()) {
                     DatabaseTable table = CreateTable(type);
                     table.BuildColumns();

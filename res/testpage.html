@@ -1,16 +1,213 @@
 <!DOCTYPE html>
 
-<body>
+<? 
+	Include("functions.html");
+
+	Player player = null;
+	List<Cache> caches = null;
+
+	// If the user is logged in and verified
+	if (isVerified()) {
+		// Find the player data for the user
+		player = DatabaseManager.SelectFirst<Player>(x => x.AccountID == session.AccountID);
+
+		// Get a list of all caches owned by the user (i.e. have a matching AccountID)
+		caches = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID);
+	}
+?>
+
 <?
-    Include("functions.html");
+    var uname = post["uname"] ?? "";
+    var phash = ( post["phash"] ?? "" ).ToLower();
 
-    testFunction();
+    var hasCreds = uname.Length > 0 && phash.Length > 0;
 
-    int num;
-    if (get["number"] != null && int.TryParse(get["number"], out num)) {
-        anotherFunction(num);
-    } else {
-        Echo("You didn't give me a number!");
+    ErrorResponse error = null;
+    if (hasCreds) {
+        error = Account.AttemptLogin( uname, phash, out session );
+        if (session != null) {
+            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
+            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
+        }
     }
 ?>
+
+<html>
+<head>
+        <meta charset="utf-8" />
+        <title>Fortitude Server Prototype - Login</title>
+<? if( session == null ) { ?>
+        <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
+        <script type="text/JavaScript" src="scripts.js"></script>
+<? } ?>
+		<link rel="stylesheet" type="text/css" href="stylesheet.css">
+	<!-- <script type="text/javascript" src="script.js"></script> -->
+</head>
+
+<body>
+<?
+	if (isAdmin()) {
+?>
+		<div id = "topbar">
+			<a href="/admin">Admin Panel</a> 
+		</div>
+<?
+	}
+?>
+	<div id = "wrapper">
+<? Include("/header.html"); ?>
+
+		<div id = "sidebar">
+			<ul>
+<? if (isSignedIn()) { ?>
+				<li class = "sidebar_section">
+					<h1>{$account.Username}</h1>
+					<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
+					<br />
+					<span>
+						Elite warlorld
+					</span>
+<? if (player != null && caches != null) { ?>
+					<p>	
+						{$caches.Sum(x => x.Balance) + player.Balance} soldiers<br />
+						{$caches.Count} {$pluralify("cache", "caches", caches.Count)}
+					</p>
+<? } ?>
+					<div style="clear: both;"></div>
+				</li> <!-- username (account summary) -->
+<? } ?>
+				<li class = "sidebar_section">
+					<h1>Search</h1>
+					<form>
+						<input type="text"></input>
+						<button>&gt;&gt;</button>
+						<div style="clear: both;"></div>
+					</form>
+				</li> <!-- search -->
+<?  // If the user is logged in and verified...
+	if (isVerified()) {
+?>
+				<li class = "sidebar_section">
+					<h1>Caches</h1>
+					<ul>
+<?
+		// Loop through the first 5 caches and display their info
+		int count = 0;
+		foreach (var cache in caches) {
+?>
+						<li>
+							<span>{$cache.Name}</span>
+							<p>
+								{$cache.Balance} soldiers | <a href="#">History</a> | <a href="#">View on Map</a>
+							</p>
+						</li>
+<?
+			count = count + 1;
+			if (count == 5) break;
+		}
+?>
+						<li class = "last_child">
+							<p>
+								Showing {$Math.Min(5, caches.Count)} most active {$pluralify("cache", "caches", caches.Count)}.
+							</p>
+							<p>
+								<a href="#">View all caches</a>
+							</p>
+						</li>
+					</ul>
+				</li> <!-- caches -->
+				<li class = "sidebar_section">
+					<h1>Recent News</h1>
+					<ul>
+						<li>
+							<span>Username</span>
+							<p>
+								<a href="#">
+									RE: This very interesting topic
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								<a href="#">
+									A cache has been conquered!
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								<a href="#">
+									A cache was successfully defended!
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Username</span>
+							<p>
+								<a href="#">
+									RE: This very interesting topic
+								</a>
+							</p>
+						</li>
+						<li>
+							<span>Fort Bastion</span>
+							<p>
+								<a href="#">
+									A cache was successfully defended!
+								</a>
+							</p>
+						</li>
+						<li class = "last_child">
+							<p>
+								Showing 5 most recent events.
+							</p>
+							<p>
+								<a href="#">View all events</a>
+							</p>
+						</li>						
+					</ul>
+				</li> <!-- recent news -->
+<?
+	}
+?>
+			</ul>	
+		</div> <!-- sidebar -->
+		
+		<div id = "content">
+			<h1>Login</h1>
+<? if( error != null ) { ?>
+            We could not log you in :(<br />
+            Reason: {$error.Message}<br /><br />
+            <a href="login" >Retry</a>
+<?} else if( session == null ) { ?>
+            <form name="loginForm" action="login" method="post"
+                onsubmit="if (pword.value.length > 0) phash.value = hash(pword.value); pword.value = ''">
+                <input type="hidden" name="phash" />
+                <table>
+                <tr><td>Username:</td> <td><input type="text"     name="uname" value="{$uname}" /></td></tr>
+                <tr><td>Password:</td> <td><input type="password" name="pword" /></td></tr>
+                <tr><td colspan ="2">
+                </td></tr>
+                
+                <tr><td colspan="2"><input type="submit" value="Login" /></td></tr>
+                </table>
+                <a href="resetpassword">Forgot your password?</a>
+            </form>
+<? } else { ?>
+            <h2>Login Successful!</h2>
+            You are logged in and can do stuff. <br />
+<? } ?>
+            <br />
+            <br />
+            <a href="index">Home</a>
+		</div> <!-- content -->
+		
+		<div style = "clear: both;"></div>
+		
+		<div id = "footer">
+		</div> <!-- footer -->
+		
+	</div> <!-- wrapper -->
 </body>

@@ -1,7 +1,16 @@
 ﻿<!DOCTYPE html>
 
 <?
-    var error = Account.AttemptActivate( get["email"], get["code"] );
+    Include("functions.html");
+
+    ErrorResponse error = null;
+    bool resending = get["resend"] != null;
+
+    if (resending) {
+        EmailValidationCode.Create(EmailValidationType.Activate, account).SendEmail(account);
+    } else {
+        error = Account.AttemptActivate(get["email"], get["code"]);
+    }
 ?>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -14,11 +23,14 @@
 <? Include("topbar.html"); ?>
         <div class="mainbox">
             <h1>Account Activation</h1>
-<? if( error != null ) { ?>
+<? if(error != null) { ?>
             <h2>An error has occurred :(</h2>
             Your account could not be activated.
             <br />
             Reason: {$error.Message}
+<? } else if(resending) { ?>
+            <h2>Activation email resent!</h2>
+            Check your inbox or spam folder!
 <? } else { ?>
             <h2>Your account has been activated!</h2>
             You can now log in!

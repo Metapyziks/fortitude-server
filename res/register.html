@@ -1,6 +1,8 @@
 ﻿<!DOCTYPE html>
 
 <?
+    Include("functions.html");
+    
     var uname = post["uname"] ?? "";
     var email = ( post["email"] ?? "" ).ToLower();
     var phash = ( post["phash"] ?? "" ).ToLower();
@@ -8,7 +10,7 @@
     var hasCreds = uname.Length > 0 && email.Length > 0 && phash.Length > 0;
 
     ErrorResponse error = null;
-    if( hasCreds )
+    if(hasCreds)
         error = Account.AttemptRegister( uname, email, phash );
 ?>
 
@@ -16,7 +18,7 @@
     <head>
         <meta charset="utf-8" />
         <title>Fortitude Server Prototype - Register Account</title>
-<? if( !hasCreds ) { ?>
+<? if(!hasCreds) { ?>
         <script type="text/JavaScript" src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
         <script type="text/JavaScript" src="scripts.js"></script>
 <? } ?>
@@ -26,11 +28,11 @@
 <? Include("topbar.html"); ?>
         <div class="mainbox">
             <h1>Register Account</h1>
-<? if( error != null ) { ?>
+<? if(error != null) { ?>
             There was an error when making your account :(<br />
             Reason: {$error.Message}<br /><br />
             <a href="register" >Retry</a>
-<?} else if( !hasCreds ) { ?>
+<?} else if(!hasCreds) { ?>
       
             <form name="regForm" action="register" method="post" onsubmit="return submitPassword(regForm);">
                 <input type="hidden" name="phash" />

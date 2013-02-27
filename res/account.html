@@ -1,10 +1,16 @@
 <?
+	Include("functions.html");
+
 	if (session == null) {
 		response.Redirect("/login.html");
 		return;
 	}
 
-	var caches = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID);
+	List<Cache> caches = null;
+
+	if (isVerified()) {
+		caches = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID);
+	}
 ?>
 
 <!DOCTYPE html>
@@ -21,15 +27,22 @@
 
 		    You are currently logged in as {$account.Username}!
 			<br />
+<?
+	if (!isVerified()) {
+?>
+			<a href="/activate?resend=true">Resend activation email</a>
+<?
+	} else {
+?>
 		    Total units: {$(player.Balance + caches.Sum(x => x.Balance))}
 		    <br />
 		    <h2>My Caches</h2>
 <?
-	if (caches.Count == 0) {
+		if (caches.Count == 0) {
 ?>
 			You own no caches :(
 <?
-	} else {
+		} else {
 ?>
 			<table border="0" cellpadding="4">
 				<tr>
@@ -39,17 +52,18 @@
 					<th>Garrison</th>
 				</tr>
 <?
-		foreach ( var cache in caches )
-		{ ?>
+			foreach ( var cache in caches )
+			{ ?>
 				<tr>
 					<td>{$cache.CacheID}</td>
 					<td>{$cache.Name}</td>
 					<td>{$cache.Latitude}, {$cache.Longitude}</td>
 					<td>{$cache.Balance}</td>
 				</tr><?
-		} ?>
+			} ?>
 			</table>
 <?
+		}
 	}
 ?>
 		</div>

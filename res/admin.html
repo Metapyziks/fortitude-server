@@ -1,4 +1,6 @@
 <?
+	Include("functions.html");
+
 	if (session == null || session.Rank != Rank.Owner) {
     	response.Redirect("404");
 	}

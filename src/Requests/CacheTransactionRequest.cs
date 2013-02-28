@@ -59,6 +59,10 @@ namespace FortitudeServer.Requests
             ply.Balance -= units;
             cache.Balance += units;
 
+            if (cache.Balance == 0) {
+                cache.AccountID = 0;
+            }
+
             DatabaseManager.Update(ply);
             DatabaseManager.Update(cache);
 

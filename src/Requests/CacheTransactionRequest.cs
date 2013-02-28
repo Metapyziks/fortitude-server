@@ -27,12 +27,8 @@ namespace FortitudeServer.Requests
             }
 
             int units;
-            if (!Int32.TryParse(args["units"] ?? "0", out units) || units <= 0) {
+            if (!Int32.TryParse(args["units"] ?? "0", out units) || units == 0) {
                 return new ErrorResponse("invalid units");
-            }
-
-            if (units == 0) {
-                return new ErrorResponse("can't transfer no units");
             }
 
             int cacheid;

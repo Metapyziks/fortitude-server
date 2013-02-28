@@ -597,6 +597,13 @@ namespace FortitudeServer
             return entity;
         }
 
+        /// <summary>
+        /// Returns the first item from the specified table that matches
+        /// all given predicates, or null if no items do.
+        /// </summary>
+        /// <typeparam name="T">Entity type of the table to select from</typeparam>
+        /// <param name="predicates">Predicates for the selected item to match</param>
+        /// <returns>The first item that matches all given predicates, or null</returns>
         public static T SelectFirst<T>(params Expression<Func<T, bool>>[] predicates)
             where T : new()
         {
@@ -610,6 +617,14 @@ namespace FortitudeServer
             return entity;
         }
 
+        /// <summary>
+        /// Returns the first pair of items from the cartesian product of two
+        /// tables that matches all given predicates, or null if no pairs do.
+        /// </summary>
+        /// <typeparam name="T0">Entity type of the first table to select from</typeparam>
+        /// <typeparam name="T1">Entity type of the second table to select from</typeparam>
+        /// <param name="predicates">Predicates for the </param>
+        /// <returns></returns>
         public static Tuple<T0, T1> SelectFirst<T0, T1>(params Expression<Func<T0, T1, bool>>[] predicates)
             where T0 : new()
             where T1 : new()

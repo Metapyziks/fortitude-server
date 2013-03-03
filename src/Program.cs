@@ -24,13 +24,13 @@ namespace FortitudeServer
         public static int LocalPort = 80;
         public static String ServerAddress = null;
 
-        static bool stActive;
+        private static bool _sActive;
 
         static void Main(String[] args)
         {
             Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
             Console.Title = "Fortitude Server Prototype";
-            stActive = true;
+            _sActive = true;
 
             Cache.MaxInteractionDistance = 30d;
             Cache.PlacementCost = 5;
@@ -69,13 +69,13 @@ namespace FortitudeServer
 
                 Console.WriteLine("Http server started and ready for requests");
 
-                while (stActive) {
+                while (_sActive) {
                     Task<HttpListenerContext> ctxTask = listener.GetContextAsync();
 
-                    while (!ctxTask.IsCompleted && stActive)
+                    while (!ctxTask.IsCompleted && _sActive)
                         Thread.Sleep(10);
 
-                    if (!stActive)
+                    if (!_sActive)
                         break;
 
                     ProcessRequest(await ctxTask);
@@ -86,7 +86,7 @@ namespace FortitudeServer
 
             clientThread.Start();
 
-            while (stActive) {
+            while (_sActive) {
 #if DEBUG
                 String[] line = Console.ReadLine().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 if (line.Length > 0)
@@ -134,7 +134,7 @@ namespace FortitudeServer
             Responses.ErrorResponse error;
             switch (command) {
                 case "stop":
-                    stActive = false;
+                    _sActive = false;
                     break;
                 case "activate":
                     if (args.Length == 0) {

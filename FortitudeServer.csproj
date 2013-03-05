@@ -78,7 +78,7 @@
     <Compile Include="src\Requests\CacheTransactionRequest.cs" />
     <Compile Include="src\Responses\BattleReportResponse.cs" />
     <Compile Include="src\Entities\Account.cs" />
-    <Compile Include="src\DatabaseManager.cs" />
+    <Compile Include="src\Entities\DatabaseManager.cs" />
     <Compile Include="src\EmailManager.cs" />
     <Compile Include="src\Entities\Cache.cs" />
     <Compile Include="src\Entities\Player.cs" />

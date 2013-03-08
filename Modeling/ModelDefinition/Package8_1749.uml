@@ -6488,13 +6488,13 @@
                     <literalString
                       Id="d05038f4-db67-4d88-97e6-1d2732d2a165"
                       name="Lower"
-                      value="*" />
+                      value="1" />
                   </lowerValueInternal>
                   <upperValueInternal>
                     <literalString
                       Id="a4372c9e-12c4-4180-9c58-b044f0ec2998"
                       name="Upper"
-                      value="*" />
+                      value="1" />
                   </upperValueInternal>
                 </memberEnd>
               </associationHasOwnedEnds>

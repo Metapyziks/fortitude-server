@@ -75,6 +75,8 @@
   <ItemGroup>
     <Compile Include="src\APIManager.cs" />
     <Compile Include="src\AuthSession.cs" />
+    <Compile Include="src\Entities\BattleReport.cs" />
+    <Compile Include="src\Entities\Notification.cs" />
     <Compile Include="src\Requests\CacheTransactionRequest.cs" />
     <Compile Include="src\Responses\BattleReportResponse.cs" />
     <Compile Include="src\Entities\Account.cs" />

@@ -3237,12 +3237,12 @@
               <associationHasOwnedEnds>
                 <memberEnd Id="65ce55f4-e0d9-4a6d-97bb-0a823e0eeed1" name="DatabaseTable" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
                   <lowerValueInternal>
-                    <literalString Id="ca842023-f4cf-4990-ae1e-4de8f4acc37e" name="Lower" value="*">
+                    <literalString Id="ca842023-f4cf-4990-ae1e-4de8f4acc37e" name="Lower" value="1">
                       <elementDefinition Id="d05038f4-db67-4d88-97e6-1d2732d2a165" />
                     </literalString>
                   </lowerValueInternal>
                   <upperValueInternal>
-                    <literalString Id="f7f3b142-2df2-4c4b-830c-8176df794842" name="Upper" value="*">
+                    <literalString Id="f7f3b142-2df2-4c4b-830c-8176df794842" name="Upper" value="1">
                       <elementDefinition Id="a4372c9e-12c4-4180-9c58-b044f0ec2998" />
                     </literalString>
                   </upperValueInternal>

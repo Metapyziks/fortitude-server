@@ -158,6 +158,19 @@ namespace FortitudeServer
                     else
                         Success("Promoted {0} to admin", args[0]);
                     break;
+                case "reset":
+                    if (args.Length == 0) {
+                        Error("Expected a table name");
+                        break;
+                    }
+                    foreach(DatabaseTable table in DatabaseManager.GetTables()) {
+                        if (table.Name.ToLower() == args[0]) {
+                            table.Drop();
+                            table.Create();
+                            break;
+                        }
+                    }
+                    break;
 
             }
         }

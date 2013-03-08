@@ -11,41 +11,42 @@ namespace FortitudeServer.Responses
     [JSONSerializable]
     public class BattleReportResponse : Response
     {
-        [JSONSerializable]
-        public class UnitReport
-        {
-            [Serialize("initial")]
-            public int Initial { get; set; }
-
-            [Serialize("survivors")]
-            public int Survivors { get; set; }
-
-            [Serialize("fatalities")]
-            public int Fatalities { get; set; }
-
-            [Serialize("deserters")]
-            public int Deserters { get; set; }
-        }
+        public BattleReport BattleReport { get; set; }
 
         [Serialize("attackerid")]
-        public int AttackerID { get; set; }
+        public int AttackerID { get { return BattleReport.AttackerID; } }
 
         [Serialize("defenderid")]
-        public int DefenderID { get; set; }
+        public int DefenderID { get { return BattleReport.DefenderID; } }
 
         [Serialize("cache")]
         public Cache Cache { get; set; }
 
-        [Serialize("attackers")]
-        public UnitReport Attackers { get; set; }
+        [Serialize("attackerinitial")]
+        public int AttackerInitial { get { return BattleReport.AttackerInitial; } }
+        [Serialize("attackersurvivors")]
+        public int AttackerSurvivors { get { return BattleReport.AttackerSurvivors; } }
+        [Serialize("attackerfatalities")]
+        public int AttackerFatalities { get { return BattleReport.AttackerFatalities; } }
+        [Serialize("attackerdeserters")]
+        public int AttackerDeserters { get { return BattleReport.AttackerDeserters; } }
 
-        [Serialize("defenders")]
-        public UnitReport Defenders { get; set; }
+        [Serialize("defenderinitial")]
+        public int DefenderInitial { get { return BattleReport.DefenderInitial; } }
+        [Serialize("defendersurvivors")]
+        public int DefenderSurvivors { get { return BattleReport.DefenderSurvivors; } }
+        [Serialize("defenderfatalities")]
+        public int DefenderFatalities { get { return BattleReport.DefenderFatalities; } }
+        [Serialize("defenderdeserters")]
+        public int DefenderDeserters { get { return BattleReport.DefenderDeserters; } }
 
         [Serialize("victory")]
-        public bool IsVictory { get; set; }
+        public bool IsVictory { get { return BattleReport.AttackerSurvivors > 0; } }
 
-        public BattleReportResponse()
-            : base(true) { }
+        public BattleReportResponse(Cache cache, BattleReport report)
+            : base(true)
+        {
+            BattleReport = report;
+        }
     }
 }

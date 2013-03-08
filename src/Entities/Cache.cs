@@ -61,10 +61,9 @@ namespace FortitudeServer.Entities
 
             double weight = 0.4 + Math.Min((units - Balance) / (double) Balance, 2.0) * 0.05;
 
-            var report = new BattleReport {
+            var report = new BattleReport (AccountID) {
                 CacheID = CacheID,
                 AttackerID = attacker.AccountID,
-                DefenderID = AccountID,
                 AttackerInitial = units,
                 AttackerSurvivors = units,
                 DefenderInitial = Balance,

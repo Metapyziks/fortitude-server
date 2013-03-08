@@ -171,7 +171,12 @@ namespace FortitudeServer
                         }
                     }
                     break;
-
+                case "spoof":
+                    DatabaseManager.Insert(new BattleReport(1) {
+                        AccountID = 2,
+                        CacheID = 5
+                    } );
+                    break;
             }
         }
 

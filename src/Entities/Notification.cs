@@ -9,7 +9,8 @@ namespace FortitudeServer.Entities
     public enum NotificationType : byte
     {
         Message = 1,
-        BattleReport = 2
+        BattleReport = 2,
+        All = Message | BattleReport
     }
 
     public enum ReadStatus : byte
@@ -40,5 +41,15 @@ namespace FortitudeServer.Entities
         [Serialize("status")]
         [NotNull]
         public ReadStatus Status { get; set; }
+
+        public Notification() { }
+
+        protected Notification(int accountID, NotificationType type)
+        {
+            AccountID = accountID;
+            TimeStamp = DateTime.Now;
+            Type = type;
+            Status = ReadStatus.Unread;
+        }
     }
 }

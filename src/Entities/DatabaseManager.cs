@@ -754,6 +754,12 @@ namespace FortitudeServer.Entities
             builder.AppendFormat("INSERT INTO {0}\n(\n  {1}\n) VALUES (\n  '{2}'\n)",
                 table.Name, columns, values);
 
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
+
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }
 
@@ -780,6 +786,12 @@ namespace FortitudeServer.Entities
             builder.AppendFormat("UPDATE {0} SET\n  {1}\nWHERE {2}",
                 table.Name, columns, predicate);
 
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
+
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }
 
@@ -803,6 +815,12 @@ namespace FortitudeServer.Entities
             builder.AppendFormat("DELETE FROM {0} WHERE {1}",
                 table.Name, predicate);
 
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
+
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }
 
@@ -815,6 +833,12 @@ namespace FortitudeServer.Entities
 
             builder.AppendFormat("WHERE {0}", String.Join("\n  OR ",
                 predicates.Select(x => SerializeExpression(x.Body, true))));
+
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
 
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }

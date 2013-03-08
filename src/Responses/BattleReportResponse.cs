@@ -46,6 +46,7 @@ namespace FortitudeServer.Responses
         public BattleReportResponse(Cache cache, BattleReport report)
             : base(true)
         {
+            Cache = cache;
             BattleReport = report;
         }
     }

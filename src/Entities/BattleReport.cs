@@ -41,5 +41,13 @@ namespace FortitudeServer.Entities
 
         [NotNull]
         public int DefenderDeserters { get; set; }
+
+        public BattleReport() { }
+
+        public BattleReport(int defenderID)
+            : base(defenderID, NotificationType.BattleReport)
+        {
+            DefenderID = defenderID;
+        }
     }
 }

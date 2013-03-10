@@ -1,26 +1,17 @@
-﻿<!DOCTYPE html>
-
-<?
-    Include("functions.html");
+﻿<?
+	Include("parts/functions.html");
+	getPageStart("404", "none", "none");
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
 ?>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-	    <meta charset="utf-8" />
-	    <title>Fortitude Server Prototype - 404</title>
-		<link rel="stylesheet" type="text/css" href="styles.css">
-	</head>
-	<body>
-<? Include("topbar.html"); ?>
-		<div class="mainbox">
-		    <h1>404 - File not Found</h1>
+				
+		<div id = "content">
+			<h1>404 - File not Found</h1>
 		    
 		    <img src="images/cats.jpg" />
-		    <br />
-		    Nothing to see here...
-		    <br />
-		    <br />
-		    <a href="index">Home</a>
-		</div>
-	</body>
-</html>
+		    <p>
+				Nothing to see here...
+			</p>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

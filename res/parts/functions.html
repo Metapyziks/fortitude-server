@@ -34,6 +34,28 @@
             return plural;
         } 
     };
+	
+	// Get the page <head> up to the </title>. This is handled as a function so that it can take an argument of the page title.
+	Action<String, String, String> getPageStart = (title, jsOne = "none", jsTwo = "none") =>
+	{
+		Echo ("<!DOCTYPE html>");
+		Echo ("<html>");
+		Echo ("<head>");
+		Echo ("<title>");
+		Echo ("Fortitude: " + title);
+		Echo ("</title>");
+		Echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"parts/stylesheet.css\">");
+		
+		if (jsOne != "none") {
+			Echo ("<script type=\"text/javascript\" src=\"" + jsOne + "\"></script>");
+		}
+		
+		if (jsTwo != "none" ) {
+			Echo ("<script type=\"text/javascript\" src=\"" + jsTwo + "\"></script>");
+		}
+		Echo ("</head>");
+	};
+
 
     // This function returns a boolean, but takes no arguments
     Func<bool> isSignedIn = () =>

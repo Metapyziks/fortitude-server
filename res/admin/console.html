@@ -1,0 +1,41 @@
+<?
+    if (session == null || session.Rank != Rank.Owner) {
+        response.Redirect("404");
+    }
+?>
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8" />
+        <title>Fortitude Server Prototype - Console</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <script type="text/javascript">
+            window.onload = function() {
+                var log = document.getElementById("log");
+                log.scrollTop = log.scrollHeight;
+            }
+        </script>
+    </head>
+    <body>
+        <? Include("topbar.html"); ?>
+        <div class="mainbox">
+            <h1>Console Log</h1>
+<?
+    var logPath = "../../console.log";
+    if (!File.Exists(logPath)) {
+        ?>Can't find console log!<?
+    } else {
+        ?><div id="log" style="padding: 8px; width: 100%-16px; height: 384px; background-color: rgba(0,0,0,0.5); font-family: 'Courier New'; overflow-y: scroll;"><?
+        var lines = File.ReadAllLines(logPath);
+        foreach (var line in lines) { ?>
+            {$line} <br /><?
+        }
+        ?></div><?
+    }
+?>
+        <br /><a href="admin">Back to Admin Panel</a>
+        </div>
+    </body>
+</html>

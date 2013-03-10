@@ -1,0 +1,58 @@
+<?
+	if (session == null) {
+		response.Redirect("/login.html");
+		return;
+	}
+
+	var allCaches = DatabaseManager.SelectAll<Cache>();
+  
+	Include("parts/functions.html");
+?>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Fortitude: Map
+		</title>
+		<link rel=\"stylesheet\" type=\"text/css\" href=\"parts/stylesheet.css\">
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsQ0syxq6tKXsyCAoef02pSbrr2PcP0Tw&sensor=false"></script>
+		<script type="text/javascript">
+		  function initialize() {
+			var mapOptions = {
+			  center: new google.maps.LatLng(54.778599, -1.570315),
+			  zoom: 14,
+			  mapTypeId: google.maps.MapTypeId.TERRAIN
+			};
+			var map = new google.maps.Map(document.getElementById("map_canvas"),
+			  mapOptions);
+			var mapCaches = new Array();
+	<?
+	  foreach (var cache in allCaches) {
+	?>
+			mapCaches.push(new google.maps.Marker({
+			  position: new google.maps.LatLng({$cache.Latitude},{$cache.Longitude}),
+			  map: map,
+			  title:"{$cache.Name}"
+			}));
+	<?
+	  }
+	  // End for each var cache in cacheas
+	?>
+		  }
+		  
+		  window.onload = initialize();
+		</script>
+	</head>
+
+<?
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+?>
+				
+		<div id = "content">
+			<h1>Map</h1>
+			<div id="map_canvas" style="width:100%; height:512px; text-shadow: 0px 0px #000000;"></div>
+			</div>
+		</div>
+		<? Include ("parts/footer.html"); ?>

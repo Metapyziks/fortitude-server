@@ -1,60 +1,29 @@
-<!DOCTYPE html>
-
-<?
-    var uname = post["uname"] ?? "";
-    var phash = ( post["phash"] ?? "" ).ToLower();
-
-    var hasCreds = uname.Length > 0 && phash.Length > 0;
-
-    ErrorResponse error = null;
-    if (hasCreds) {
-        error = Account.AttemptLogin( uname, phash, out session );
-        if (session != null) {
-            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
-            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
-        }
-    }
+<?	
+	Include("parts/functions.html");
+	getPageStart("Login", "http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js", "parts/scripts.js");
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
 ?>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-        <meta charset="utf-8" />
-        <title>Fortitude Server Prototype - Login</title>
-<? if( session == null ) { ?>
-        <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-        <script type="text/JavaScript" src="scripts.js"></script>
-<? } ?>
-        <link rel="stylesheet" type="text/css" href="styles.css">
-    </head>
-    <body>
-<? Include("topbar.html"); ?>
-        <div class="mainbox">
-            <h1>Login</h1>
-<? if( error != null ) { ?>
-            We could not log you in :(<br />
-            Reason: {$error.Message}<br /><br />
-            <a href="login" >Retry</a>
-<?} else if( session == null ) { ?>
-            <form name="loginForm" action="login" method="post"
-                onsubmit="if (pword.value.length > 0) phash.value = hash(pword.value); pword.value = ''">
-                <input type="hidden" name="phash" />
-                <table>
-                <tr><td>Username:</td> <td><input type="text"     name="uname" value="{$uname}" /></td></tr>
-                <tr><td>Password:</td> <td><input type="password" name="pword" /></td></tr>
-                <tr><td colspan ="2">
-                </td></tr>
-                
-                <tr><td colspan="2"><input type="submit" value="Login" /></td></tr>
-                </table>
-                <a href="resetpassword">Forgot your password?</a>
-            </form>
-<? } else { ?>
-            <h2>Login Successful!</h2>
-            You are logged in and can do stuff. <br />
-<? } ?>
-            <br />
-            <br />
-            <a href="index">Home</a>
-        </div>
-    </body>
-</html>
+				
+		<div id = "content">
+			<h1>Log in</h1>
+			<p>
+				Please login in with your Fortitude username and password. If you have created an account on the Fortitude app, you will be able to use the same account on the website.
+			</p>
+			<p>
+				If you do not have an account with Fortitude, please sign up for one below.
+			</p>
+			<div class = "table">
+				<div class = "module">
+					<? Include ("parts/signup_module.html"); ?>
+				</div>
+			
+				<div class = "table_gap"></div>
+			
+				<div class = "module">
+					<? Include ("parts/login_module.html"); ?>
+				</div>
+			</div>
+		</div>
+		
+		<? Include ("/parts/footer.html"); ?>

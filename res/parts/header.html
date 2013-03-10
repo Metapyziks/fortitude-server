@@ -1,0 +1,62 @@
+
+<? 
+	Player player = null;
+	List<Cache> caches = null;
+
+	// If the user is logged in and verified
+	if (isVerified()) {
+		// Find the player data for the user
+		player = DatabaseManager.SelectFirst<Player>(x => x.AccountID == session.AccountID);
+
+		// Get a list of all caches owned by the user (i.e. have a matching AccountID)
+		caches = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID);
+	}
+?>
+
+<body>
+<?
+	if (isAdmin()) {
+		Include ("parts/adminbar.html");
+	}
+?>
+	<div id = "wrapper">
+		<div id = "header">
+			<ul>
+				<li> 
+					<a href="/index">Home</a> 
+				</li>
+				<li> 
+					<a href="/map">Map</a>
+				</li>
+				<li> 
+					<a href="/account">Account</a>
+				</li>
+				<li> 
+					<a href="/messages">Messages</a>  
+				</li>
+				<li> 
+					<a href="/news">News</a>  
+				</li>
+				<li> 
+					<a href="/help">Help</a>  
+					<ul>
+						<a href="#">&gt;&gt; Sub section</a>
+						<a href="#">&gt;&gt; Sub section</a>
+						<a href="#">&gt;&gt; Sub section</a>
+					</ul>
+				</li>
+				<li> 
+		<?
+			if (session != null) {
+		?>
+					<a href="/account/logout">Sign out</a>
+		<?
+			} else {
+		?>
+					<a href="/login">Sign in</a>
+		<?
+			}
+		?>
+				</li>
+			</ul>
+		</div> <!-- header -->

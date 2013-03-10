@@ -1,9 +1,0 @@
-<?
-    if (session == null || session.Rank != Rank.Owner) {
-        response.Redirect("404");
-    }
-?>Server is restarting and should be back in a few seconds...<?
-    DatabaseManager.Disconnect();
-    writer.Flush();
-    Program.Restart();
-?>

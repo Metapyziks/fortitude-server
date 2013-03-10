@@ -15,6 +15,9 @@
     // The javascript code to login is included by default.
 	Action<String, String, String> getPageStart = (title, jsOne, jsTwo) =>
 	{
+        jsOne = jsOne ?? "none";
+        jsTwo = jsTwo ?? "none";
+
 		Echo ("<!DOCTYPE html>");
 		Echo ("<html>");
 		Echo ("<head>");

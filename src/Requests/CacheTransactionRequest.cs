@@ -41,7 +41,7 @@ namespace FortitudeServer.Requests
                 return new ErrorResponse("cache does not exist");
             }
 
-            if (cache.AccountID != acc.AccountID) {
+            if (cache.AccountID != 0 && cache.AccountID != acc.AccountID) {
                 return new ErrorResponse("you do not own the cache");
             }
 
@@ -61,6 +61,8 @@ namespace FortitudeServer.Requests
 
             if (cache.Balance == 0) {
                 cache.AccountID = 0;
+            } else {
+                cache.AccountID = ply.AccountID;
             }
 
             DatabaseManager.Update(ply);

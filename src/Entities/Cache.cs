@@ -34,6 +34,7 @@ namespace FortitudeServer.Entities
         public int AccountID { get; set; }
 
         public bool HasOwner { get { return AccountID > 0; } }
+        public bool IsNPC { get { return AccountID == -1; } }
 
         [Serialize("name")]
         [NotNull, Capacity(32)]
@@ -61,52 +62,48 @@ namespace FortitudeServer.Entities
 
             double weight = 0.4 + Math.Min((units - Balance) / (double) Balance, 2.0) * 0.05;
 
-            var report = new BattleReportResponse {
-                Cache = this,
+            var report = new BattleReport (AccountID) {
+                CacheID = CacheID,
                 AttackerID = attacker.AccountID,
-                DefenderID = AccountID,
-                Attackers = new BattleReportResponse.UnitReport {
-                    Initial = units,
-                    Survivors = units
-                },
-                Defenders = new BattleReportResponse.UnitReport {
-                    Initial = Balance,
-                    Survivors = Balance
-                }
+                AttackerInitial = units,
+                AttackerSurvivors = units,
+                DefenderInitial = Balance,
+                DefenderSurvivors = Balance
             };
 
-            while (report.Attackers.Survivors > 0 && report.Defenders.Survivors > 0) {
+            while (report.AttackerSurvivors > 0 && report.DefenderSurvivors > 0) {
                 if (Tools.CoinToss(weight)) {
-                    --report.Defenders.Survivors;
+                    --report.DefenderSurvivors;
                 } else {
-                    --report.Attackers.Survivors;
+                    --report.AttackerSurvivors;
                 }
             }
 
-            report.Attackers.Fatalities = report.Attackers.Initial - report.Attackers.Survivors;
-            report.Defenders.Fatalities = report.Defenders.Initial - report.Defenders.Survivors;
+            report.AttackerFatalities = report.AttackerInitial - report.AttackerSurvivors;
+            report.DefenderFatalities = report.DefenderInitial - report.DefenderSurvivors;
 
-            attacker.Balance -= report.Attackers.Fatalities;
-            Balance -= report.Defenders.Fatalities;
+            attacker.Balance -= report.AttackerInitial;
+            Balance -= report.DefenderFatalities + report.DefenderDeserters;
 
-            report.IsVictory = report.Attackers.Survivors > 0;
-            if (report.IsVictory) {
-                report.Attackers.Deserters = 0;
-                report.Defenders.Deserters = (int) (report.Defenders.Fatalities * (Tools.Random() * 0.1 + 0.1));
-                Balance = report.Attackers.Survivors + report.Defenders.Deserters;
+            if (report.AttackerSurvivors > 0) {
+                report.AttackerDeserters = 0;
+                report.DefenderDeserters = (int) (report.DefenderFatalities * (Tools.Random() * 0.1 + 0.1));
+                Balance = report.AttackerSurvivors + report.DefenderDeserters;
                 AccountID = attacker.AccountID;
             } else {
-                report.Defenders.Deserters = 0;
-                report.Attackers.Deserters = (int) (report.Attackers.Fatalities * (Tools.Random() * 0.1 + 0.05));
-                Balance = report.Defenders.Survivors;
-                defender.Balance += report.Attackers.Deserters;
+                report.DefenderDeserters = 0;
+                report.AttackerDeserters = (int) (report.AttackerFatalities * (Tools.Random() * 0.1 + 0.05));
+                Balance = report.DefenderSurvivors;
+                defender.Balance += report.AttackerDeserters;
             }
 
             DatabaseManager.Update(this);
             DatabaseManager.Update(attacker);
             DatabaseManager.Update(defender);
 
-            return report;
+            DatabaseManager.Insert(report);
+
+            return new BattleReportResponse(this, report);
         }
     }
 }

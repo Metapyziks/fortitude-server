@@ -36,7 +36,7 @@
     };
 	
 	// Get the page <head> up to the </title>. This is handled as a function so that it can take an argument of the page title.
-	Action<String, String, String> getPageStart = (title, jsOne, jsTwo) =>
+	Action<String, String, String> getPageStart = (title, jsOne = "none", jsTwo = "none") =>
 	{
 		Echo ("<!DOCTYPE html>");
 		Echo ("<html>");

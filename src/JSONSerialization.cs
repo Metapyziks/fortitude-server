@@ -40,6 +40,11 @@ namespace FortitudeServer
         {
             StringBuilder builder = new StringBuilder();
             Serialize(obj, builder);
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
             return builder.ToString();
         }
 

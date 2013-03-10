@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace FortitudeServer
+namespace FortitudeServer.Entities
 {
 #if LINUX
     using DBConnection = Mono.Data.Sqlite.SqliteConnection;
@@ -18,7 +18,6 @@ namespace FortitudeServer
     using DBCommand = System.Data.SqlServerCe.SqlCeCommand;
     using DBDataReader = System.Data.SqlServerCe.SqlCeDataReader;
     using DBEngine = System.Data.SqlServerCe.SqlCeEngine;
-    using System.Linq.Expressions;
 #endif
 
     [AttributeUsage(AttributeTargets.Class)]
@@ -144,6 +143,9 @@ namespace FortitudeServer
             if (type == typeof(Double) || type == typeof(Single))
                 return "DECIMAL({0},{1})";
 
+            if (type == typeof(Boolean))
+                return "BOOLEAN";
+
             throw new Exception("Can't find the SQL type of " + type.FullName);
         }
 
@@ -210,6 +212,7 @@ namespace FortitudeServer
         public Type Type { get { return _type; } }
         public String Name { get { return _type.Name; } }
 
+        public DatabaseTable SuperTable { get; private set; }
         public DatabaseColumn[] Columns { get; private set; }
 
         public DatabaseTable(Type type)
@@ -217,19 +220,42 @@ namespace FortitudeServer
             _type = type;
         }
 
+        private bool ShouldInclude(PropertyInfo property)
+        {
+            if (!property.IsDefined<ColumnAttribute>()) return false;
+
+            if (property.IsDefined<PrimaryKeyAttribute>()) return true;
+
+            Type super = _type.BaseType;
+            while (super.IsDefined<DatabaseEntityAttribute>()) {
+                if (super.GetProperty(property.Name) != null) {
+                    return false;
+                }
+                super = super.BaseType;
+            }
+
+            return true;
+        }
+
         internal void BuildColumns()
         {
-            int count = _type.GetProperties().Count(x => x.IsDefined<ColumnAttribute>());
+            int count = _type.GetProperties().Count(x => ShouldInclude(x));
             Columns = new DatabaseColumn[count];
 
             int i = 0;
-            foreach (PropertyInfo property in _type.GetProperties())
-                if (property.IsDefined<ColumnAttribute>())
+            foreach (PropertyInfo property in _type.GetProperties()) {
+                if (ShouldInclude(property)) {
                     Columns[i++] = new DatabaseColumn(property);
+                }
+            }
         }
 
         internal void ResolveForeignKeys()
         {
+            if (_type.BaseType.IsDefined<DatabaseEntityAttribute>()) {
+                SuperTable = DatabaseManager.GetTable(_type.BaseType);
+            }
+
             foreach (var col in Columns) {
                 col.ResolveForeignKeys();
             }
@@ -239,11 +265,24 @@ namespace FortitudeServer
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("CREATE TABLE {0}\n(\n", Name);
-            for (int i = 0; i < Columns.Length; ++i)
+            for (int i = 0; i < Columns.Length; ++i) {
                 builder.AppendFormat("  {0}{1}\n", Columns[i].GenerateDefinitionStatement(),
                     i < Columns.Length - 1 ? "," : "");
+            }
             builder.AppendFormat(");\n");
             return builder.ToString();
+        }
+
+        public void Drop()
+        {
+            Console.WriteLine("  Dropping table {0}...", Name);
+            DatabaseManager.ExecuteNonQuery("DROP TABLE {0}", Name);
+        }
+
+        public void Create()
+        {
+            Console.WriteLine("  Creating table {0}...", Name);
+            DatabaseManager.ExecuteNonQuery(GenerateDefinitionStatement());
         }
 
         public override string ToString()
@@ -297,14 +336,7 @@ namespace FortitudeServer
             foreach (var table in _sTables) {
                 table.ResolveForeignKeys();
                 if (!TableExists(table)) {
-                    Console.WriteLine("  Creating table {0}...", table.Name);
-                    DBCommand cmd = new DBCommand(table.GenerateDefinitionStatement(), _sConnection);
-#if DEBUG
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine(cmd.CommandText);
-                    Console.ResetColor();
-#endif
-                    cmd.ExecuteNonQuery();
+                    table.Create();
                 }
             }
 
@@ -464,6 +496,17 @@ namespace FortitudeServer
             }
         }
 
+        public static int ExecuteNonQuery(String format, params Object[] args)
+        {
+            var cmd = new DBCommand(String.Format(format, args), _sConnection);
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(cmd.CommandText);
+            Console.ResetColor();
+#endif
+            return cmd.ExecuteNonQuery();
+        }
+
         public static DatabaseTable GetTable<T>()
         {
             return GetTable(typeof(T));
@@ -472,6 +515,11 @@ namespace FortitudeServer
         public static DatabaseTable GetTable(Type t)
         {
             return _sTables.FirstOrDefault(x => x.Type == t);
+        }
+
+        public static DatabaseTable[] GetTables()
+        {
+            return _sTables.ToArray();
         }
 
         public static bool TableExists<T>()
@@ -597,6 +645,13 @@ namespace FortitudeServer
             return entity;
         }
 
+        /// <summary>
+        /// Returns the first item from the specified table that matches
+        /// all given predicates, or null if no items do.
+        /// </summary>
+        /// <typeparam name="T">Entity type of the table to select from</typeparam>
+        /// <param name="predicates">Predicates for the selected item to match</param>
+        /// <returns>The first item that matches all given predicates, or null</returns>
         public static T SelectFirst<T>(params Expression<Func<T, bool>>[] predicates)
             where T : new()
         {
@@ -610,6 +665,14 @@ namespace FortitudeServer
             return entity;
         }
 
+        /// <summary>
+        /// Returns the first pair of items from the cartesian product of two
+        /// tables that matches all given predicates, or null if no pairs do.
+        /// </summary>
+        /// <typeparam name="T0">Entity type of the first table to select from</typeparam>
+        /// <typeparam name="T1">Entity type of the second table to select from</typeparam>
+        /// <param name="predicates">Predicates for the </param>
+        /// <returns></returns>
         public static Tuple<T0, T1> SelectFirst<T0, T1>(params Expression<Func<T0, T1, bool>>[] predicates)
             where T0 : new()
             where T1 : new()
@@ -675,8 +738,13 @@ namespace FortitudeServer
         public static int Insert<T>(T entity)
             where T : new()
         {
-            DatabaseTable table = GetTable<T>();
+            return Insert(GetTable<T>(), entity);
+        }
 
+        private static int Insert(DatabaseTable table, Object entity)
+        {
+            if (table.SuperTable != null) Insert(table.SuperTable, entity);
+            
             IEnumerable<DatabaseColumn> valid = table.Columns.Where(x => !x.AutoIncrement);
 
             String columns = String.Join(",\n  ", valid.Select(x => x.Name));
@@ -686,13 +754,25 @@ namespace FortitudeServer
             builder.AppendFormat("INSERT INTO {0}\n(\n  {1}\n) VALUES (\n  '{2}'\n)",
                 table.Name, columns, values);
 
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
+
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }
 
         public static int Update<T>(T entity)
             where T : new()
         {
-            DatabaseTable table = GetTable<T>();
+            return Update(GetTable<T>(), entity);
+        }
+
+        private static int Update(DatabaseTable table, Object entity)
+        {
+            if (table.SuperTable != null) Update(table.SuperTable, entity);
+
             DatabaseColumn primaryKey = table.Columns.First(x => x.PrimaryKey);
 
             IEnumerable<DatabaseColumn> valid = table.Columns.Where(x => x != primaryKey);
@@ -706,9 +786,16 @@ namespace FortitudeServer
             builder.AppendFormat("UPDATE {0} SET\n  {1}\nWHERE {2}",
                 table.Name, columns, predicate);
 
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
+
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }
 
+        // TODO: Delete should cascade with supertables
         public static int Delete<T>(T entity)
             where T : new()
         {
@@ -728,6 +815,12 @@ namespace FortitudeServer
             builder.AppendFormat("DELETE FROM {0} WHERE {1}",
                 table.Name, predicate);
 
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
+
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }
 
@@ -740,6 +833,12 @@ namespace FortitudeServer
 
             builder.AppendFormat("WHERE {0}", String.Join("\n  OR ",
                 predicates.Select(x => SerializeExpression(x.Body, true))));
+
+#if DEBUG
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(builder.ToString());
+            Console.ResetColor();
+#endif
 
             return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
         }

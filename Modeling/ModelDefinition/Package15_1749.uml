@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/SimpleShapesModel" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ActivityDesigner" xmlns:dm10="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="36a6c6ed-aa1c-4090-806f-be5a943163d3"
+  name="TestServerTests"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="c98da930-f5fb-4335-8dc6-ca2bfffb2b6f"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DTestServerTests"
+      tag="ViewCode" />
+  </referencesInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <class
+        Id="62b4daab-4865-42e4-97ef-9476c636c52e"
+        name="CacheTests"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="a6697e68-1b74-442b-a905-05df3705e48f"
+            handle="viewcode://./CodeSchema_Class?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FJames%2FProjects%2Fdurham-seg-group-3%2Ffortitude-server%2Fbin%2FDebug%2FTestServerTests.dll Namespace%3DTestServerTests Type%3DCacheTests"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="c7127219-02de-45c9-a3c6-7c8c7ae82b7e"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="2aaea065-d078-44b7-8494-28cfd8c73ae8">
+                <propertyInstance
+                  Id="f19dda65-4ede-494d-a05a-78cf2c5907f2"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="091dc87a-f1bb-4bae-b43f-18d432b4e7b8">
+                <propertyInstance
+                  Id="59897a2d-34d1-4491-8b28-3541e789db7e"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="5e161720-6605-48c7-a290-d32d429cb5cd">
+                <propertyInstance
+                  Id="fd734403-69d3-49d2-b14d-aa4a97e4d9e2"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="760275a2-1ffc-40b8-9836-c0c74a09e378">
+                <propertyInstance
+                  Id="0b891712-7f11-458a-ae0c-84ff87f2aef2"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="013c6be8-e224-4c9a-8e29-54e8eb80792f">
+                <propertyInstance
+                  Id="20cfc99a-47ae-4b18-9b13-0bf2bfcb42fe"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="b126dc20-f8fc-4d0e-9c71-d021b8973640"
+            name="CacheTests"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="a2858e90-4fd3-49ec-a1b6-1c9fc536bb66"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FJames%2FProjects%2Fdurham-seg-group-3%2Ffortitude-server%2Fbin%2FDebug%2FTestServerTests.dll Namespace%3DTestServerTests Type%3DCacheTests Member%3D.ctor"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="b98af908-44d8-4640-ac4e-ea0e59097e86"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="5033a21b-f91d-4dc4-a8a5-49151ffe323a">
+                    <propertyInstance
+                      Id="fff8f218-7909-47bc-a158-36f85f768d38"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="adf030c9-c981-4095-a3af-5df445080a1e">
+                    <propertyInstance
+                      Id="591ec5b3-3360-413e-b8f8-17452774727b"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="43900dba-c73b-40a2-946b-5e16e575f7c8">
+                    <propertyInstance
+                      Id="14ecf916-39ad-415c-94f9-c54c171b99e6"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="d329977b-0d4e-4ee0-aa7f-84997c1311e6">
+                    <propertyInstance
+                      Id="9126caaa-9c39-4359-8235-ce961ff22d21"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3239c298-222a-4c55-8876-7fe8daa44c1e">
+                    <propertyInstance
+                      Id="3f280268-7429-486a-b686-7e3f2e0fb528"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="c87264d4-b06f-40dd-98b1-269dfc2f814f">
+                    <propertyInstance
+                      Id="796d3124-b72b-4503-b450-60ec644d56f8"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+          <operation
+            Id="8cd3fa68-727e-46a7-b7fb-fdd661ee9b36"
+            name="CacheDistanceTest"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="6ed879f3-979a-4cfb-9dfe-7821029b03fc"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FJames%2FProjects%2Fdurham-seg-group-3%2Ffortitude-server%2Fbin%2FDebug%2FTestServerTests.dll Namespace%3DTestServerTests Type%3DCacheTests Member%3DCacheDistanceTest"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="1c4a6ca7-aee6-49ae-ba79-40b461adc03a"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="6b9473db-aba1-4704-85c9-b866c4be9e30">
+                    <propertyInstance
+                      Id="18bb5de7-be00-4fd2-8f3e-dda074c19e81"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="f1f528d1-1922-44bc-bf7e-c2d8651357f5">
+                    <propertyInstance
+                      Id="ca83d873-98de-4098-afa9-7119cf27c09f"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="a6756bff-f536-4741-a045-067c94f53d68">
+                    <propertyInstance
+                      Id="532c5933-5b8b-4320-9388-134eae754fdc"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="dbcf8e8a-aa51-49ba-889f-e3c7a3085090">
+                    <propertyInstance
+                      Id="23d135c9-669a-4f22-a22c-2779de75fe4d"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3baccee8-b948-4acf-85d2-bc36e41cdcc7">
+                    <propertyInstance
+                      Id="297c5452-20b2-4f16-b343-c6164a59d74c"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="fad856c9-7e45-4439-8d4d-720caaae5248">
+                    <propertyInstance
+                      Id="2d9c2023-2b18-49ce-869a-b57d01ebe777"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

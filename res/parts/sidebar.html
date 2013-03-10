@@ -72,54 +72,27 @@
 				<li class = "sidebar_section">
 					<h1>Recent News</h1>
 					<ul>
+<?
+		var news = DatabaseManager.Select<Notification>(x => x.AccountID == account.AccountID);
+		foreach (var item in news) {
+			if (item.Type == NotificationType.BattleReport) {
+				var report = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == item.NotificationID);
+				var cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == report.CacheID);
+				if (cache != null && report != null) {
+?>
 						<li>
-							<span>Username</span>
+							<span>{$cache.Name} has been {$(report.DefenderSurvivors > 0) ? "attacked" : "defeated"}</span>
 							<p>
-								<a href="#">
-									RE: This very interesting topic
-								</a>
+								Attackers : {$report.AttackerInitial} <br />
+								Defenders : {$report.DefenderInitial} <br />
+								Time: {$item.TimeStamp}!
 							</p>
 						</li>
-						<li>
-							<span>Fort Bastion</span>
-							<p>
-								<a href="#">
-									A cache has been conquered!
-								</a>
-							</p>
-						</li>
-						<li>
-							<span>Fort Bastion</span>
-							<p>
-								<a href="#">
-									A cache was successfully defended!
-								</a>
-							</p>
-						</li>
-						<li>
-							<span>Username</span>
-							<p>
-								<a href="#">
-									RE: This very interesting topic
-								</a>
-							</p>
-						</li>
-						<li>
-							<span>Fort Bastion</span>
-							<p>
-								<a href="#">
-									A cache was successfully defended!
-								</a>
-							</p>
-						</li>
-						<li class = "last_child">
-							<p>
-								Showing 5 most recent events.
-							</p>
-							<p>
-								<a href="#">View all events</a>
-							</p>
-						</li>						
+<?
+				}
+			}
+		}
+?>
 					</ul>
 				</li> <!-- recent news -->
 <?

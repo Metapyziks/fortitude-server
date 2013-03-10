@@ -78,7 +78,7 @@ namespace FortitudeServer.Requests
                     return false;
                 }
                 if (!Account.IsUsernameValid(username)) {
-                    error = new Responses.ErrorResponse("auth error: invalid username");
+                    error = new Responses.ErrorResponse("auth error: invalid credentials");
                     return false;
                 }
             } else if (args["uid"] != null) {
@@ -98,7 +98,7 @@ namespace FortitudeServer.Requests
                 }
             } else if (passwordHash != null && passwordHash.Length > 0) {
                 if (!Account.IsPasswordHashValid(passwordHash)) {
-                    error = new Responses.ErrorResponse("auth error: invalid password");
+                    error = new Responses.ErrorResponse("auth error: invalid credentials");
                     return false;
                 }
             } else {

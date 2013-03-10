@@ -1,9 +1,72 @@
 
 <?	
+	Console.WriteLine ("Hello World!");
+
+	// Logging in:
+
+	var login_uname = post["login_uname"] ?? "";
+    var login_phash = (post["login_phash"] ?? "").ToLower();
+	
+    var login_hasCreds = login_uname.Length > 0 && login_phash.Length > 0;
+
+    ErrorResponse login_error = null;
+    if (login_hasCreds) {
+    	Console.WriteLine ("Inside login has creds");
+        login_error = Account.AttemptLogin(login_uname, login_phash, out session);
+        // If the above function is successful, it will create a session.
+        // Use this session (if existing) to store the cookies.
+        if (session != null) {
+            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
+            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
+        }
+    }
+
+
+    // Creating new account:
+    var reg_uname = post["reg_uname"] ?? "";
+    var reg_email = ( post["reg_email"] ?? "" ).ToLower();
+    var reg_phash = ( post["reg_phash"] ?? "" ).ToLower();
+    Console.WriteLine ("Uname: {0} Email: {1} phash: {2}", reg_uname, reg_email, reg_phash);
+
+    var reg_hasCreds = reg_uname.Length > 0 && reg_email.Length > 0 && reg_phash.Length > 0;
+
+    ErrorResponse reg_error = null;
+    ErrorResponse reg_login_error = null;
+    if(reg_hasCreds) {
+    	Console.WriteLine ("Got reg creds");
+        reg_error = Account.AttemptRegister( reg_uname, reg_email, reg_phash );
+    	
+	    if (reg_error == null) {
+	    	Console.WriteLine ("Inside reg_error == null");
+	    	reg_login_error = Account.AttemptLogin(reg_uname, reg_phash, out session);
+	        // If the above function is successful, it will create a session.
+	        // Use this session (if existing) to store the cookies.
+	        if (session != null) {
+	        	Console.WriteLine ("Insie session != null");
+	            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
+	            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
+	        }
+	    }
+
+	    else {
+	    	Console.WriteLine ("Inside the else part");
+	    	Console.WriteLine (reg_error.Message);
+	    }
+	}
+
+
+    if (isSignedIn()){
+    	Console.WriteLine ("Inside if is signed in");
+        response.Redirect("/index.html");
+		return;
+    }
+
 	Include("parts/functions.html");
-	getPageStart("Login", "http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js", "parts/scripts.js");
+	getPageStart("Login", null, null);
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
+
+
 ?>
 				
 		<div id = "content">
@@ -16,13 +79,58 @@
 			</p>
 			<div class = "table">
 				<div class = "module">
-					<? Include ("parts/signup_module.html"); ?>
+					<h1>Register</h1>
+
+					<? if (reg_error != null) { ?>
+						<span>There was an error registering: {$reg_error.Message}.</span>
+						<?
+					}
+
+					if (reg_login_error != null) {?>
+						<span>There was an error logging in after registering: {$reg_login_error.Message}.</span>
+						<?
+					}
+
+						?>
+					<form name="reg_form" action="login" method="post" onsubmit="return submitPassword(reg_form);">
+		                <input type="hidden" name="reg_phash" />
+		                <table>
+		                <tr><td>Username:</td> <td><input type="text"     name="reg_uname" value="{$reg_uname}" /></td></tr>
+		                <tr><td>Email:   </td> <td><input type="email"    name="reg_email" value="{$reg_email}" /></td></tr>
+		                <tr><td>Password:</td> <td><input type="password" name="reg_pword" /></td></tr>
+		                <tr><td>Retype Password:</td> <td><input type="password" name="reg_rpword" /></td></tr>
+		                <tr><td colspan ="2">
+		                </td></tr>
+		                
+		                <tr><td colspan="2"><input type="submit" value="Register" /></td></tr>
+		                </table>
+		            </form>
 				</div>
 			
 				<div class = "table_gap"></div>
 			
 				<div class = "module">
-					<? Include ("parts/login_module.html"); ?>
+					<h1>Log in</h1>
+
+					<? if (login_error != null) { ?>
+						<span>There was an error logging in: {$login_error.Message}.</span>
+						<!-- If is incorrect details: "There was an error logging in, please check your details and try again."
+							Otherwise: "The server could not log you on at this time, please try again later." -->
+					<? } ?>
+
+					<form name="loginForm" action="login" method="post" onsubmit="if (login_pword.value.length > 0) login_phash.value = hash(login_pword.value); login_pword.value = ''">
+						<input type="hidden" name="login_phash" />
+						<table>
+							<tr><td>Username:</td> <td><input type="text" name="login_uname" value="{$login_uname}" /></td></tr>
+							<tr><td>Password:</td> <td><input type="password" name="login_pword" /></td></tr>
+							
+							<tr><td colspan ="2"><span></td></tr>
+												
+							<tr><td colspan="2"><input type="submit" value="Log in" /></td></tr>
+						</table>
+						<a href="resetpassword">Forgot your password?</a>
+						<br style="clear: both;" />
+					</form>
 				</div>
 			</div>
 		</div>

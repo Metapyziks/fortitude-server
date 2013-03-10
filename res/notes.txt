@@ -1,0 +1,47 @@
+
+
+			NOTES
+	---------------------
+	
+	
+	The Old Login Text was:
+	-----------------------
+	
+	Include("functions.html");
+    
+    var uname = post["uname"] ?? "";
+    var phash = (post["phash"] ?? "").ToLower();
+	
+    var hasCreds = uname.Length > 0 && phash.Length > 0;
+
+    ErrorResponse error = null;
+    if (hasCreds) {
+        error = Account.AttemptLogin(uname, phash, out session);
+        if (session != null) {
+            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
+            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
+        }
+    }
+	
+	Handling cookies are:
+	---------------------
+	
+	// Add new cookie:
+	response.SetCookie (new Cookie ("cookie name", "cookie value" ));
+	
+	//Access cookie:
+	request.Cookies["cookie name"].Value;
+	
+	//Overwrite cookie / update value:
+	response.SetCookie (new Cookie ("cookie name", "cookie value two" ));
+	
+	
+	Admin form to add new outlaw camp must include:
+	-----------------------------------------------
+	
+	Location => latitude and longitude
+	Initial population
+	Growth style => drop down (Constant, Logarithmic, Linear, Quadratic)
+	Growth speed => drop down (Slow, Moderate, Fast)
+	
+	Choose name from cache name generator or generate one automatically?

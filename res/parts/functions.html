@@ -10,7 +10,9 @@
         } 
     };
 	
-	// Get the page <head> up to the </title>. This is handled as a function so that it can take an argument of the page title.
+	// Get the page <head> up to the </title>.
+    // @Params: page title, an two additional javascript sources (external library and internal code)
+    // The javascript code to login is included by default.
 	Action<String, String, String> getPageStart = (title, jsOne, jsTwo) =>
 	{
 		Echo ("<!DOCTYPE html>");
@@ -20,12 +22,14 @@
 		Echo ("Fortitude: " + title);
 		Echo ("</title>");
 		Echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"parts/stylesheet.css\">");
-		
-		if (jsOne != "none") {
+		Echo ("<script type=\"text/javascript\" src=\"http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js\"></script>");
+        Echo ("<script type=\"text/javascript\" src=\"parts/scripts.js\"></script>");
+
+		if (jsOne != null) {
 			Echo ("<script type=\"text/javascript\" src=\"" + jsOne + "\"></script>");
 		}
 		
-		if (jsTwo != "none" ) {
+		if (jsTwo != null ) {
 			Echo ("<script type=\"text/javascript\" src=\"" + jsTwo + "\"></script>");
 		}
 		Echo ("</head>");

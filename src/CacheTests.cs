@@ -28,5 +28,11 @@ namespace TestServerTests
             Assert.IsTrue(dist >= targ - targ * error,
                 String.Format("Distance is too small! Expected {0}, got {1}.", targ, dist));
         }
+
+        [TestMethod]
+        public void GrowthStyles()
+        {
+
+        }
     }
 }

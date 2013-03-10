@@ -34,6 +34,7 @@ namespace FortitudeServer.Entities
         public int AccountID { get; set; }
 
         public bool HasOwner { get { return AccountID > 0; } }
+        public bool IsNPC { get { return AccountID == -1; } }
 
         [Serialize("name")]
         [NotNull, Capacity(32)]

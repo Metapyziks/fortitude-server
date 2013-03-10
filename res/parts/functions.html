@@ -1,31 +1,6 @@
 <?
-    // This is a function that takes no arguments
-    Action testFunction = () =>
-    {
-        // You can print things to the page with 'Echo'
-        Echo("Hello world! <br />");
-    };
-
-    // This function takes in one integer and calls it 'arg' inside the function
-    Action<int> anotherFunction = (arg) =>
-    {
-        // You can concatenate strings with '+', like Java
-        Echo("Your number: " + arg + "<br />");
-        
-        // Here's a variable that stores a string
-        var test = "this";
-
-        // Inline HTML will be output to the page when the HTML is
-        // encountered, like PHP
-        ?>
-            You can also insert html like this! </br>
-            And display C&sharp; things like {$test}.
-
-            It even works with more complex things, like {$Math.Sqrt(arg) / 2.0}
-        <?
-    };
-
-    // This function returns something, a String
+    // Determine whether to use the singular or plural form of a word.
+	// @Params: singular form of the word, plural form, number of items.
     Func<String, String, int, String> pluralify = (singular, plural, count) =>
     {
         if (count == 1) {
@@ -36,7 +11,7 @@
     };
 	
 	// Get the page <head> up to the </title>. This is handled as a function so that it can take an argument of the page title.
-	Action<String, String, String> getPageStart = (title, jsOne = "none", jsTwo = "none") =>
+	Action<String, String, String> getPageStart = (title, jsOne, jsTwo) =>
 	{
 		Echo ("<!DOCTYPE html>");
 		Echo ("<html>");
@@ -56,8 +31,6 @@
 		Echo ("</head>");
 	};
 
-
-    // This function returns a boolean, but takes no arguments
     Func<bool> isSignedIn = () =>
     {
         return session != null;

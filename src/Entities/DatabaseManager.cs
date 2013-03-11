@@ -761,6 +761,8 @@ namespace FortitudeServer.Entities
         public static List<T> Select<T>(params Expression<Func<T, bool>>[] predicates)
             where T : new()
         {
+            if (predicates.Length == 0) return new List<T>();
+
             DatabaseTable table = GetTable<T>();
             DBCommand cmd = GenerateSelectCommand(table, false, predicates);
 
@@ -778,6 +780,8 @@ namespace FortitudeServer.Entities
             where T0 : new()
             where T1 : new()
         {
+            if (predicates.Length == 0) return new List<Tuple<T0, T1>>();
+
             var table0 = GetTable<T0>();
             var table1 = GetTable<T1>();
             var cmd = GenerateSelectCommand(table0, table1, predicates);
@@ -860,9 +864,9 @@ namespace FortitudeServer.Entities
             IEnumerable<DatabaseColumn> valid = table.Columns.Where(x => x != primaryKey);
 
             String columns = String.Join(",\n  ", valid.Select(x =>
-                String.Format("{0} = '{1}'", x.Name, x.GetValue(entity))));
+                String.Format("{0} = '{1}'", x.Name, x.GetValue(entity).ToString().Escape())));
 
-            String predicate = String.Format("{0}='{1}'", primaryKey.Name, primaryKey.GetValue(entity).ToString().Escape());
+            String predicate = String.Format("{0}='{1}'", primaryKey.Name, primaryKey.GetValue(entity));
 
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("UPDATE {0} SET\n  {1}\nWHERE {2}",

@@ -21,13 +21,8 @@ namespace FortitudeServer.Requests
             if (!this.CheckAuth(args, out acc, out error, true))
                 return error;
 
-            if (args["receiverid"] == null) {
+            if (args["receiverid"] == null && args["receiver"] == null) {
                 return new ErrorResponse("expected a receiver id");
-            }
-
-            int receiverid;
-            if (!int.TryParse(args["receiverid"], out receiverid)) {
-                return new ErrorResponse("invalid receiver id");
             }
 
             String subject = args["subject"];
@@ -41,13 +36,24 @@ namespace FortitudeServer.Requests
                 return new ErrorResponse("expected a content body");
             }
 
-            var account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == receiverid);
+            Account receiver;
 
-            if (account == null) {
+            if (args["receiverid"] != null) {
+                int receiverid;
+                if (!int.TryParse(args["receiverid"], out receiverid)) {
+                    return new ErrorResponse("invalid receiver id");
+                }
+
+                receiver = DatabaseManager.SelectFirst<Account>(x => x.AccountID == receiverid);
+            } else {
+                receiver = DatabaseManager.SelectFirst<Account>(x => x.Username == args["receiver"]);
+            }
+
+            if (receiver == null) {
                 return new ErrorResponse("invalid receiver id");
             }
 
-            DatabaseManager.Insert(new Message(acc.AccountID, receiverid, subject, content));
+            DatabaseManager.Insert(new Message(acc.AccountID, receiver.AccountID, subject, content));
 
             return new Response(true);
         }

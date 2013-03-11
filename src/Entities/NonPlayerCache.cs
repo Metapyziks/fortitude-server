@@ -43,7 +43,7 @@ namespace FortitudeServer.Entities
 
         public static int FindNextAttackDelay(int initial, int attacks, GrowthStyle growthStyle)
         {
-            return FindNextGarrisonSize(intitial, attacks, growthStyle) * 2 * 60;
+            return FindNextGarrisonSize(initial, attacks, growthStyle) * 2 * 60;
         }
 
         [NotNull]

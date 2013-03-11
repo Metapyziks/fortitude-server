@@ -142,7 +142,7 @@ namespace FortitudeServer.Entities
                     report.DefenderDeserters = report.DefenderInitial / 2 + report.AttackerFatalities;
                     attacker.Balance += report.DefenderDeserters;
                     ++instance.Attacks;
-                    instance.NextAttack = DateTime.Now.AddSeconds(30.0);
+                    instance.NextAttack = DateTime.Now.AddSeconds(NonPlayerCache.FindNextAttackDelay(Balance, instance.Attacks, npc.GrowthStyle));
                     DatabaseManager.Update(instance);
                 }
             } else {

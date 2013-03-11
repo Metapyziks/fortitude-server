@@ -41,6 +41,11 @@ namespace FortitudeServer.Entities
             }
         }
 
+        public static int FindNextAttackDelay(int initial, int attacks, GrowthStyle growthStyle)
+        {
+            return FindNextGarrisonSize(intitial, attacks, growthStyle) * 2 * 60;
+        }
+
         [NotNull]
         public GrowthStyle GrowthStyle { get; set; }
 

@@ -13,6 +13,12 @@ namespace FortitudeServer.Responses
     {
         public Message Message { get; private set; }
 
+        [Serialize("messageid")]
+        public int MessageID
+        {
+            get { return Message.NotificationID; }
+        }
+
         [Serialize("senderid")]
         public int SenderID
         {

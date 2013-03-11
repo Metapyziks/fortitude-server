@@ -129,8 +129,9 @@ namespace FortitudeServer.Entities
             if (type.IsEnum)
                 return GetSQLTypeName(col, Enum.GetUnderlyingType(type));
 
-            if (type == typeof(String) || type == typeof(Char[])) {
-                String name = col.FixedLength ? "NCHAR({0})" : "NVARCHAR({0})";
+            if (type == typeof(String) || type == typeof(Char[])) {     
+                String name = col.Capacity > 255 ? "NTEXT" :
+                    col.FixedLength ? "NCHAR({0})" : "NVARCHAR({0})";
 #if LINUX
                 name += "COLLATE NOCASE";
 #endif

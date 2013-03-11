@@ -78,6 +78,7 @@
     <Compile Include="src\Entities\BattleReport.cs" />
     <Compile Include="src\Entities\ClaimedEvent.cs" />
     <Compile Include="src\Entities\Message.cs" />
+    <Compile Include="src\Entities\Announcement.cs" />
     <Compile Include="src\Entities\NonPlayerCache.cs" />
     <Compile Include="src\Entities\Notification.cs" />
     <Compile Include="src\Entities\NPCInstance.cs" />

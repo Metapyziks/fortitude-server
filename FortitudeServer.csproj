@@ -76,6 +76,7 @@
     <Compile Include="src\APIManager.cs" />
     <Compile Include="src\AuthSession.cs" />
     <Compile Include="src\Entities\BattleReport.cs" />
+    <Compile Include="src\Entities\BlockedUser.cs" />
     <Compile Include="src\Entities\ClaimedEvent.cs" />
     <Compile Include="src\Entities\Message.cs" />
     <Compile Include="src\Entities\Announcement.cs" />

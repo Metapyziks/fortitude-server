@@ -253,6 +253,10 @@
 		font: 11pt calibri;
 		text-align: justify;
 	}
+
+	/*	--------------------------------------------------------------------------	*/
+	/*	Login page modules
+	/*	--------------------------------------------------------------------------	*/
 	
 	#content .table {
 		display: table;
@@ -263,8 +267,59 @@
 		display: table-cell;
 		width: 47%;
 		border: 1px solid #000;
+		background: #444;
+		color: #000;
+	}
+
+	#content .module h1 {
+		display: block;
+		width: 100%;
+		padding: 0;
+		margin: 0 0 5px 0;
+		background: #222 url('/images/h1_background.png') bottom no-repeat;
+		text-align: center;
+		font-family: "Calibri";
+		font-size: 12pt;
+		text-shadow: 1px 1px #000000;
+		letter-spacing: 1px;
+		line-height: 30px;
+		height: 42px;
+	}
+
+	#content .module span {
+		color: #960000;
+		margin: 0 4px;
+		display: block;
+	}
+
+	#content .module a {
+		float: right;
+		margin-right: 12px;
+		color: #ccc;
+		text-decoration: none;
+		border-bottom: 1px dotted #ccc;
+	}
+
+	#content .module a:hover {
+		color: #fff;
+		text-decoration: none;
+		border-bottom: 1px solid #fff;
 	}
 	
+	#content .module form {
+		margin: 4px;
+		width: 100%;
+	}
+
+	#content .module td:first-child {
+		width: 40%;
+		padding-left: 10px;
+	}
+
+	#content .module tr:last-child {
+		text-align: center;
+	}
+
 	#content .table_gap {
 		display: table-cell;
 		width: 2%;

@@ -5,6 +5,7 @@ function matches(string, regexp)
 
 function validatePassword(first, second)
 {
+	alert ("Inside validate password");
 	if (first.length < 5) {
 		alert("Password must be at least 5 characters long!");
 		return false;
@@ -31,11 +32,14 @@ function hash(string)
 
 function submitPassword(form)
 {
-	var valid = validatePassword(form.pword.value, form.rpword.value);
-	if (valid) form.phash.value = hash(form.pword.value);
+	var valid = validatePassword(form.reg_pword.value, form.reg_rpword.value);
+	if (valid) form.reg_phash.value = hash(form.reg_pword.value);
 
-	form.pword.value = "";
-	form.rpword.value = "";
+	form.reg_pword.value = "";
+	form.reg_rpword.value = "";
 
 	return valid;
 }
+
+
+

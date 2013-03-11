@@ -1,17 +1,10 @@
 <?
 	Include("parts/functions.html");
-	getPageStart("Home", "none", "none");
+	getPageStart("Home", null, null);
 	Include("parts/header.html");
-	//Include ("parts/sidebar.html"); 
+	Include ("parts/sidebar.html"); 
 
-	if (request.Cookies["testing"] != null) {
-		Echo("Cookie value: " + request.Cookies["testing"].Value);
-		request.Cookies["testing"].Value += "!";
-	} else {
-		response.SetCookie(new Cookie("testing", "test"));
-	}
 ?>
-
 		<div id = "content">
 			<h1>Page Title</h1>
 			<p>

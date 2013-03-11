@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
 <?
+	Include("functions.html");
+
 	int count = 10;
 	if (get["count"] != null) {
 		count = Int32.Parse(get["count"]);
@@ -46,12 +48,12 @@
 <?
 	if (count % 2 == 1) {
 ?>
-				&nbsp
+				&nbsp;
 				<br />
 <?
 	}
 ?>
-				&nbsp
+				&nbsp;
 				<br />
 				<a href="index">Home</a>
 			</div>

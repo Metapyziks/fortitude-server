@@ -584,15 +584,19 @@ namespace FortitudeServer.Entities
             columns.AddRange(table.Columns.Select(x => alias + "." + x.Name));
             
             var tables = new List<String> { table.Name + " AS " + alias };
+            var oldPrimary = table.Columns.First(x => x.PrimaryKey);
             DatabaseTable super = table;
             while ((super = super.SuperTable) != null) {
                 columns.AddRange(super.Columns.Select(x => super.Name + "." + x.Name));
-                tables.Add(super.Name);
+                var primary = super.Columns.First(x => x.PrimaryKey);
+                tables.Add(String.Format("INNER JOIN {0} ON {0}.{2} = {1}.{3}",
+                    super.Name, alias, primary.Name, oldPrimary.Name));
+                oldPrimary = primary;
             }
 
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("SELECT\n  {0}\nFROM {1}\n", String.Join(", ", columns),
-                String.Join(", ", tables));
+                String.Join("\n  ", tables));
 
             builder.AppendFormat("WHERE {0}\n", String.Join("\n  OR ",
                 predicates.Select(x => SerializeExpression(x.Body))));

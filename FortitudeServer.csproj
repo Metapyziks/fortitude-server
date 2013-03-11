@@ -85,6 +85,8 @@
     <Compile Include="src\Requests\CacheTransactionRequest.cs" />
     <Compile Include="src\Requests\ClaimSpecialEventRequest.cs" />
     <Compile Include="src\Requests\NotificationListRequest.cs" />
+    <Compile Include="src\Requests\ReadMessageRequest.cs" />
+    <Compile Include="src\Requests\SendMessageRequest.cs" />
     <Compile Include="src\Requests\SpecialEventListRequest.cs" />
     <Compile Include="src\Responses\BattleReportResponse.cs" />
     <Compile Include="src\Entities\Account.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="src\Requests\UserCachesRequest.cs" />
     <Compile Include="src\Responses\CacheInfoResponse.cs" />
     <Compile Include="src\Responses\NotificationListResponse.cs" />
+    <Compile Include="src\Responses\ReadMessageResponse.cs" />
     <Compile Include="src\Responses\ScoutCacheResponse.cs" />
     <Compile Include="src\Responses\SpecialEventClaimedResponse.cs" />
     <Compile Include="src\Responses\SpecialEventListResponse.cs" />

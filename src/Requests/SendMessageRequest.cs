@@ -53,6 +53,14 @@ namespace FortitudeServer.Requests
                 return new ErrorResponse("invalid receiver id");
             }
 
+            if (receiver.HasBlocked(acc)) {
+                return new ErrorResponse("the receiver has disabled receiving messages");
+            }
+
+            if (acc.HasBlocked(receiver)) {
+                return new ErrorResponse("you cannot send messages to a blocked user");
+            }
+
             DatabaseManager.Insert(new Message(acc.AccountID, receiver.AccountID, subject, content));
 
             return new Response(true);

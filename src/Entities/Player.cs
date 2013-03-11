@@ -33,5 +33,8 @@ namespace FortitudeServer.Entities
         [Serialize("balance")]
         [NotNull]
         public int Balance { get; set; }
+
+        [NotNull]
+        public MessageSettings MessageSettings { get; set; }
     }
 }

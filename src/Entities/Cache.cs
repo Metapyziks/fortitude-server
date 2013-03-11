@@ -157,7 +157,7 @@ namespace FortitudeServer.Entities
                 }
             }
 
-            if (IsNPC) {
+            if (!IsNPC) {
                 DatabaseManager.Update(this);
                 DatabaseManager.Insert(report);
             }

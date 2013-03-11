@@ -142,6 +142,11 @@ namespace FortitudeServer.Requests
                 sess.Refresh();
             }
 
+            if (account.Rank < Rank.Verified) {
+                error = new Responses.ErrorResponse("auth error: account not activated");
+                return false;
+            }
+
             return true;
         }
 

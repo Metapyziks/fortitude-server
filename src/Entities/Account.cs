@@ -264,5 +264,11 @@ namespace FortitudeServer.Entities
 
             return null;
         }
+
+        public bool HasBlocked(Account account)
+        {
+            return DatabaseManager.SelectFirst<BlockedUser>(x =>
+                x.BlockerID == AccountID && x.BlockedID == account.AccountID) != null;
+        }
     }
 }

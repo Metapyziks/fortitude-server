@@ -22,10 +22,10 @@ namespace FortitudeServer.Requests
                 return error;
             }
 
-            var blocked = DatabaseManager.Select<BlockedUser, Account>((x, y) =>
-                x.BlockedID == y.AccountID && x.BlockerID == acc.AccountID);
+            var blocked = DatabaseManager.Select<Account, BlockedUser>((y, x) =>
+                x.BlockedID == y.AccountID, (y, x) => x.BlockerID == acc.AccountID);
 
-            return new UserInfoResponse(blocked.Select(x => x.Item2).ToList());
+            return new UserInfoResponse(blocked.Select(x => x.Item1).ToList());
         }
     }
 }

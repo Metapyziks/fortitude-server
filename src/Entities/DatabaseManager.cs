@@ -35,11 +35,11 @@ namespace FortitudeServer.Entities
     [AttributeUsage(AttributeTargets.Property)]
     public class ForeignKeyAttribute : ColumnAttribute
     {
-        public readonly Type ForeignEntityType;
+        public readonly Type[] ForeignEntityTypes;
 
-        public ForeignKeyAttribute(Type foreignEntityType)
+        public ForeignKeyAttribute(params Type[] foreignEntityTypes)
         {
-            ForeignEntityType = foreignEntityType;
+            ForeignEntityTypes = foreignEntityTypes;
         }
     }
 
@@ -109,8 +109,8 @@ namespace FortitudeServer.Entities
         {
             if (ForeignKey) {
                 ForeignTables = (
-                    from attrib in _property.GetCustomAttributes(typeof(ForeignKeyAttribute), false)
-                    select DatabaseManager.GetTable(((ForeignKeyAttribute)attrib).ForeignEntityType)
+                    _property.GetCustomAttributes(typeof(ForeignKeyAttribute), false).SelectMany(x =>
+                    ((ForeignKeyAttribute) x).ForeignEntityTypes.Select(y => DatabaseManager.GetTable(y)))
                 ).ToArray();
             }
             if (super != null) {
@@ -627,7 +627,7 @@ namespace FortitudeServer.Entities
         }
 
         private static DBCommand GenerateSelectCommand<T0, T1>(DatabaseTable table0,
-            DatabaseTable table1, params Expression<Func<T0, T1, bool>>[] predicates)
+            DatabaseTable table1, Expression<Func<T0, T1, bool>> joinOn, params Expression<Func<T0, T1, bool>>[] predicates)
             where T0 : new()
             where T1 : new()
         {
@@ -644,13 +644,9 @@ namespace FortitudeServer.Entities
             var columns = String.Join(",\n  ", table0.Columns.Select(x => alias0 + "." + x.Name))
                 + ",\n  " + String.Join(",\n  ", table1.Columns.Select(x => alias1 + "." + x.Name));
 
-            var joinOn = String.Format("{0}.{1} = {2}.{3}", alias0,
-                table0.Columns.First(x => x.PrimaryKey).Name, alias1,
-                table1.Columns.First(x => x.ForeignTables != null && x.ForeignTables.Contains(table0)).Name);
-
             var builder = new StringBuilder();
             builder.AppendFormat("SELECT\n  {0}\nFROM {1} AS {2}\nINNER JOIN {3} AS {4}\nON {5}\n", columns,
-                table0.Name, alias0, table1.Name, alias1, joinOn);
+                table0.Name, alias0, table1.Name, alias1, SerializeExpression(joinOn.Body));
 
             builder.AppendFormat("WHERE {0}", String.Join("\n  OR ",
                 predicates.Select(x => SerializeExpression(x.Body))));
@@ -743,13 +739,13 @@ namespace FortitudeServer.Entities
         /// <typeparam name="T1">Entity type of the second table to select from</typeparam>
         /// <param name="predicates">Predicates for the </param>
         /// <returns></returns>
-        public static Tuple<T0, T1> SelectFirst<T0, T1>(params Expression<Func<T0, T1, bool>>[] predicates)
+        public static Tuple<T0, T1> SelectFirst<T0, T1>(Expression<Func<T0, T1, bool>> joinOn, params Expression<Func<T0, T1, bool>>[] predicates)
             where T0 : new()
             where T1 : new()
         {
             var table0 = GetTable<T0>();
             var table1 = GetTable<T1>();
-            var cmd = GenerateSelectCommand(table0, table1, predicates);
+            var cmd = GenerateSelectCommand(table0, table1, joinOn, predicates);
 
             Tuple<T0, T1> entity;
             using (DBDataReader reader = cmd.ExecuteReader())
@@ -776,7 +772,7 @@ namespace FortitudeServer.Entities
             return entities;
         }
 
-        public static List<Tuple<T0, T1>> Select<T0, T1>(params Expression<Func<T0, T1, bool>>[] predicates)
+        public static List<Tuple<T0, T1>> Select<T0, T1>(Expression<Func<T0, T1, bool>> joinOn, params Expression<Func<T0, T1, bool>>[] predicates)
             where T0 : new()
             where T1 : new()
         {
@@ -784,7 +780,7 @@ namespace FortitudeServer.Entities
 
             var table0 = GetTable<T0>();
             var table1 = GetTable<T1>();
-            var cmd = GenerateSelectCommand(table0, table1, predicates);
+            var cmd = GenerateSelectCommand(table0, table1, joinOn, predicates);
 
             var entities = new List<Tuple<T0, T1>>();
             using (DBDataReader reader = cmd.ExecuteReader()) {
@@ -802,11 +798,11 @@ namespace FortitudeServer.Entities
             return Select<T>(x => true);
         }
 
-        public static List<Tuple<T0, T1>> SelectAll<T0, T1>()
+        public static List<Tuple<T0, T1>> SelectAll<T0, T1>(Expression<Func<T0, T1, bool>> joinOn)
             where T0 : new()
             where T1 : new()
         {
-            return Select<T0, T1>((x, y) => true);
+            return Select<T0, T1>(joinOn, (x, y) => true);
         }
 
         public static int Insert<T>(T entity)

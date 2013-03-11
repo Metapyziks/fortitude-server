@@ -252,13 +252,25 @@ namespace FortitudeServer
                         var caches = Cache.FindNearby(latitude, longitude, Cache.MinPlacementDistance);
                         DatabaseManager.Delete(caches);
 
+                        int bal = 20;
+                        if (args.Length > 1) {
+                            if (!int.TryParse(args[1], out bal)) {
+                                Error("Invalid balance");
+                                break;
+                            }
+                        }
+
                         DatabaseManager.Insert(new Cache {
                             AccountID = acc.AccountID,
-                            Balance = 20,
+                            Balance = bal,
                             Latitude = latitude,
                             Longitude = longitude,
                             Name = CacheNamer.GenerateRandomName()
                         });
+
+                        Success("Placed cache!");
+                    } else {
+                        Error("Account not found");
                     }
                     break;
                 case "message":

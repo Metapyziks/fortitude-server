@@ -92,7 +92,7 @@ namespace FortitudeServer.Entities
             Unique = property.IsDefined<UniqueAttribute>();
             ForeignKey = property.IsDefined<ForeignKeyAttribute>();
             PrimaryKey = property.IsDefined<PrimaryKeyAttribute>();
-            AutoIncrement = property.IsDefined<AutoIncrementAttribute>();
+            AutoIncrement = property.IsDefined<AutoIncrementAttribute>(false);
             FixedLength = property.IsDefined<FixedLengthAttribute>();
             
             if (property.IsDefined<CapacityAttribute>()) {
@@ -105,13 +105,22 @@ namespace FortitudeServer.Entities
             }
         }
 
-        internal void ResolveForeignKeys()
+        internal void ResolveForeignKeys(DatabaseTable super)
         {
             if (ForeignKey) {
                 ForeignTables = (
                     from attrib in _property.GetCustomAttributes(typeof(ForeignKeyAttribute), false)
                     select DatabaseManager.GetTable(((ForeignKeyAttribute)attrib).ForeignEntityType)
                 ).ToArray();
+            }
+            if (super != null) {
+                if (AutoIncrement) {
+                    AutoIncrement = false;
+                }
+                if (PrimaryKey) {
+                    ForeignKey = true;
+                    ForeignTables = new [] { super };
+                }
             }
         }
 
@@ -220,7 +229,7 @@ namespace FortitudeServer.Entities
             _type = type;
         }
 
-        private bool ShouldInclude(PropertyInfo property)
+        public bool ShouldInclude(PropertyInfo property)
         {
             if (!property.IsDefined<ColumnAttribute>()) return false;
 
@@ -257,7 +266,7 @@ namespace FortitudeServer.Entities
             }
 
             foreach (var col in Columns) {
-                col.ResolveForeignKeys();
+                col.ResolveForeignKeys(SuperTable);
             }
         }
 
@@ -478,15 +487,29 @@ namespace FortitudeServer.Entities
 
             switch (exp.NodeType) {
                 case ExpressionType.Parameter:
-                    ParameterExpression pExp = (ParameterExpression) exp;
+                    var pExp = (ParameterExpression) exp;
                     return pExp.Name;
                 case ExpressionType.Constant:
-                    ConstantExpression cExp = (ConstantExpression) exp;
+                    var cExp = (ConstantExpression) exp;
                     return String.Format("'{0}'", cExp.Value.ToString());
                 case ExpressionType.MemberAccess:
-                    MemberExpression mExp = (MemberExpression) exp;
+                    var mExp = (MemberExpression) exp;
                     if (removeParam && mExp.Expression is ParameterExpression)
                         return mExp.Member.Name;
+                    if (mExp.Expression is ParameterExpression) {
+                        var param = (ParameterExpression) mExp.Expression;
+                        var paramName = param.Name;
+                        DatabaseTable table = GetTable(param.Type);
+                        if (!table.Columns.Any(x => x.Name == mExp.Member.Name)) {
+                            while ((table = table.SuperTable) != null) {
+                                if (table.Columns.Any(x => x.Name == mExp.Member.Name)) {
+                                    paramName = table.Name;
+                                    break;
+                                }
+                            }
+                        }
+                        return String.Format("{0}.{1}", paramName, mExp.Member.Name);
+                    }
                     return String.Format("{0}.{1}", SerializeExpression(
                             mExp.Expression, removeParam),
                         mExp.Member.Name);
@@ -547,7 +570,8 @@ namespace FortitudeServer.Entities
             }
         }
 
-        private static DBCommand GenerateSelectCommand<T>(DatabaseTable table, params Expression<Func<T, bool>>[] predicates)
+        private static DBCommand GenerateSelectCommand<T>(DatabaseTable table,
+            bool selectLast, params Expression<Func<T, bool>>[] predicates)
             where T : new()
         {
             for (int i = 1; i < predicates.Length; ++i)
@@ -556,14 +580,30 @@ namespace FortitudeServer.Entities
 
             String alias = predicates[0].Parameters[0].Name;
 
-            String columns = String.Join(",\n  ", table.Columns.Select(x => alias + "." + x.Name));
+            var columns = new List<String>();
+            columns.AddRange(table.Columns.Select(x => alias + "." + x.Name));
+            
+            var tables = new List<String> { table.Name + " AS " + alias };
+            var oldPrimary = table.Columns.First(x => x.PrimaryKey);
+            DatabaseTable super = table;
+            while ((super = super.SuperTable) != null) {
+                columns.AddRange(super.Columns.Select(x => super.Name + "." + x.Name));
+                var primary = super.Columns.First(x => x.PrimaryKey);
+                tables.Add(String.Format("INNER JOIN {0} ON {0}.{2} = {1}.{3}",
+                    super.Name, alias, primary.Name, oldPrimary.Name));
+                oldPrimary = primary;
+            }
 
             StringBuilder builder = new StringBuilder();
-            builder.AppendFormat("SELECT\n  {0}\nFROM {1} AS {2}\n", columns,
-                table.Name, alias);
+            builder.AppendFormat("SELECT\n  {0}\nFROM {1}\n", String.Join(", ", columns),
+                String.Join("\n  ", tables));
 
-            builder.AppendFormat("WHERE {0}", String.Join("\n  OR ",
+            builder.AppendFormat("WHERE {0}\n", String.Join("\n  OR ",
                 predicates.Select(x => SerializeExpression(x.Body))));
+
+            if (selectLast) {
+                builder.AppendFormat("ORDER BY {0}.{1} DESC\n", alias, table.Columns.First(x=> x.PrimaryKey).Name);
+            }
 
 #if DEBUG
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -614,13 +654,20 @@ namespace FortitudeServer.Entities
         private static T ReadEntity<T>(this DBDataReader reader, DatabaseTable table)
             where T : new()
         {
-            T entity = default(T);
+            return (T) ReadEntity(reader, table);
+        }
+        
+        private static Object ReadEntity(this DBDataReader reader, DatabaseTable table)
+        {
+            Object entity = null;
 
             if (reader.Read()) {
-                entity = new T();
-
-                foreach (DatabaseColumn col in table.Columns)
-                    col.SetValue(entity, reader[col.Name]);
+                entity = table.Type.GetConstructor(new Type[] { }).Invoke(new Object[] { });
+                
+                do {
+                    foreach (DatabaseColumn col in table.Columns)
+                        col.SetValue(entity, reader[col.Name]);
+                } while ((table = table.SuperTable) != null);
             }
 
             return entity;
@@ -656,11 +703,22 @@ namespace FortitudeServer.Entities
             where T : new()
         {
             DatabaseTable table = GetTable<T>();
-            DBCommand cmd = GenerateSelectCommand(table, predicates);
+            DBCommand cmd = GenerateSelectCommand(table, false, predicates);
 
             T entity;
             using (DBDataReader reader = cmd.ExecuteReader())
                 entity = reader.ReadEntity<T>(table);
+
+            return entity;
+        }
+
+        private static Object SelectLast(DatabaseTable table)
+        {
+            DBCommand cmd = GenerateSelectCommand<Object>(table, true, x => true);
+
+            Object entity;
+            using (DBDataReader reader = cmd.ExecuteReader())
+                entity = reader.ReadEntity(table);
 
             return entity;
         }
@@ -692,7 +750,7 @@ namespace FortitudeServer.Entities
             where T : new()
         {
             DatabaseTable table = GetTable<T>();
-            DBCommand cmd = GenerateSelectCommand(table, predicates);
+            DBCommand cmd = GenerateSelectCommand(table, false, predicates);
 
             List<T> entities = new List<T>();
             using (DBDataReader reader = cmd.ExecuteReader()) {
@@ -743,8 +801,20 @@ namespace FortitudeServer.Entities
 
         private static int Insert(DatabaseTable table, Object entity)
         {
-            if (table.SuperTable != null) Insert(table.SuperTable, entity);
-            
+            if (table.SuperTable != null) {
+                Insert(table.SuperTable, entity);
+                var inherited = table.Columns.Where(x => !x.AutoIncrement
+                    && table.SuperTable.Columns.Any(y => y.Name == x.Name))
+                    .Select(x => new Tuple<DatabaseColumn, DatabaseColumn>(
+                        x, table.SuperTable.Columns.First(y => y.Name == x.Name)));
+                if (inherited.Count() > 0) {
+                    Object super = DatabaseManager.SelectLast(table.SuperTable);
+                    foreach(var pair in inherited) {
+                        pair.Item1.SetValue(entity, pair.Item2.GetValue(super));
+                    }
+                }
+            }
+
             IEnumerable<DatabaseColumn> valid = table.Columns.Where(x => !x.AutoIncrement);
 
             String columns = String.Join(",\n  ", valid.Select(x => x.Name));

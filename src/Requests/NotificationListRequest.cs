@@ -45,15 +45,19 @@ namespace FortitudeServer.Requests
                 }
             }
 
-            List<Notification> news;
+            List<Notification> news = new List<Notification>();
 
-            if (filter == NotificationType.All) {
-                news = DatabaseManager.Select<Notification>(x => x.AccountID == acc.AccountID);
-            } else {
-                news = DatabaseManager.Select<Notification>(x => x.AccountID == acc.AccountID && x.Type == filter);
+            // news.AddRange(DatabaseManager.Select<Notification>(x => x.AccountID == acc.AccountID));
+
+            if (filter.HasFlag(NotificationType.BattleReport)) {
+                news.AddRange(DatabaseManager.Select<BattleReport>(x => x.AccountID == acc.AccountID));
             }
+            if (filter.HasFlag(NotificationType.Message)) {
+                news.AddRange(DatabaseManager.Select<Message>(x => x.AccountID == acc.AccountID));
+            }
+
             news = news.Where(x => x.TimeStamp < since).ToList();
-            news.Reverse();
+            news.Sort(Comparer<Notification>.Create((x, y) => (y.TimeStamp - x.TimeStamp).Seconds));
             return new NotificationListResponse(news.GetRange(0, Math.Min(count, news.Count)).ToArray());
         }
     }

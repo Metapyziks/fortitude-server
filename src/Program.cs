@@ -158,24 +158,104 @@ namespace FortitudeServer
                     else
                         Success("Promoted {0} to admin", args[0]);
                     break;
+                case "delete":
+                    if (args.Length == 0) {
+                        Error("Expected an identifier");
+                        break;
+                    }
+                    DatabaseManager.Delete<Cache>(x => x.CacheID == int.Parse(args[0]));
+                    Success("Deleted cache with id {0}", args[0]);
+                    break;
                 case "reset":
                     if (args.Length == 0) {
                         Error("Expected a table name");
                         break;
                     }
+                    args[0] = args[0].ToLower();
                     foreach(DatabaseTable table in DatabaseManager.GetTables()) {
                         if (table.Name.ToLower() == args[0]) {
                             table.Drop();
                             table.Create();
-                            break;
+                            Success("Deleted table with name {0}", args[0]);
+                            return;
                         }
                     }
+                    Error("Invalid table name");
                     break;
-                case "spoof":
-                    DatabaseManager.Insert(new BattleReport(1) {
-                        AccountID = 2,
-                        CacheID = 5
-                    } );
+                case "placenpc":
+                    if (args.Length < 2) {
+                        Error("Expected a position");
+                        break;
+                    }
+
+                    double lat, lon;
+                    if (!double.TryParse(args[0], out lat)) {
+                        Error("Invalid lattitude");
+                        break;
+                    }
+                    if (!double.TryParse(args[1], out lon)) {
+                        Error("Invalid longitude");
+                        break;
+                    }
+
+                    NonPlayerCache cache = new NonPlayerCache {
+                        Latitude = lat,
+                        Longitude = lon,
+                        Name = CacheNamer.GenerateRandomName(),
+                        Balance = 20,
+                        GrowthStyle = GrowthStyle.Linear | GrowthStyle.Slow
+                    };
+
+                    DatabaseManager.Insert(cache);
+                    Success("Placed non-player cache at ({0}, {1})", args[0], args[1]);
+                    break;
+                case "addspecial":
+                    if (args.Length < 4) {
+                        Error("Expected name, address, starting balance and reward");
+                        break;
+                    }
+                    String name = args[0];
+                    String address = args[1];
+                    if (!SpecialEvent.IsAddressValid(address)) {
+                        Error("Invalid address");
+                        break;
+                    }
+                    int balance, reward;
+                    if (!int.TryParse(args[2], out balance)) {
+                        Error("Invalid balance");
+                        break;
+                    }
+                    if (!int.TryParse(args[3], out reward)) {
+                        Error("Invalid reward");
+                        break;
+                    }
+                    var special = new SpecialEvent {
+                        Name = name,
+                        MACAddress = address,
+                        Balance = balance,
+                        Reward = reward,
+                        Expires = DateTime.Now.AddMonths(1)
+                    };
+                    DatabaseManager.Insert(special);
+                    Success("Added special cache named {0} with address {1}, a reward of {2} points and {3} claims", args[0], args[1], args[3], args[2]);
+                    break;
+                case "message":
+                    if (args.Length < 3) {
+                        Error("Expected a receiver, subject, and content");
+                        break;
+                    }
+                    String receiverName = args[0];
+                    String subject = args[1];
+                    String content = args[2];
+
+                    var receiver = DatabaseManager.SelectFirst<Account>(x => x.Username == receiverName);
+
+                    if (receiver == null) {
+                        Error("Invalid user name");
+                        break;
+                    }
+
+                    DatabaseManager.Insert(new Message(1, receiver.AccountID, subject, content));
                     break;
             }
         }

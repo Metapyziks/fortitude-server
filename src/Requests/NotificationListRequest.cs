@@ -47,8 +47,6 @@ namespace FortitudeServer.Requests
 
             List<Notification> news = new List<Notification>();
 
-            // news.AddRange(DatabaseManager.Select<Notification>(x => x.AccountID == acc.AccountID));
-
             if (filter.HasFlag(NotificationType.BattleReport)) {
                 news.AddRange(DatabaseManager.Select<BattleReport>(x => x.AccountID == acc.AccountID));
             }

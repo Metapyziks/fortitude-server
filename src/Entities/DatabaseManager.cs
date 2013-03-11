@@ -424,6 +424,16 @@ namespace FortitudeServer.Entities
             throw new Exception("Cannot reduce an expression of type " + exp.GetType());
         }
 
+        public static String Escape(this String str)
+        {
+            StringBuilder escaped = new StringBuilder();
+            foreach (char c in str) {
+                if (c == '\'') escaped.Append("''");
+                else escaped.Append(c);
+            }
+            return escaped.ToString();
+        }
+
         private static String SerializeExpression(Expression exp, bool removeParam = false)
         {
             if (!RequiresParam(exp)) {
@@ -439,8 +449,9 @@ namespace FortitudeServer.Entities
                     Expression<Func<double,String>> toString = x => x.ToString();
                     return String.Format("'{0}'", Expression.Lambda<Func<String>>(
                         Expression.Invoke(toString, exp)).Compile()());
-                } else
-                    return String.Format("'{0}'", Expression.Lambda<Func<Object>>(exp).Compile()());
+                } else {
+                    return String.Format("'{0}'", Expression.Lambda<Func<Object>>(exp).Compile()().ToString().Escape());
+                }
             }
 
             if (exp is UnaryExpression) {
@@ -742,7 +753,7 @@ namespace FortitudeServer.Entities
             Tuple<T0, T1> entity;
             using (DBDataReader reader = cmd.ExecuteReader())
                 entity = reader.ReadEntity<T0, T1>(table0, table1);
-
+            
             return entity;
         }
 
@@ -818,7 +829,7 @@ namespace FortitudeServer.Entities
             IEnumerable<DatabaseColumn> valid = table.Columns.Where(x => !x.AutoIncrement);
 
             String columns = String.Join(",\n  ", valid.Select(x => x.Name));
-            String values = String.Join("',\n  '", valid.Select(x => x.GetValue(entity)));
+            String values = String.Join("',\n  '", valid.Select(x => x.GetValue(entity).ToString().Escape()));
 
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("INSERT INTO {0}\n(\n  {1}\n) VALUES (\n  '{2}'\n)",
@@ -850,7 +861,7 @@ namespace FortitudeServer.Entities
             String columns = String.Join(",\n  ", valid.Select(x =>
                 String.Format("{0} = '{1}'", x.Name, x.GetValue(entity))));
 
-            String predicate = String.Format("{0}='{1}'", primaryKey.Name, primaryKey.GetValue(entity));
+            String predicate = String.Format("{0}='{1}'", primaryKey.Name, primaryKey.GetValue(entity).ToString().Escape());
 
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("UPDATE {0} SET\n  {1}\nWHERE {2}",
@@ -879,7 +890,7 @@ namespace FortitudeServer.Entities
             DatabaseColumn primaryKey = table.Columns.First(x => x.PrimaryKey);
 
             String predicate = String.Join("\n  OR ", entities.Select(x => String.Format("{0}='{1}'",
-                primaryKey.Name, primaryKey.GetValue(x))));
+                primaryKey.Name, primaryKey.GetValue(x).ToString().Escape())));
 
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("DELETE FROM {0} WHERE {1}",

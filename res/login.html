@@ -1,7 +1,5 @@
 
 <?	
-	Console.WriteLine ("Hello World!");
-
 	// Logging in:
 
 	var login_uname = post["login_uname"] ?? "";
@@ -11,8 +9,8 @@
 
     ErrorResponse login_error = null;
     if (login_hasCreds) {
-    	Console.WriteLine ("Inside login has creds");
         login_error = Account.AttemptLogin(login_uname, login_phash, out session);
+       
         // If the above function is successful, it will create a session.
         // Use this session (if existing) to store the cookies.
         if (session != null) {
@@ -26,7 +24,6 @@
     var reg_uname = post["reg_uname"] ?? "";
     var reg_email = ( post["reg_email"] ?? "" ).ToLower();
     var reg_phash = ( post["reg_phash"] ?? "" ).ToLower();
-    Console.WriteLine ("Uname: {0} Email: {1} phash: {2}", reg_uname, reg_email, reg_phash);
 
     var reg_hasCreds = reg_uname.Length > 0 && reg_email.Length > 0 && reg_phash.Length > 0;
 
@@ -39,6 +36,7 @@
 	    if (reg_error == null) {
 	    	Console.WriteLine ("Inside reg_error == null");
 	    	reg_login_error = Account.AttemptLogin(reg_uname, reg_phash, out session);
+	        
 	        // If the above function is successful, it will create a session.
 	        // Use this session (if existing) to store the cookies.
 	        if (session != null) {

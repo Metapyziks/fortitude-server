@@ -11,12 +11,10 @@
     };
 	
 	// Get the page <head> up to the </title>.
-    // @Params: page title, an two additional javascript sources (external library and internal code)
+    // @Params: page title, and two additional javascript sources (external library and internal code)
     // The javascript code to login is included by default.
 	Action<String, String, String> getPageStart = (title, jsOne, jsTwo) =>
 	{
-        jsOne = jsOne ?? "none";
-        jsTwo = jsTwo ?? "none";
 
 		Echo ("<!DOCTYPE html>");
 		Echo ("<html>");
@@ -27,7 +25,6 @@
 		Echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"parts/stylesheet.css\">");
 		Echo ("<script type=\"text/javascript\" src=\"http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js\"></script>");
         Echo ("<script type=\"text/javascript\" src=\"parts/scripts.js\"></script>");
-
 		if (jsOne != null) {
 			Echo ("<script type=\"text/javascript\" src=\"" + jsOne + "\"></script>");
 		}

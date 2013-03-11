@@ -4,24 +4,62 @@
 	---------------------
 	
 	
-	The Old Login Text was:
-	-----------------------
-	
-	Include("functions.html");
-    
-    var uname = post["uname"] ?? "";
-    var phash = (post["phash"] ?? "").ToLower();
-	
-    var hasCreds = uname.Length > 0 && phash.Length > 0;
+			To Do
+	---------------------
 
-    ErrorResponse error = null;
-    if (hasCreds) {
-        error = Account.AttemptLogin(uname, phash, out session);
-        if (session != null) {
-            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
-            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
-        }
-    }
+	Login/Signup
+		Integrate errors neatly; asynchronious checking
+		Forgot your password
+
+	Side bar
+		// Change caches and recent news to display message when have none
+		Implement search function
+
+	Map
+		Test with pins
+		Format pin colours
+		Display cache on hover
+		Link to cache details
+		Implement search ajax
+
+	News
+		// Add news items
+		// Add dates and news titles
+		Add admin form to update news items?
+		Make news items update automatically?
+
+	// Help
+		// Style FAQ
+		// Add FAQ items
+		// Split it into sections, create links to
+		// Help intro screen
+
+	Home
+		Fill home screen
+
+	Account screen
+		// Add forms and stuff
+		Make things work
+		Subsection / new page of all caches
+		Subsection / new page of activity recording
+
+	Messages
+
+	Footer
+		Site map
+		Back to top
+		Credit stone wall
+
+
+	Admins
+		Database view
+		Database tabs
+
+
+
+
+
+
 	
 	Handling cookies are:
 	---------------------

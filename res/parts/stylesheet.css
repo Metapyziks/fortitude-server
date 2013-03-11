@@ -1,4 +1,4 @@
-	
+
 	
 	/*	--------------------------------------------------------------------------	*/
 	/*	Page layout
@@ -135,7 +135,7 @@
 		width: 100%;
 		border: 1px solid #000;
 		background: #444;
-		color: #000;
+		color: #fff;
 		margin: 0 0 10px 0;
 	}
 	
@@ -160,18 +160,23 @@
 	li.sidebar_section form {
 		margin: 8px;
 	}
-	
+
 	li.sidebar_section input {
-		width: 80%;
+		width: 95%;
 	}
 	
 	li.sidebar_section li p {
 		font: 8pt Tahoma;
 		margin-top: 2px;
 	}
+
+	li.sidebar_section a {
+		color: #ccc;
+		text-decoration: none;
+	}
 	
-	li.sidebar_section li a {
-		color: #888;
+	li.sidebar_section a:hover {
+		color: #fff;
 		text-decoration: none;
 	}
 
@@ -234,8 +239,8 @@
 		text-decoration: none;
 		border-bottom: 1px solid #fff;
 	}
-	
-	/*	--------------------------------------------------------------------------	*/
+
+	/*	-------------------------------------------------------------------------	*/
 	/*	Main page content
 	/*	--------------------------------------------------------------------------	*/
 	
@@ -253,6 +258,24 @@
 		font: 11pt calibri;
 		text-align: justify;
 	}
+
+	#content span {
+		color: #ccc;
+		font-style: italic;
+	}
+
+	#content a {
+		color: #ccc;
+		text-decoration: none;
+		border-bottom: 1px dotted #ccc;
+	}
+
+	#content a:hover {
+		color: #fff;
+		text-decoration: none;
+		border-bottom: 1px solid #fff;
+	}
+	
 
 	/*	--------------------------------------------------------------------------	*/
 	/*	Login page modules
@@ -287,7 +310,7 @@
 	}
 
 	#content .module span {
-		color: #960000;
+		color: #ccc;
 		margin: 0 4px;
 		display: block;
 	}
@@ -295,15 +318,6 @@
 	#content .module a {
 		float: right;
 		margin-right: 12px;
-		color: #ccc;
-		text-decoration: none;
-		border-bottom: 1px dotted #ccc;
-	}
-
-	#content .module a:hover {
-		color: #fff;
-		text-decoration: none;
-		border-bottom: 1px solid #fff;
 	}
 	
 	#content .module form {
@@ -326,7 +340,7 @@
 	}
 	
 	/*	--------------------------------------------------------------------------	*/
-	/*	FAQ Section
+	/*	Lists - news, faq etc
 	/*	--------------------------------------------------------------------------	*/
 	
 	#content ul, #content li {
@@ -334,7 +348,7 @@
 		margin: 0;
 		padding: 0;
 	}
-	
+
 	#content ul h1 {
 		font: 14pt calibri;
 		border-bottom: 2px dotted;
@@ -343,8 +357,67 @@
 		text-align: left;
 		padding-left: 15px;
 	}
-	
-	#content li .deselected {
-		background: pink;
+
+	#content ul.news li {
+		border: 1px solid #000;
+		background: #444;
+		margin: 5px 0;
+	}
+
+	#content ul.news h1 {
+		display: block;
+		width: 100%;
+		padding: 0;
+		margin: 0 0 5px 0;
+		background: #222 url('/images/h1_background.png') bottom no-repeat;
+		border-bottom: none;
+		text-align: center;
+		font-family: "Calibri";
+		font-size: 12pt;
+		text-shadow: 1px 1px #000000;
+		letter-spacing: 1px;
+		line-height: 30px;
+		height: 42px;
+	}
+
+	#content ul.news p {
+		margin-left: 8px;
+		margin-right: 8px;
+	}
+
+	#content ul.news span {
+		float: right;
+		margin-top: -30px;
+		font-variant: small-caps;
+		margin-right: 10px;
+	}
+
+	#content ul.news img {
+		max-height: 200px;
+	}
+
+	#content ul.news table {
+		width: 100%;
+	}
+
+	.blocked_users {
+		width: 96%;
+		height: 70px;
+		overflow: auto;
+		border: 1px solid #ccc;
+		color: #ccc;
+	}
+
+	.blocked_users p {
+		width: 100%;
+		margin: 2px 0;
+		text-align: center;
+		color: #fff;
+	}
+
+	.blocked_users span {
+		width: 30%;
+		margin: 0;
+		float: left;
 	}
 	

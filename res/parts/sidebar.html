@@ -1,22 +1,31 @@
 <div id = "sidebar">
 			<ul>
-<? if (isSignedIn()) { ?>
+<? 	if (isSignedIn()) { ?>
 				<li class = "sidebar_section">
 					<h1>{$account.Username}</h1>
 					<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
 					<br />
 					<span>
-						Elite warlorld
+						Elite warlord
 					</span>
-<? if (player != null && caches != null) { ?>
+<? 		if (player != null && caches != null) { ?>
 					<p>	
-						{$caches.Sum(x => x.Balance) + player.Balance} soldiers<br />
+						{$caches.Sum(x => x.Balance) + player.Balance} {$pluralify("soldier", "soldiers", caches.Sum(x => x.Balance) + player.Balance)}<br />
 						{$caches.Count} {$pluralify("cache", "caches", caches.Count)}
 					</p>
-<? } ?>
+<? 	
+		} 
+	
+		else {
+?>
+					<p>	
+						No soldiers<br />
+						No caches
+					</p>
+<? 		} ?>
 					<div style="clear: both;"></div>
 				</li> <!-- username (account summary) -->
-<? } ?>
+<? 	} ?>
 				<li class = "sidebar_section">
 					<h1>Search</h1>
 					<center>
@@ -60,12 +69,26 @@
 		}
 ?>
 						<li class = "last_child">
+
+<?
+		if (count == 0) {
+?>
 							<p>
-								Showing {$Math.Min(5, caches.Count)} most active {$pluralify("cache", "caches", caches.Count)}.
+								You don't have any caches! Use the Fortitude App to place some caches.
+							</p>
+<?		
+		}
+
+		else {
+?>
+							<p>
+								Showing {$count} most active {$pluralify("cache", "caches", count)}.
 							</p>
 							<p>
 								<a href="#">View all caches</a>
 							</p>
+<?		}
+?>
 						</li>
 					</ul>
 				</li> <!-- caches -->
@@ -74,6 +97,7 @@
 					<ul>
 <?
 		var news = DatabaseManager.Select<Notification>(x => x.AccountID == account.AccountID);
+		int news_count = 0;
 		foreach (var item in news) {
 			if (item.Type == NotificationType.BattleReport) {
 				var report = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == item.NotificationID);
@@ -89,10 +113,35 @@
 							</p>
 						</li>
 <?
+					news_count = news_count + 1;
+					if (news_count == 5) break;
+
 				}
 			}
 		}
 ?>
+					<li class = "last_child">
+
+<?
+		if (news_count == 0) {
+?>
+							<p>
+								You don't have any news! Start playing the game through the Fortitude app today.
+							</p>
+<?		
+		}
+
+		else {
+?>
+							<p>
+								Showing {$news_count} most active {$pluralify("news item", "news items", news_count)}.
+							</p>
+							<p>
+								<a href="#">View all caches</a>
+							</p>
+<?		}
+?>
+						</li>
 					</ul>
 				</li> <!-- recent news -->
 <?

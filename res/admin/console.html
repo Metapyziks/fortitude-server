@@ -2,6 +2,8 @@
     if (session == null || session.Rank != Rank.Owner) {
         response.Redirect("404");
     }
+
+    Include("parts/functions.html");
 ?>
 
 <!DOCTYPE html>
@@ -9,8 +11,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta charset="utf-8" />
-        <title>Fortitude Server Prototype - Console</title>
-        <link rel="stylesheet" type="text/css" href="styles.css">
+        <title>Fortitude: Console</title>
+        <link rel="stylesheet" type="text/css" href="/parts/stylesheet.css">
         <script type="text/javascript">
             window.onload = function() {
                 var log = document.getElementById("log");
@@ -18,9 +20,12 @@
             }
         </script>
     </head>
-    <body>
-        <? Include("topbar.html"); ?>
-        <div class="mainbox">
+    <?
+    Include("parts/header.html");
+    Include ("parts/sidebar.html"); 
+?>
+                
+        <div id = "content">
             <h1>Console Log</h1>
 <?
     var logPath = "../../console.log";
@@ -35,7 +40,5 @@
         ?></div><?
     }
 ?>
-        <br /><a href="admin">Back to Admin Panel</a>
         </div>
-    </body>
-</html>
+        <? Include ("parts/footer.html"); ?>

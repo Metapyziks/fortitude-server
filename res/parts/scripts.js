@@ -5,7 +5,6 @@ function matches(string, regexp)
 
 function validatePassword(first, second)
 {
-	alert ("Inside validate password");
 	if (first.length < 5) {
 		alert("Password must be at least 5 characters long!");
 		return false;

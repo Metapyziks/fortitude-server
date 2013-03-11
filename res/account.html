@@ -1,0 +1,198 @@
+<?
+	if (session == null) {
+		response.Redirect("/login.html");
+		return;
+	}
+
+	Include("parts/functions.html");
+	getPageStart("Account", "parts/account_script.js", null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>Your Account</h1>
+			<p>
+				This is the page to manage your account. From here you can manage your settings, see your account history and view all of your caches.
+			</p>
+			<ul class = "news">
+				<li>
+					<h1>Account Summary</h1>
+
+					<table>
+						<tr>
+							<td>
+								<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
+							</td>
+							<td>
+								{$account.Username}<br />
+								{$account.Email}
+							</td>
+							<td>
+<? 		if (player != null && caches != null) { ?>
+								{$caches.Sum(x => x.Balance) + player.Balance} {$pluralify("soldier", "soldiers", caches.Sum(x => x.Balance) + player.Balance)}<br />
+								{$caches.Count} {$pluralify("cache", "caches", caches.Count)} | <a href="/mycaches">View all caches</a>
+<? 	
+		} 
+	
+		else {
+?>
+								No soldiers<br />
+								No caches
+<? 		} ?>
+							</td>
+							<td>
+								Active since {$account.RegistrationDate}</i><br />
+								<a href="/myactivy">View account activity</a>
+							</td>
+						</tr>
+					</table>
+
+				</li> <!-- Account summary -->
+			</ul>
+			<div class = "table">
+				<div class = "module">
+					<h1>Update Password</h1>
+					<form>
+						<table>
+							<tr>
+								<td style = "width: 53%;">
+									Enter new password:
+								</td>
+								<td>
+									<input type="password" name="update_pword" />
+								</td>
+							</tr>
+							<tr><td colspan="2" height="10"></td></tr>
+							<tr>
+								<td>
+									Retype new password:
+								</td>
+								<td>
+									<input type="password" name="update_rpword" />
+								</td>
+							</tr>
+							<tr><td colspan="2" height="10"></td></tr>
+							<tr>
+								<td>
+									Enter current password:
+								</td>
+								<td>
+									<input type="password" name="update_pword_pword" />
+								</td>
+							</tr>
+							<tr><td colspan="2" height="10"></td></tr>
+							<tr>
+								<td colspan="2">
+									<input type="submit" value="Update" />
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+
+				<div class = "table_gap"></div>
+
+				<div class = "module">
+					<h1>Message settings</h1>
+					<form>
+						<table>
+							<tr>
+								<td style = "width: 53%;">
+									Receive messages:
+								</td>
+								<td>
+									<input type="radio" name="rec_mes" value="on" checked> On
+									<input type="radio" name="rec_mes" value="off"> Off 
+								</td>
+							</tr>
+							<tr><td colspan="2" height="10"></td></tr>
+							<tr>
+								<td>
+									Block or unblock a user:
+								</td>
+								<td>
+									<input type="text" name="block_user" />
+								</td>
+							</tr>
+							<tr><td colspan="2" height="10"></td></tr>
+							<tr>
+								<td colspan="2">
+									<div class = "blocked_users">
+										<p>Currently blocked users:</p>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+										<span>username</span>
+									</div>
+								</td>
+							</tr>
+							<tr><td colspan="2" height="10"></td></tr>
+							<tr>
+								<td colspan="2">
+									<input type="submit" value="Update" />
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			</div> <!-- table holding update password and message settings -->
+
+			<ul class = "news">
+				<li>
+					<h1>Change Avatar</h1>
+					<form>
+					<table style="width: 50%; margin: 0 auto; text-align: center;">
+						<tr>
+							<td>
+								<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
+							</td>
+							<td>
+								<select id = "new_avatar_select" onchange = "updateAvatar()">
+									<option value = "1">Dark unicorn</option>
+									<option value = "2">Swirly horse</option>
+									<option value = "3">Blue horse</option>
+									<option value = "4">Flower</option>
+									<option value = "5">Mouse</option>
+									<option value = "6">Crazy lady</option>
+									<option value = "7">Tribble</option>
+									<option value = "8">Blue lion</option>
+									<option value = "9">Girl</option>
+									<option value = "10">Velociraptor</option>
+								</select>
+								<br /><br />
+								<input type="submit" value="Change Avatar" />
+							</td>
+							<td>
+								<p id = "new_avatar">
+									<img src="/images/avatars/1-normal.gif" class="avatar" />
+								</p>
+							</td>
+						</tr>
+					</table>
+				</form>
+					<div style = "text-align: center;">
+						<img src="/images/avatars/1-normal.gif" class="avatar" />
+						<img src="/images/avatars/2-normal.gif" class="avatar" />
+						<img src="/images/avatars/3-normal.gif" class="avatar" />
+						<img src="/images/avatars/4-normal.gif" class="avatar" />
+						<img src="/images/avatars/5-normal.gif" class="avatar" />
+						<img src="/images/avatars/6-normal.gif" class="avatar" />
+						<img src="/images/avatars/7-normal.gif" class="avatar" />
+						<img src="/images/avatars/8-normal.gif" class="avatar" />
+						<img src="/images/avatars/9-normal.gif" class="avatar" />
+						<img src="/images/avatars/10-normal.gif" class="avatar" />
+					</div>
+				</li>
+			</ul>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

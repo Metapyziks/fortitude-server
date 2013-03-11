@@ -1,0 +1,18 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+        response.Redirect("404");
+    }
+
+    Include("parts/functions.html");
+	getPageStart("Admin Caches", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>Caches</h1>
+
+
+		</div> <!-- content -->
+		
+	<? Include ("parts/footer.html"); ?>

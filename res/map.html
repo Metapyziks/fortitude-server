@@ -4,9 +4,9 @@
 		return;
 	}
 
-	var allCaches = DatabaseManager.SelectAll<Cache>();
-  
 	Include("parts/functions.html");
+	var allCaches = DatabaseManager.SelectAll<Cache>();
+
 ?>
 
 <!DOCTYPE html>
@@ -15,36 +15,34 @@
 		<title>
 			Fortitude: Map
 		</title>
-		<link rel=\"stylesheet\" type=\"text/css\" href=\"parts/stylesheet.css\">
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsQ0syxq6tKXsyCAoef02pSbrr2PcP0Tw&sensor=false"></script>
-		<script type="text/javascript">
-		  function initialize() {
-			var mapOptions = {
-			  center: new google.maps.LatLng(54.778599, -1.570315),
-			  zoom: 14,
-			  mapTypeId: google.maps.MapTypeId.TERRAIN
-			};
-			var map = new google.maps.Map(document.getElementById("map_canvas"),
-			  mapOptions);
-			var mapCaches = new Array();
-	<?
-	  foreach (var cache in allCaches) {
-	?>
-			mapCaches.push(new google.maps.Marker({
-			  position: new google.maps.LatLng({$cache.Latitude},{$cache.Longitude}),
-			  map: map,
-			  title:"{$cache.Name}"
-			}));
-	<?
-	  }
-	  // End for each var cache in cacheas
-	?>
-		  }
-		  
-		  window.onload = initialize();
-		</script>
-	</head>
+		<link rel="stylesheet" type="text/css" href="parts/stylesheet.css">
+		 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsQ0syxq6tKXsyCAoef02pSbrr2PcP0Tw&sensor=false"></script>
+    <script type="text/javascript">
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(54.778599, -1.570315),
+          zoom: 14,
+          mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"),
+          mapOptions);
+        var caches = new Array();
+<?
+  foreach (var cache in allCaches) {
+?>
+        caches.push(new google.maps.Marker({
+          position: new google.maps.LatLng({$cache.Latitude},{$cache.Longitude}),
+          map: map,
+          title:"{$cache.Name}"
+        }));
+<?
+  }
+?>
+      }
 
+      window.onload = initialize;
+    </script>
+	</head>
 <?
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
@@ -52,7 +50,20 @@
 				
 		<div id = "content">
 			<h1>Map</h1>
-			<div id="map_canvas" style="width:100%; height:512px; text-shadow: 0px 0px #000000;"></div>
-			</div>
+			<form>
+				<select>
+					<option value="all">All Caches</option>
+					<option value="mine">My Caches</option>
+					<option value="enemy">Enemy Caches</option>
+					<option value="admin">Outlaw Camps</option>
+				</select>
+				<div style="float: right">
+					Search by username, cache name or location:
+					<input type="text" name="search" />
+					<input type="submit" value="search" />
+				</div>
+			</form><br />
+			<div id="map_canvas" style="width:100%; height:512px; text-shadow: 0px 0px #000000; margin-bottom: 15px;"></div>
 		</div>
 		<? Include ("parts/footer.html"); ?>
+

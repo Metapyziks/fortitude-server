@@ -176,7 +176,7 @@ namespace FortitudeServer
                         if (table.Name.ToLower() == args[0]) {
                             table.Drop();
                             table.Create();
-                            Success("Deleted table with name {0}", args[0]);
+                            Success("Reset table with name {0}", args[0]);
                             return;
                         }
                     }

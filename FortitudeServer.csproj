@@ -84,6 +84,7 @@
     <Compile Include="src\Entities\Notification.cs" />
     <Compile Include="src\Entities\NPCInstance.cs" />
     <Compile Include="src\Entities\SpecialEvent.cs" />
+    <Compile Include="src\Requests\BlockedUserListRequest.cs" />
     <Compile Include="src\Requests\CacheTransactionRequest.cs" />
     <Compile Include="src\Requests\ClaimSpecialEventRequest.cs" />
     <Compile Include="src\Requests\NotificationListRequest.cs" />

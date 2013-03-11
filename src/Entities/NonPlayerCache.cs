@@ -31,7 +31,7 @@ namespace FortitudeServer.Entities
 
             switch ((GrowthStyle) ((int) growthStyle & 0x3)) {
                 case GrowthStyle.Logarithmic:
-                    return initial + (int) Math.Round(initial * Math.Log(attacks, 2.0) * 0.25);
+                    return initial + (int) Math.Round(initial * Math.Log(attacks + 1, 2.0) * 0.25);
                 case GrowthStyle.Linear:
                     return initial + (int) Math.Round(initial * attacks * 0.25);
                 case GrowthStyle.Quadratic:
@@ -42,9 +42,11 @@ namespace FortitudeServer.Entities
         }
 
         [NotNull]
-        public int InitialPopulation { get; set; }
-
-        [NotNull]
         public GrowthStyle GrowthStyle { get; set; }
+
+        public NonPlayerCache()
+        {
+            AccountID = -1;
+        }
     }
 }

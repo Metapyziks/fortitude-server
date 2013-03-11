@@ -52,17 +52,7 @@ namespace FortitudeServer.Requests
                 return new ErrorResponse("too far away from cache ({0}m)", dist.ToString("F2"));
             }
 
-            int survivors = Enumerable.Range(0, units).Count(x => Tools.CoinToss(0.8));
-            ply.Balance -= units - survivors;
-
-            DatabaseManager.Update(ply);
-
-            return new ScoutCacheResponse {
-                CacheID = cache.CacheID,
-                Scouts = units,
-                Survivors = survivors,
-                Garrison = cache.Balance
-            };
+            return cache.Scout(ply, units);
         }
     }
 }

@@ -19,6 +19,8 @@ namespace FortitudeServer.Entities
         public static void Payout()
         {
             _sLastPayout = DateTime.Now;
+
+            Console.WriteLine("Performing payout at {0}", DateTime.Now.ToString());
             
             var accplys = DatabaseManager.SelectAll<Account, Player>((x, y) => x.AccountID == y.AccountID && x.Rank >= Rank.Verified);
             var caches = DatabaseManager.Select<Cache>(x => x.AccountID > 0);

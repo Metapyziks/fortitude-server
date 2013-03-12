@@ -3,6 +3,10 @@
         response.Redirect("404");
     }
 
+    if (post["cli"] != null && post["cli"].Length > 0) {
+        Program.ProcessCommand(post["cli"]);
+    }
+
     Include("parts/functions.html");
 ?>
 
@@ -37,7 +41,8 @@
         foreach (var line in lines) { ?>
             {$line} <br /><?
         }
-        ?></div><input type="text" name="cli" style="width: 100%-64px;"/><input type="button" value="Run" /><br /><?
+        ?></div>
+        <div style="padding: 8px;"><form name="cli_form" action="/admin/console" method="post" ><input type="text" name="cli" style="width: 90%;"/><input type="submit" value="Run" /></form></div><?
     }
 ?>
         </div>

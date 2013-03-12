@@ -1,0 +1,26 @@
+<?
+	var error = Account.AttemptActivate( get["email"], get["code"] );
+
+	Include("parts/functions.html");
+	getPageStart("Activitate", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>Activate Account</h1>
+<? if( error != null ) { ?>
+            <p>
+            	An error has occurred :(
+            </p>
+            <p>
+           		Your account could not be activated. Reason: {$error.Message}.
+           	</p>
+<? } else { ?>
+            <p>
+            	Congratulations, your account has been activated!
+            </p>
+<? } ?>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

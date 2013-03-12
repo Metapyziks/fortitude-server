@@ -7,6 +7,41 @@
 	Include("parts/functions.html");
 	getPageStart("Account", "parts/account_script.js", null);
 	Include("parts/header.html");
+
+	var page_response = "none";
+
+	// Update the avatar
+
+	var new_avatar = Convert.ToInt32(post["new_avatar_select"]);
+
+	if (new_avatar != 0) {
+		account.AvatarID = new_avatar;
+		DatabaseManager.Update(account);
+		page_response = "Avatar changed!";
+	}
+
+	// Update the user's password
+
+	var new_password = post["new_pword_phash"];
+	var password = post["pword_phash"];
+
+	if ( (new_password != null) && (password != null) ) {
+		if(password.EqualsCharArray(account.PasswordHash)) {
+			account.PasswordHash = new_password.ToCharArray();
+			DatabaseManager.Update(account);
+			page_response = "Password successfully updated!";
+		}
+
+		else {
+			page_response = "There was an error updating your password: Please enter the correct current password.";
+		}
+	}
+/*
+	elseif (new_password != null) {
+		page_response = "There was an error updating your password: Please enter the correct current password.";
+	}
+
+*/
 	Include ("parts/sidebar.html"); 
 
 ?>
@@ -16,13 +51,21 @@
 				This is the page to manage your account. From here you can manage your settings, see your account history and view all of your caches.
 			</p>
 			<ul class = "news">
+<? if (page_response != "none") { ?>
+				<li>
+					<p>
+						{$page_response}
+					</p>
+				</li>
+<? } ?>
+
 				<li>
 					<h1>Account Summary</h1>
 
 					<table>
 						<tr>
 							<td>
-								<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
+								<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" style = "margin: 2px;"/>
 							</td>
 							<td>
 								{$account.Username}<br />
@@ -42,7 +85,7 @@
 <? 		} ?>
 							</td>
 							<td>
-								Active since {$account.RegistrationDate}</i><br />
+								Active since {$account.RegistrationDate}<br />
 								<a href="/myactivy">View account activity</a>
 							</td>
 						</tr>
@@ -50,17 +93,19 @@
 
 				</li> <!-- Account summary -->
 			</ul>
-			<div class = "table">
+			<div class = "accountLeft">
 				<div class = "module">
 					<h1>Update Password</h1>
-					<form>
+					<form id = "update_password" name = "update_password" method = "post" action = "account.html" onsubmit="return updatePasswords(update_password);">
+						<input type="hidden" name="pword_phash" />
+						<input type="hidden" name="new_pword_phash" />
 						<table>
 							<tr>
 								<td style = "width: 53%;">
 									Enter new password:
 								</td>
 								<td>
-									<input type="password" name="update_pword" />
+									<input type="password" name="new_pword" />
 								</td>
 							</tr>
 							<tr><td colspan="2" height="10"></td></tr>
@@ -69,7 +114,7 @@
 									Retype new password:
 								</td>
 								<td>
-									<input type="password" name="update_rpword" />
+									<input type="password" name="new_rpword" />
 								</td>
 							</tr>
 							<tr><td colspan="2" height="10"></td></tr>
@@ -78,7 +123,7 @@
 									Enter current password:
 								</td>
 								<td>
-									<input type="password" name="update_pword_pword" />
+									<input type="password" name="pword" />
 								</td>
 							</tr>
 							<tr><td colspan="2" height="10"></td></tr>
@@ -89,11 +134,21 @@
 							</tr>
 						</table>
 					</form>
+				</div><br />
+				<div class = "module">
+					<h1>Delete Account</h1>
+					<p style="margin: 6px 12px;" id="confirm_delete" >
+						Deleting your account is done by a link sent to your email address. Click the button below to send this link.
+					</p>
+					<div style="text-align: center; height: 30px;">
+						<button onclick = "delete_account( '{$account.AccountID}', '{$account.Email}' )">Send delete link</button>
+					</div>
 				</div>
 
-				<div class = "table_gap"></div>
+			</div>
+			<div class = "accountRight">
 
-				<div class = "module">
+				<div class = "module" style = "height: 351px;">
 					<h1>Message settings</h1>
 					<form>
 						<table>
@@ -109,7 +164,7 @@
 							<tr><td colspan="2" height="10"></td></tr>
 							<tr>
 								<td>
-									Block or unblock a user:
+									Block a user:
 								</td>
 								<td>
 									<input type="text" name="block_user" />
@@ -117,9 +172,18 @@
 							</tr>
 							<tr><td colspan="2" height="10"></td></tr>
 							<tr>
+								<td>
+									Unblock a user:
+								</td>
+								<td>
+									<input type="text" name="unblock_user" />
+								</td>
+							</tr>
+							<tr><td colspan="2" height="10"></td></tr>
+							<tr>
 								<td colspan="2">
+									<p>Currently blocked users:</p>
 									<div class = "blocked_users">
-										<p>Currently blocked users:</p>
 										<span>username</span>
 										<span>username</span>
 										<span>username</span>
@@ -145,31 +209,33 @@
 					</form>
 				</div>
 			</div> <!-- table holding update password and message settings -->
-
+			<div style = "clear: both;">
+			</div>
 			<ul class = "news">
 				<li>
 					<h1>Change Avatar</h1>
-					<form>
 					<table style="width: 50%; margin: 0 auto; text-align: center;">
 						<tr>
 							<td>
 								<img src="/images/avatars/{$account.AvatarID}-normal.gif" class="avatar" />
 							</td>
 							<td>
-								<select id = "new_avatar_select" onchange = "updateAvatar()">
-									<option value = "1">Dark unicorn</option>
-									<option value = "2">Swirly horse</option>
-									<option value = "3">Blue horse</option>
-									<option value = "4">Flower</option>
-									<option value = "5">Mouse</option>
-									<option value = "6">Crazy lady</option>
-									<option value = "7">Tribble</option>
-									<option value = "8">Blue lion</option>
-									<option value = "9">Girl</option>
-									<option value = "10">Velociraptor</option>
-								</select>
-								<br /><br />
-								<input type="submit" value="Change Avatar" />
+								<form id="update_avatar_form" action="account.html" method="post">
+									<select id = "new_avatar_select" name = "new_avatar_select" onchange = "updateAvatar()">
+										<option value = "1">Dark unicorn</option>
+										<option value = "2">Swirly horse</option>
+										<option value = "3">Blue horse</option>
+										<option value = "4">Flower</option>
+										<option value = "5">Mouse</option>
+										<option value = "6">Crazy lady</option>
+										<option value = "7">Tribble</option>
+										<option value = "8">Blue lion</option>
+										<option value = "9">Girl</option>
+										<option value = "10">Velociraptor</option>
+									</select>
+									<br /><br />
+									<input type="submit" value="Change Avatar"/>
+								</form>
 							</td>
 							<td>
 								<p id = "new_avatar">
@@ -178,7 +244,7 @@
 							</td>
 						</tr>
 					</table>
-				</form>
+					<br />
 					<div style = "text-align: center;">
 						<img src="/images/avatars/1-normal.gif" class="avatar" />
 						<img src="/images/avatars/2-normal.gif" class="avatar" />

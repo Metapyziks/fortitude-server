@@ -30,7 +30,7 @@
 					<h1>Search</h1>
 					<center>
 					<form>
-						<input type="text"></input>
+						<input type="text" />
 						<button>Search</button>
 						<div style="clear: both;"></div>
 					</form>
@@ -39,10 +39,36 @@
 <?	// If the user is not logged in, display the log in and sign up modules.
 	if (!isSignedIn()) { ?>
 				<li class = "sidebar_section">
-					<? Include ("parts/login_module.html"); ?>
+					<h1>Log in</h1>
+					<form name="loginForm" action="login" method="post" onsubmit="if (login_pword.value.length > 0) login_phash.value = hash(login_pword.value); login_pword.value = ''">
+						<input type="hidden" name="login_phash" />
+						<table>
+							<tr><td>Username:</td> <td><input type="text" name="login_uname" value="" /></td></tr>
+							<tr><td>Password:</td> <td><input type="password" name="login_pword" /></td></tr>
+							
+							<tr><td colspan ="2"></td></tr>
+												
+							<tr><td colspan="2"><input type="submit" value="Log in" /></td></tr>
+						</table>
+						<a href="resetpassword">Forgot your password?</a>
+					</form>
 				</li>
 				<li class = "sidebar_section">
-					<? Include ("parts/signup_module.html"); ?>
+					<h1>Create Account</h1>
+					<form name="regForm" action="login" method="post" onsubmit="return submitPassword(regForm);">
+						<input type="hidden" name="reg_phash" />
+												
+						<table>
+							<tr><td>Username:	</td> <td><input type="text"		name="reg_uname" value="" /></td></tr>
+							<tr><td>Email:		</td> <td><input type="email"		name="reg_email" value="" /></td></tr>
+							<tr><td>Password:	</td> <td><input type="password"	name="reg_pword" /></td></tr>
+							<tr><td>Retype Password:</td> <td><input type="password" name="reg_rpword" /></td></tr>
+							
+							<tr><td colspan ="2"></td></tr>
+											
+							<tr><td colspan="2"><input type="submit" value="Register" /></td></tr>
+						</table>
+					</form>
 				</li>
 <?	} 
 
@@ -85,7 +111,7 @@
 								Showing {$count} most active {$pluralify("cache", "caches", count)}.
 							</p>
 							<p>
-								<a href="#">View all caches</a>
+								<a href="mycaches">View all caches</a>
 							</p>
 <?		}
 ?>

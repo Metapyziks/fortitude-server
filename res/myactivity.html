@@ -1,0 +1,23 @@
+<?
+	if (session == null) {
+		response.Redirect("/login.html");
+		return;
+	}
+
+	Include("parts/functions.html");
+	getPageStart("Activity", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>View Activity Log</h1>
+			<p>
+				Here is what you've been up to.
+			</p>
+			<ul class = "news">
+
+			</ul>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

@@ -1,0 +1,37 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+        response.Redirect("404");
+    }
+
+	Include("parts/functions.html");
+	getPageStart("User list", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>User List</h1>
+			<table border="0" cellpadding="4">
+				<tr>
+					<th>ID</th>
+					<th>Username</th>
+					<th>Rank</th>
+					<th>Caches</th>
+					<th>Join Date</th>
+				</tr><?
+	IEnumerable<Account> users = DatabaseManager.SelectAll<Account>();
+	var usercaches = DatabaseManager.SelectAll<Cache>();
+	users = users.OrderByDescending(x => usercaches.Count(y => y.AccountID == x.AccountID)).ToArray();
+	foreach (Account acc in users) { ?>
+			  	<tr>
+					<td>{$acc.AccountID}</td>
+					<td>{$acc.Username}</td>
+					<td>{$acc.Rank}</td>
+					<td>{$caches.Count(x => x.AccountID == acc.AccountID)}</td>
+					<td>{$acc.RegistrationDate.ToShortDateString()}</td>
+				</tr><?
+	} ?>
+			</table>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

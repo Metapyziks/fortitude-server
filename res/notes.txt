@@ -9,6 +9,7 @@
 
 	Login/Signup
 		Integrate errors neatly; asynchronious checking
+		Should be two email fields
 		Forgot your password
 
 	Side bar
@@ -16,7 +17,7 @@
 		Implement search function
 
 	Map
-		Test with pins
+		// Test with pins
 		Format pin colours
 		Display cache on hover
 		Link to cache details
@@ -35,12 +36,16 @@
 		// Help intro screen
 
 	Home
-		Fill home screen
+		// Fill home screen
+		Modularisation of home screen
 
 	Account screen
 		// Add forms and stuff
-		Make things work
-		Subsection / new page of all caches
+		// Change avatar
+		Delete Account
+		// Update password
+		Update message settings
+		// Subsection / new page of all caches
 		Subsection / new page of activity recording
 
 	Messages

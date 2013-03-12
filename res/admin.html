@@ -1,0 +1,35 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+    	response.Redirect("404");
+	}
+
+	Include("parts/functions.html");
+	getPageStart("Control Panel", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>Admin Control Panel</h1>
+			<div class = "table">
+				<div class = "module">
+					<? Include("admin/giveunits.html"); ?>
+				</div>
+				<div class = "table_gap"></div>
+				<div class = "module">
+					<? Include("admin/placecache.html"); ?>
+				</div>
+			</div>
+			<br />
+			<div class = "table">
+				<div class = "module">
+					<? Include("admin/placenpc.html"); ?>
+				</div>
+				<div class = "table_gap"></div>
+				<div class = "module">
+					<? Include("admin/deletecache.html"); ?>
+				</div>
+			</div>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

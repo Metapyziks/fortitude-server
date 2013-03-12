@@ -164,7 +164,7 @@ namespace FortitudeServer.Entities
 
             DatabaseManager.Update(attacker);
 
-            return new BattleReportResponse(this, report);
+            return new BattleReportResponse(this, report, report.AttackerSurvivors > 0);
         }
     }
 }

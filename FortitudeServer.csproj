@@ -91,6 +91,7 @@
     <Compile Include="src\Requests\NotificationListRequest.cs" />
     <Compile Include="src\Requests\ReadMessageRequest.cs" />
     <Compile Include="src\Requests\SendMessageRequest.cs" />
+    <Compile Include="src\Requests\SendReportRequest.cs" />
     <Compile Include="src\Requests\SetBlockedRequest.cs" />
     <Compile Include="src\Requests\SettingRequest.cs" />
     <Compile Include="src\Requests\SpecialEventListRequest.cs" />

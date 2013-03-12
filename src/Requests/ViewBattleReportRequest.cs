@@ -47,7 +47,7 @@ namespace FortitudeServer.Requests
                 return new ErrorResponse("the attacked cache no longer exists");
             }
 
-            return new BattleReportResponse(cache, report);
+            return new BattleReportResponse(cache, report, report.DefenderSurvivors > 0);
         }
     }
 }

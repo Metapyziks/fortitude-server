@@ -19,6 +19,9 @@ namespace FortitudeServer.Entities
         [PrimaryKey, AutoIncrement]
         public int ReportID { get; set; }
 
+        [NotNull, ForeignKey(typeof(Account))]
+        public int AccountID { get; set; }
+
         [NotNull]
         public ReportType Type { get; set; }
 

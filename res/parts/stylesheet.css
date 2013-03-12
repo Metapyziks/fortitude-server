@@ -242,6 +242,7 @@
 	
 	#footer ul.sitenav {
 		float: left;
+		display: block;
 		width: 22%;
 		list-style: none;
 	}

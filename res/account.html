@@ -17,7 +17,12 @@
 	if (new_avatar != 0) {
 		account.AvatarID = new_avatar;
 		DatabaseManager.Update(account);
-		page_response = "Avatar changed!";
+		if (page_response == "none") {
+			page_response = "Avatar changed!";
+		}
+		else {
+			page_response += "</p><p>Avatar changed!";
+		}
 	}
 
 	// Update the user's password
@@ -29,16 +34,31 @@
 		if(password.EqualsCharArray(account.PasswordHash)) {
 			account.PasswordHash = new_password.ToCharArray();
 			DatabaseManager.Update(account);
-			page_response = "Password successfully updated!";
+			if (page_response == "none") {
+				page_response = "Password successfully updated!";
+			}
+			else {
+				page_response += "</p><p>Password successfully updated!";
+			}
 		}
 
 		else {
-			page_response = "There was an error updating your password: Please enter the correct current password.";
+			if (page_response == "none") {
+				page_response = "There was an error updating your password: Please enter the correct current password.";
+			}
+			else {
+				page_response += "</p><p>There was an error updating your password: Please enter the correct current password.";
+			}
 		}
 	}
 
 	else if (new_password != null) {
-		page_response = "There was an error updating your password: Please enter the correct current password.";
+		if (page_response == "none") {
+			page_response = "There was an error updating your password: Please enter the correct current password.";
+		}
+		else {
+			page_response += "</p><p>There was an error updating your password: Please enter the correct current password.";
+		}
 	}
 
 	// Delete the user's account
@@ -68,29 +88,82 @@
 			// Update message settings
 		}
 
-		if ( (post["block_user"] == post["unblock_user"]) && (post["block_user"] != null) {
-				page_response = "You can't block and unblock the same user!"
+		if ( (post["block_user"] == post["unblock_user"]) && (post["block_user"] != "") ) {
+				if (page_response == "none") {
+					page_response = "You can't block and unblock the same user!";
+				}
+				else {
+					page_response += "</p><p>You can't block and unblock the same user!";
+				}
 			}
 
 		else {
-			if (post["block_user"] != null) {
+			if (post["block_user"] != "") {
 				Account new_blocked_account = DatabaseManager.SelectFirst<Account>(x => x.Username == post["block_user"]);
-				BlockedUser new_blocked_user = DatabaseManager.SelectFirst<BlockedUser>(x => x.BlockedID == new_blocked_account.AccountID);
-
+				
 				if (new_blocked_account == null) {
-					page_response = "Error blocking " + post["block_user"] + ". We could not find that user to block them.";
-				}
-				else if (new_blocked_user !- null) {
-					page_response = "Error blocking " + post["block_user"] + ". User is already on your block list.";
+					if (page_response == "none") {
+						page_response = "Error blocking " + post["block_user"] + ". We could not find that user to block them.";
+					}
+					else {
+						page_response += "</p><p>Error blocking " + post["block_user"] + ". We could not find that user to block them.";
+					}
 				}
 				else {
-					// Block the user
+					BlockedUser new_blocked_user = DatabaseManager.SelectFirst<BlockedUser>(x => x.BlockedID == new_blocked_account.AccountID);
+					
+					if (new_blocked_user != null) {
+						if (page_response == "none") {
+							page_response = "Error blocking " + post["block_user"] + ". User is already on your block list.";
+						}
+						else {
+							page_response += "</p><p>Error blocking " + post["block_user"] + ". User is already on your block list.";
+						}
+					}
+					else {
+						DatabaseManager.Insert(new BlockedUser {
+							BlockerID = account.AccountID,
+							BlockedID = new_blocked_account.AccountID
+						});
+
+						if (page_response == "none") {
+							page_response = "Blocked list updated! " + post["block_user"] + " has been added to your block list.";
+						}
+						else {
+							page_response += "</p><p>Blocked list updated! " + post["block_user"] + " has been added to your block list.";
+						}
+					}
+				}
+			}
+
+			if (post["unblock_user"] != "") {
+				Account new_unblocked_account = DatabaseManager.SelectFirst<Account>(x => x.Username == post["unblock_user"]);
+				
+				if (new_unblocked_account != null) {
+					BlockedUser new_unblocked_user = DatabaseManager.SelectFirst<BlockedUser>(x => x.BlockedID == new_unblocked_account.AccountID);
+					
+					if (new_unblocked_user != null) {
+						DatabaseManager.Delete<BlockedUser>(new_unblocked_user);
+
+						if (page_response == "none") {
+							page_response = "Blocked list updated! " + post["unblock_user"] + " has been removed from your block list.";
+						}
+						else {
+							page_response += "</p><p>Blocked list updated! " + post["unblock_user"] + " has been removed from your block list.";
+						}
+					}
+					else {
+						if (page_response == "none") {
+							page_response = "Error unblocking " + post["unblock_user"] + ". User is not on your block list.";
+						}
+						else {
+							page_response += "</p><p>Error unblocking " + post["unblock_user"] + ". User is not on your block list.";
+						}
+					}
 				}
 			}
 		}
 
-
-		// Remove user from the blocked list
 	}
 
 	Include ("parts/sidebar.html"); 

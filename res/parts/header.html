@@ -37,7 +37,9 @@
 					<div>
 						<a href="/mycaches">&gt;&gt; Caches</a>
 						<a href="/myactivity">&gt;&gt; Activity log</a>
+<? if (isSignedIn()) { ?>						
 						<a href="/profile?user={$account.Username}">&gt;&gt; Profile</a>
+<?	} ?>
 					</div>
 				</li>
 				<li> 

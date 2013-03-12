@@ -1,17 +1,17 @@
 <?
-	if (session == null) {
-		response.Redirect("/login.html");
-		return;
-	}
 
-	var search = get["search"];
+	var search = get["search"] ?? "";
 
-	var acc = null;
-	Entity found_caches = null;
+	Account acc = null;
+	IEnumerable<Cache> found_caches = null;
 
-	if (search != null) {
+	if (search != "") {
 		acc = DatabaseManager.SelectFirst<Account>(x => x.Username == search);
 		found_caches = DatabaseManager.Select<Cache>(x => x.Name == search);
+		int count = found_caches.Count();
+		if (count < 1) {
+			found_caches = null;
+		}
 	}
 
 	Include("parts/functions.html");
@@ -27,12 +27,12 @@
 				<div class = "module" style = "text-align: center;">
 					<h1>Users</h1>
 
-<?	if (search == null) {
+<?	if (search == "") {
 ?>
 						<p>You haven't searched for anything!</p>
 						<p>Please enter a search term below:</p>
 <?						
-		Include ("/parts/search_form"); 
+		Include ("/parts/search_form.html"); 
 	}
 
 	else if (acc != null) {
@@ -48,7 +48,7 @@
 						<p>No users found.</p>
 						<p>Try again?</p>
 <?						
-		Include ("/parts/search_form"); 
+		Include ("/parts/search_form.html"); 
 	}
 
 ?>
@@ -58,7 +58,7 @@
 			
 				<div class = "module" style = "text-align: center;">
 					<h1>Caches</h1>
-<?	if (search == null) {
+<?	if (search == "") {
 ?>
 						<p>You haven't searched for anything!</p>
 						<p>Please enter a search term below:</p>
@@ -66,7 +66,7 @@
 	}
 
 	else if (found_caches != null) {
-		foreach (var cache in caches) {
+		foreach (var cache in found_caches) {
 			if (cache.IsNPC) { 
 ?> 
 						<a href="map?cache={$cache.CacheID}">
@@ -90,9 +90,16 @@
 <? 			}
 
 			else { 
+				
 				var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);
 				
-				if (owner == account) {
+				var current_username = "";
+
+				if (session != null) {
+					current_username = account.Username;
+				}
+
+				if (owner.Username == current_username) {
 ?>			
 						<a href="map?cache={$cache.CacheID}">
 							<div class = "found_cache">
@@ -101,7 +108,7 @@
 								Allied cache
 							</div>
 						</a> 
-	<?			}
+<?				}
 				
 				else {
 ?>
@@ -119,7 +126,7 @@
 
 	else { 
 ?>
-						<p>No users found.</p>
+						<p>No caches found.</p>
 						<p>Try again?</p>
 <?						Include ("/parts/search_form.html"); 
 	}

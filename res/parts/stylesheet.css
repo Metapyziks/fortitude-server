@@ -315,7 +315,7 @@
 		display: block;
 	}
 
-	#content .module a {
+	#content .module span a {
 		float: right;
 		margin-right: 12px;
 	}
@@ -328,6 +328,12 @@
 	#content .module td:first-child {
 		width: 40%;
 		padding-left: 10px;
+	}
+
+	.found_cache {
+		float: left;
+		border-bottom: none !important;
+		margin: 5px;
 	}
 
 	#content .table_gap {
@@ -407,7 +413,7 @@
 
 	#content ul.news span {
 		float: right;
-		margin-top: -30px;
+		margin-top: -40px;
 		font-variant: small-caps;
 		margin-right: 10px;
 	}

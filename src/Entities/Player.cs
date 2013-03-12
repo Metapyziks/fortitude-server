@@ -20,7 +20,7 @@ namespace FortitudeServer.Entities
         {
             _sLastPayout = DateTime.Now;
             
-            var accplys = DatabaseManager.SelectAll<Account, Player>((x, y) => x.AccountID == y.AccountID);
+            var accplys = DatabaseManager.SelectAll<Account, Player>((x, y) => x.AccountID == y.AccountID && x.Rank >= Rank.Verified);
             var caches = DatabaseManager.Select<Cache>(x => x.AccountID > 0);
 
             foreach (var accply in accplys) {

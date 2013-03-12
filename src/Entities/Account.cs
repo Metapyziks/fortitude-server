@@ -283,8 +283,12 @@ namespace FortitudeServer.Entities
             } else {
                 Rank = Rank.Verified;
             }
-            
+
+            var ply = Player.GetPlayer(this);
+            ply.Balance = 10;
+
             DatabaseManager.Update(this);
+            DatabaseManager.Insert(ply);
             return null;
         }
 

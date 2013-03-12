@@ -1,0 +1,22 @@
+<?
+    if (session == null) {
+        response.Redirect("/login.html");
+        return;
+    }
+
+    Include("parts/functions.html");
+    getPageStart("News", null, null);
+    Include("parts/header.html");
+    Include ("parts/sidebar.html"); 
+?>
+
+<div id = "content">
+    <h1>Messages</h1>
+    <p>
+        Here will be the messages etc.
+    </p>
+</div>
+
+<?
+    Include ("parts/footer.html");
+?>

@@ -24,12 +24,12 @@
 			<li>
 					<h1>Account Summary</h1>
 
-					<? if (profileUsername == "" || profile == null) { ?> 
+<? 	if (profileUsername == "" || profile == null) { ?> 
 					<p> We could not find the account you entered. Please try again.</p>
 					<p>Please entre a search term:</p>
-					<? Include ("/parts/search_form.html");
-					}
-					else { ?> 
+<? 		Include ("/parts/search_form.html");
+	}
+	else { ?> 
 					
 					<table>
 						<tr>
@@ -44,12 +44,11 @@
 							</td>
 						</tr>
 					</table>
-					<? } ?>
+<? 	} ?>
 				</li> <!-- Account summary -->
 			
 			</ul>
 		</div> <!-- content -->
 		
 		<? Include ("parts/footer.html"); ?>
-		
-		//var allCaches = DatabaseManager.Select<Cache>(x => x.AccountID == 
+

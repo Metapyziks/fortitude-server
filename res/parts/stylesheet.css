@@ -224,14 +224,6 @@
 		text-align: center;
 	}
 	
-	#footer p .left {
-		text-align: left;
-	}
-	
-	#footer p .right{
-		text-align: right;
-	}
-	
 	#footer .padding {
 		margin: 8px;
 	}
@@ -248,13 +240,18 @@
 		border-bottom: 1px solid #fff;
 	}
 	
-	#footer ul{
+	#footer ul.sitenav {
 		float: left;
-		width: 50%;
+		width: 22%;
+		list-style: none;
 	}
 	
-	#foot ul a{
+	#footer ul a {
 		border-bottom: 0px !important;
+	}
+
+	#footer ul ul {
+		margin-left: 15px;
 	}
 
 	/*	-------------------------------------------------------------------------	*/

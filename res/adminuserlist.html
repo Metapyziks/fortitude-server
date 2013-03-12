@@ -27,7 +27,7 @@
 					<td>{$acc.AccountID}</td>
 					<td>{$acc.Username}</td>
 					<td>{$acc.Rank}</td>
-					<td>{$caches.Count(x => x.AccountID == acc.AccountID)}</td>
+					<td>{$usercaches.Count(x => x.AccountID == acc.AccountID)}</td>
 					<td>{$acc.RegistrationDate.ToShortDateString()}</td>
 				</tr><?
 	} ?>

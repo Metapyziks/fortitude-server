@@ -10,18 +10,21 @@
 	Login/Signup
 		Integrate errors neatly; asynchronious checking
 		Should be two email fields
-		Forgot your password
+		// Activate account
+		// Forgot your password
 
 	Side bar
 		// Change caches and recent news to display message when have none
 		Implement search function
 
-	Map
-		// Test with pins
-		Format pin colours
-		Display cache on hover
-		Link to cache details
-		Implement search ajax
+	CAMDEN {
+		Map
+			// Test with pins
+			Format pin colours
+			Display cache on hover
+			Link to cache details
+			Implement search ajax
+	}
 
 	News
 		// Add news items
@@ -48,7 +51,9 @@
 		// Subsection / new page of all caches
 		Subsection / new page of activity recording
 
-	Messages
+	KING {
+		Messages
+	}
 
 	Footer
 		Site map
@@ -57,11 +62,21 @@
 
 
 	Admins
-		Database view
-		Database tabs
+		// Control panel
+		// Cache list
+		// User list
+		Reports
+		Special Placement
+		Announcements
+		// Console log
+		// Restart and update
 
+		Filtering and searching cache list
+		Filtering and searching user list
 
-
+	User profile pages
+	Cache profile pages
+	Plan route to cache
 
 
 

@@ -28,13 +28,8 @@
 <? 	} ?>
 				<li class = "sidebar_section">
 					<h1>Search</h1>
-					<center>
-					<form>
-						<input type="text" />
-						<button>Search</button>
-						<div style="clear: both;"></div>
-					</form>
-					</center>
+					<div style="text-align: center;">
+					<? Include ("/parts/search_form.html"); ?>
 				</li> <!-- search -->
 <?	// If the user is not logged in, display the log in and sign up modules.
 	if (!isSignedIn()) { ?>

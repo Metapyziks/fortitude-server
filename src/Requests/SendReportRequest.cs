@@ -47,7 +47,7 @@ namespace FortitudeServer.Requests
 
             switch (type) {
                 case ReportType.Account:
-                    if (DatabaseManager.SelectFirst<Account>(x => x.AccountID == id) == null) {
+                    if (DatabaseManager.SelectFirst<Account>(x => x.AccountID == id && x.AccountID != acc.AccountID) == null) {
                         return new ErrorResponse("invalid context id");
                     }
                     break;
@@ -57,7 +57,7 @@ namespace FortitudeServer.Requests
                     }
                     break;
                 case ReportType.Message:
-                    if (DatabaseManager.SelectFirst<Message>(x => x.NotificationID == id) == null) {
+                    if (DatabaseManager.SelectFirst<Message>(x => x.NotificationID == id && x.SenderID != acc.AccountID) == null) {
                         return new ErrorResponse("invalid context id");
                     }
                     break;

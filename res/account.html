@@ -80,11 +80,12 @@
 	if (post["message_settings_updated"] != null) {	
 		
 		// Check if user has changed their block-all settings
-		var new_message_state = (post["rec_mes"] != "off") ? MessageSettings.Default : MessageSettings.BlockAll;
+		var new_message_state = (post["rec_mes"] == "on") ? MessageSettings.Default : MessageSettings.BlockAll;
 
 		if (ply.MessageSettings != new_message_state) {
 			ply.MessageSettings = new_message_state;
 			DatabaseManager.Update(ply);
+			messages_on = new_message_state == MessageSettings.Default;
 		}
 
 		if ( (post["block_user"] == post["unblock_user"]) && (post["block_user"] != "") ) {
@@ -291,7 +292,7 @@
 <?	if (messages_on) { ?>			You are currently receiving messages.
 								</td>
 								<td>
-									<input type="checkbox" name="rec_mes" value="off"> Block all messages
+									<input type="checkbox" name="rec_mes" value="on" checked> Receive messages
 <? 	} else { ?>						You have blocked all messages.
 								</td>
 								<td>

@@ -52,11 +52,13 @@ namespace FortitudeServer.Entities
         [NotNull]
         public int Balance { get; set; }
 
+#if DEBUG
         [CleanUpMethod]
         public void Cleanup()
         {
             Console.WriteLine("{0}: ~Goodbye cruel world~", Name);
         }
+#endif
 
         public Response Scout(Player ply, int units)
         {

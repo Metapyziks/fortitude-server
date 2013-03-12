@@ -38,7 +38,7 @@ namespace FortitudeServer.Requests
             }
 
             if (DateTime.Now > special.Expires || special.Balance <= 0) {
-                special.Delete();
+                DatabaseManager.Delete(special);
                 return new ErrorResponse("special event expired");
             }
 
@@ -55,7 +55,7 @@ namespace FortitudeServer.Requests
             DatabaseManager.Update(player);
 
             if (special.Balance <= 0) {
-                special.Delete();
+                DatabaseManager.Delete(special);
             } else {
                 DatabaseManager.Insert(new ClaimedEvent {
                     AccountID = acc.AccountID,

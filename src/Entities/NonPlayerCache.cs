@@ -45,6 +45,12 @@ namespace FortitudeServer.Entities
         [NotNull]
         public GrowthStyle GrowthStyle { get; set; }
 
+        [CleanUpMethod]
+        public void Cleanup()
+        {
+            DatabaseManager.Delete<NPCInstance>(x => x.CacheID == CacheID);
+        }
+
         public NonPlayerCache()
         {
             AccountID = -1;

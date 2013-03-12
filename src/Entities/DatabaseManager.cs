@@ -298,7 +298,7 @@ namespace FortitudeServer.Entities
         public void Drop()
         {
             Console.WriteLine("  Dropping table {0}...", Name);
-            DatabaseManager.DeleteAll(_type);
+            //DatabaseManager.DeleteAll(_type);
             DatabaseManager.ExecuteNonQuery("DROP TABLE {0}", Name);
         }
 

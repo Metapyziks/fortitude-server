@@ -298,7 +298,7 @@ namespace FortitudeServer.Entities
         public void Drop()
         {
             Console.WriteLine("  Dropping table {0}...", Name);
-            //DatabaseManager.DeleteAll(_type);
+            DatabaseManager.DeleteAll(_type);
             DatabaseManager.ExecuteNonQuery("DROP TABLE {0}", Name);
         }
 
@@ -811,6 +811,20 @@ namespace FortitudeServer.Entities
             return Select<T>(x => true);
         }
 
+        private static List<Object> SelectAll(DatabaseTable table)
+        {
+            DBCommand cmd = GenerateSelectCommand<Object>(table, false, x => true);
+
+            List<Object> entities = new List<Object>();
+            using (DBDataReader reader = cmd.ExecuteReader()) {
+                Object entity;
+                while ((entity = reader.ReadEntity(table)) != null)
+                    entities.Add(entity);
+            }
+
+            return entities;
+        }
+
         public static List<Tuple<T0, T1>> SelectAll<T0, T1>(Expression<Func<T0, T1, bool>> joinOn)
             where T0 : new()
             where T1 : new()
@@ -849,13 +863,7 @@ namespace FortitudeServer.Entities
             builder.AppendFormat("INSERT INTO {0}\n(\n  {1}\n) VALUES (\n  '{2}'\n)",
                 table.Name, columns, values);
 
-#if DEBUG
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine(builder.ToString());
-            Console.ResetColor();
-#endif
-
-            return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
+            return ExecuteNonQuery(builder.ToString());
         }
 
         public static int Update<T>(T entity)
@@ -881,13 +889,7 @@ namespace FortitudeServer.Entities
             builder.AppendFormat("UPDATE {0} SET\n  {1}\nWHERE {2}",
                 table.Name, columns, predicate);
 
-#if DEBUG
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine(builder.ToString());
-            Console.ResetColor();
-#endif
-
-            return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
+            return ExecuteNonQuery(builder.ToString());
         }
 
         // TODO: Delete should cascade with supertables
@@ -895,6 +897,12 @@ namespace FortitudeServer.Entities
             where T : new()
         {
             return Delete<T>(new T[] { entity });
+        }
+
+        public static int Delete<T>(params Expression<Func<T, bool>>[] predicates)
+            where T : new()
+        {
+            return Delete<T>(Select<T>(predicates));
         }
 
         public static int Delete<T>(IEnumerable<T> entities)
@@ -910,32 +918,30 @@ namespace FortitudeServer.Entities
             builder.AppendFormat("DELETE FROM {0} WHERE {1}",
                 table.Name, predicate);
 
-#if DEBUG
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine(builder.ToString());
-            Console.ResetColor();
-#endif
+            if (table.CleanupMethod != null) {
+                foreach (var ent in entities) {
+                    table.CleanupMethod.Invoke(ent, new Object[0]);
+                }
+            }
 
-            return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
+            return ExecuteNonQuery(builder.ToString());
         }
 
-        public static int Delete<T>(params Expression<Func<T, bool>>[] predicates)
+        internal static int DeleteAll(Type t)
         {
-            DatabaseTable table = GetTable<T>();
+            DatabaseTable table = GetTable(t);
 
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("DELETE FROM {0} ", table.Name);
+            builder.Append("WHERE '1' = '1'");
 
-            builder.AppendFormat("WHERE {0}", String.Join("\n  OR ",
-                predicates.Select(x => SerializeExpression(x.Body, true))));
-
-#if DEBUG
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine(builder.ToString());
-            Console.ResetColor();
-#endif
-
-            return new DBCommand(builder.ToString(), _sConnection).ExecuteNonQuery();
+            if (table.CleanupMethod != null) {
+                foreach (var ent in SelectAll(table)) {
+                    table.CleanupMethod.Invoke(ent, new Object[0]);
+                }
+            }
+            
+            return ExecuteNonQuery(builder.ToString());
         }
 
         public static void Disconnect()

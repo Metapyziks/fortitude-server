@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FortitudeServer.Entities
 {
+    public enum MessageSettings : byte
+    {
+        Default = 0,
+        BlockAll = 1
+    }
+
     [JSONSerializable, DatabaseEntity]
     public class Message : Notification
     {

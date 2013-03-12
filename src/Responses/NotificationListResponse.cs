@@ -142,8 +142,10 @@ namespace FortitudeServer.Responses
                     return stub;
                 } else if (x is BattleReport) {
                     var stub = new BattleReportStub((BattleReport) x);
-                    stub.AttackerName = accounts.First(y => y.AccountID == stub.Notification.AttackerID).Username;
-                    stub.CacheName = caches.First(y => y.CacheID == stub.Notification.CacheID).Name;
+                    var account = accounts.FirstOrDefault(y => y.AccountID == stub.Notification.AttackerID);
+                    stub.AttackerName = account != null ? account.Username : "[deleted]";
+                    var cache = caches.FirstOrDefault(y => y.CacheID == stub.Notification.CacheID);
+                    stub.CacheName = cache != null ? cache.Name : "[deleted]";
                     return stub;
                 } else {
                     throw new Exception("Unknown notification type to serialize");

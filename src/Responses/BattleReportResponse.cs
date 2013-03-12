@@ -41,13 +41,14 @@ namespace FortitudeServer.Responses
         public int DefenderDeserters { get { return BattleReport.DefenderDeserters; } }
 
         [Serialize("victory")]
-        public bool IsVictory { get { return BattleReport.AttackerSurvivors > 0; } }
+        public bool IsVictory { get; set; }
 
-        public BattleReportResponse(Cache cache, BattleReport report)
+        public BattleReportResponse(Cache cache, BattleReport report, bool victory)
             : base(true)
         {
             Cache = cache;
             BattleReport = report;
+            IsVictory = victory;
         }
     }
 }

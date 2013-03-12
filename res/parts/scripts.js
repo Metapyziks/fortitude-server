@@ -24,9 +24,18 @@ function validatePassword(first, second)
 	return true;
 }
 
+function hex2a(hex) {
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
+
 function hash(string)
 {
-    return CryptoJS.MD5("7¬`j8,#@ytIsQ9$Od" + string + "%fI4\"0lPQz^~U&An4:9£k").toString();
+	var temp0 = "37ac606a382c2340797449735139244f64";
+	var temp1 = "2566493422306c50517a5e7e5526416e343a39a36b";
+    return CryptoJS.MD5(hex2a(temp0) + string + hex2a(temp1)).toString();
 }
 
 function submitPassword(form)
@@ -39,6 +48,3 @@ function submitPassword(form)
 
 	return valid;
 }
-
-
-

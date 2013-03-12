@@ -46,7 +46,7 @@
 
 ?>
 		<div id = "content">
-			<h1>Your Account</h1>
+			<h1>Manage Your Account</h1>
 			<p>
 				This is the page to manage your account. From here you can manage your settings, see your account history and view all of your caches.
 			</p>
@@ -85,7 +85,7 @@
 <? 		} ?>
 							</td>
 							<td>
-								Active since {$account.RegistrationDate.ToShortDateString()}<br />
+								Active since <? calculateAge(account.RegistrationDate); ?><br />
 								<a href="/myactivy">View account activity</a>
 							</td>
 						</tr>

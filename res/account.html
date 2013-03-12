@@ -36,12 +36,28 @@
 			page_response = "There was an error updating your password: Please enter the correct current password.";
 		}
 	}
-/*
-	elseif (new_password != null) {
+
+	else if (new_password != null) {
 		page_response = "There was an error updating your password: Please enter the correct current password.";
 	}
 
-*/
+	// Delete the user's account
+
+	bool delete = false;
+
+	if (post["delete"] != null) {
+		Console.Write ("I are deleting the account yarr");
+		delete = true;
+
+		// delete account
+	}
+
+	// Update the message settings
+
+	bool messages_on = true;
+	Player play = Player.getPlayer(account);
+
+
 	Include ("parts/sidebar.html"); 
 
 ?>
@@ -128,7 +144,7 @@
 							</tr>
 							<tr><td colspan="2" height="10"></td></tr>
 							<tr>
-								<td colspan="2">
+								<td colspan="2" style="text-align: center;">
 									<input type="submit" value="Update" />
 								</td>
 							</tr>
@@ -137,12 +153,22 @@
 				</div><br />
 				<div class = "module">
 					<h1>Delete Account</h1>
-					<p style="margin: 6px 12px;" id="confirm_delete" >
-						Deleting your account is done by a link sent to your email address. Click the button below to send this link.
+					<p style="margin: 6px 12px;">
+<?	if (delete) { 
+?>
+						An email has been sent to you containing a link to delete your account.
+
+<?	} 
+	else {
+?>
+						Deleting your account is done by a link sent to your email address. Click the button below to send this link
+<? } ?>
 					</p>
-					<div style="text-align: center; height: 30px;">
-						<button onclick = "delete_account( '{$account.AccountID}', '{$account.Email}' )">Send delete link</button>
-					</div>
+					<form name="delete_form" id="delete_form" action="account" method="post" style="text-align: center;">
+						 <input type="hidden" name="delete" value="yes" />
+
+						 <input type="submit" value="Send delete link" />
+					</form>
 				</div>
 
 			</div>
@@ -150,7 +176,7 @@
 
 				<div class = "module" style = "height: 351px;">
 					<h1>Message settings</h1>
-					<form>
+					<form id = "message_settings" name = "message_settings" action = "account" method = "post">
 						<table>
 							<tr>
 								<td style = "width: 53%;">
@@ -201,7 +227,7 @@
 							</tr>
 							<tr><td colspan="2" height="10"></td></tr>
 							<tr>
-								<td colspan="2">
+								<td colspan="2" style="text-align: center;">
 									<input type="submit" value="Update" />
 								</td>
 							</tr>

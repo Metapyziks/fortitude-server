@@ -9,13 +9,13 @@
 
 	Login/Signup
 		Integrate errors neatly; asynchronious checking
-		Should be two email fields
+		// Should be two email fields
 		// Activate account
 		// Forgot your password
 
 	Side bar
 		// Change caches and recent news to display message when have none
-		Implement search function
+		// Implement search function
 
 	CAMDEN {
 		Map
@@ -24,6 +24,7 @@
 			Display cache on hover
 			Link to cache details
 			Implement search ajax
+			Plan route to cache
 	}
 
 	News
@@ -56,8 +57,9 @@
 	}
 
 	Footer
-		Site map
-		Back to top
+		// Site map
+		// Back to top
+		Add site map to footer
 		Credit stone wall
 
 
@@ -76,7 +78,6 @@
 
 	User profile pages
 	Cache profile pages
-	Plan route to cache
 
 
 

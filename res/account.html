@@ -54,9 +54,44 @@
 
 	// Update the message settings
 
-	bool messages_on = true;
-	Player play = Player.getPlayer(account);
+	bool messages_on = Player.GetPlayer(account).MessageSettings == MessageSettings.Default;
 
+	if (post["message_settings_updated"] != null) {	
+		
+		// Check if user has changed their block-all settings
+		bool new_message_state = true;
+		if (post["rec_mes"] == "off") {
+			new_message_state = false;
+		}
+
+		if (messages_on != new_message_state) {
+			// Update message settings
+		}
+
+		if ( (post["block_user"] == post["unblock_user"]) && (post["block_user"] != null) {
+				page_response = "You can't block and unblock the same user!"
+			}
+
+		else {
+			if (post["block_user"] != null) {
+				Account new_blocked_account = DatabaseManager.SelectFirst<Account>(x => x.Username == post["block_user"]);
+				BlockedUser new_blocked_user = DatabaseManager.SelectFirst<BlockedUser>(x => x.BlockedID == new_blocked_account.AccountID);
+
+				if (new_blocked_account == null) {
+					page_response = "Error blocking " + post["block_user"] + ". We could not find that user to block them.";
+				}
+				else if (new_blocked_user !- null) {
+					page_response = "Error blocking " + post["block_user"] + ". User is already on your block list.";
+				}
+				else {
+					// Block the user
+				}
+			}
+		}
+
+
+		// Remove user from the blocked list
+	}
 
 	Include ("parts/sidebar.html"); 
 
@@ -177,15 +212,19 @@
 				<div class = "module" style = "height: 351px;">
 					<h1>Message settings</h1>
 					<form id = "message_settings" name = "message_settings" action = "account" method = "post">
+					<input type="hidden" name="message_settings_updated" value="yes" />
 						<table>
 							<tr>
 								<td style = "width: 53%;">
-									Receive messages:
+<?	if (messages_on) { ?>			You are currently receiving messages.
 								</td>
 								<td>
-									<input type="radio" name="rec_mes" value="on" checked> On
-									<input type="radio" name="rec_mes" value="off"> Off 
+									<input type="checkbox" name="rec_mes" value="off"> Block all messages
+<? 	} else { ?>						You have blocked all messages.
 								</td>
+								<td>
+									<input type="checkbox" name="rec_mes" value="on"> Receive messages
+<?	}	?>						</td>
 							</tr>
 							<tr><td colspan="2" height="10"></td></tr>
 							<tr>
@@ -210,18 +249,18 @@
 								<td colspan="2">
 									<p>Currently blocked users:</p>
 									<div class = "blocked_users">
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
-										<span>username</span>
+<?		IEnumerable<BlockedUser> blocked_users = DatabaseManager.Select<BlockedUser>(x => x.BlockerID == account.AccountID);
+		if (blocked_users.Count() < 1) {
+?>										<p style = "text-align: center;">You have not blocked any users</p>
+<?
+		}
+		else {
+			foreach (var blocked_user in blocked_users) {
+				var user = DatabaseManager.SelectFirst<Account>(x => x.AccountID == blocked_user.BlockedID);
+?>										<span>{$user.Username}</span>
+<?			}
+		}
+?>
 									</div>
 								</td>
 							</tr>

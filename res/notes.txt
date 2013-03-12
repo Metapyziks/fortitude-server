@@ -51,6 +51,7 @@
 		Update message settings
 		// Subsection / new page of all caches
 		Subsection / new page of activity recording
+		// Get date to display properly
 
 	KING {
 		Messages
@@ -77,7 +78,7 @@
 		Filtering and searching user list
 
 	User profile pages
-	Cache profile pages
+	Cache profile pages -- not doing! incorporate into all cache list
 
 
 

@@ -908,6 +908,8 @@ namespace FortitudeServer.Entities
         public static int Delete<T>(IEnumerable<T> entities)
             where T : new()
         {
+            if (entities.Count() == 0) return 0;
+
             DatabaseTable table = GetTable<T>();
             DatabaseColumn primaryKey = table.Columns.First(x => x.PrimaryKey);
 

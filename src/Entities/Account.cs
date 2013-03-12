@@ -242,6 +242,10 @@ namespace FortitudeServer.Entities
         public void Cleanup()
         {
             if (AccountID <= 0) return;
+
+#if DEBUG
+            Console.WriteLine("{0}: ~Goodbye cruel world~", Username);
+#endif
             
             var caches = DatabaseManager.Select<Cache>(x => x.AccountID == AccountID);
             if (caches.Count == 0) return;

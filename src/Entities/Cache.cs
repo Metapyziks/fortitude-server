@@ -148,7 +148,7 @@ namespace FortitudeServer.Entities
                     AccountID = attacker.AccountID;
                 } else {
                     report.DefenderDeserters = report.DefenderInitial / 2 + report.AttackerFatalities;
-                    attacker.Balance += report.DefenderDeserters;
+                    attacker.Balance += report.DefenderDeserters + report.AttackerSurvivors;
                     ++instance.Attacks;
                     instance.NextAttack = DateTime.Now.AddSeconds(NonPlayerCache.FindNextAttackDelay(Balance, instance.Attacks, npc.GrowthStyle));
                     DatabaseManager.Update(instance);

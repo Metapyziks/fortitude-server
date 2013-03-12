@@ -36,6 +36,9 @@ namespace FortitudeServer
             Cache.PlacementCost = 5;
             Cache.MinPlacementDistance = 300d;
 
+            Player.PayoutInterval = 3.0 * 60.0 * 60.0;
+            Player.UnitsPerCache = 1.0;
+
             String iniPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "config.ini");
             String[] ownerEmails = null;
 
@@ -72,8 +75,12 @@ namespace FortitudeServer
                 while (_sActive) {
                     Task<HttpListenerContext> ctxTask = listener.GetContextAsync();
 
-                    while (!ctxTask.IsCompleted && _sActive)
+                    while (!ctxTask.IsCompleted && _sActive) { 
                         Thread.Sleep(10);
+                        if (Player.PayoutInterval > 1.0 && Player.PayoutDue) {
+                            Player.Payout();
+                        }
+                    }
 
                     if (!_sActive)
                         break;
@@ -176,7 +183,7 @@ namespace FortitudeServer
                         if (table.Name.ToLower() == args[0]) {
                             table.Drop();
                             table.Create();
-                            Success("Deleted table with name {0}", args[0]);
+                            Success("Reset table with name {0}", args[0]);
                             return;
                         }
                     }
@@ -239,6 +246,40 @@ namespace FortitudeServer
                     DatabaseManager.Insert(special);
                     Success("Added special cache named {0} with address {1}, a reward of {2} points and {3} claims", args[0], args[1], args[3], args[2]);
                     break;
+                case "placetest":
+                    if (args.Length < 1) {
+                        Error("Expected a username");
+                    }
+
+                    double latitude = 54.778324, longitude = -1.569824;
+
+                    Account acc = DatabaseManager.SelectFirst<Account>(x => x.Username == args[0]);
+
+                    if (acc != null) {
+                        var caches = Cache.FindNearby(latitude, longitude, Cache.MinPlacementDistance);
+                        DatabaseManager.Delete(caches);
+
+                        int bal = 20;
+                        if (args.Length > 1) {
+                            if (!int.TryParse(args[1], out bal)) {
+                                Error("Invalid balance");
+                                break;
+                            }
+                        }
+
+                        DatabaseManager.Insert(new Cache {
+                            AccountID = acc.AccountID,
+                            Balance = bal,
+                            Latitude = latitude,
+                            Longitude = longitude,
+                            Name = CacheNamer.GenerateRandomName()
+                        });
+
+                        Success("Placed cache!");
+                    } else {
+                        Error("Account not found");
+                    }
+                    break;
                 case "message":
                     if (args.Length < 3) {
                         Error("Expected a receiver, subject, and content");
@@ -256,6 +297,32 @@ namespace FortitudeServer
                     }
 
                     DatabaseManager.Insert(new Message(1, receiver.AccountID, subject, content));
+                    break;
+                case "gibemone":
+                    if (args.Length < 2) {
+                        Error("Expected a username and amount");
+                        break;
+                    }
+
+                    String username = args[0];
+                    int amount;
+                    if (!int.TryParse(args[1], out amount)) {
+                        Error("Invalid amount");
+                        break;
+                    }
+
+                    var a = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
+
+                    if (a == null) {
+                        Error("Invalid username");
+                        break;
+                    }
+
+                    var ply = Player.GetPlayer(a);
+                    ply.Balance += amount;
+                    DatabaseManager.Update(ply);
+
+                    Success("Gave {0} to {1}", username, amount);
                     break;
             }
         }

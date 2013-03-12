@@ -157,14 +157,14 @@ namespace FortitudeServer.Entities
                 }
             }
 
-            if (IsNPC) {
+            if (!IsNPC) {
                 DatabaseManager.Update(this);
                 DatabaseManager.Insert(report);
             }
 
             DatabaseManager.Update(attacker);
 
-            return new BattleReportResponse(this, report);
+            return new BattleReportResponse(this, report, report.AttackerSurvivors > 0);
         }
     }
 }

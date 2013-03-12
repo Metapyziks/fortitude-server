@@ -224,6 +224,14 @@
 		text-align: center;
 	}
 	
+	#footer p .left {
+		text-align: left;
+	}
+	
+	#footer p .right{
+		text-align: right;
+	}
+	
 	#footer .padding {
 		margin: 8px;
 	}
@@ -238,6 +246,15 @@
 		color: #fff;
 		text-decoration: none;
 		border-bottom: 1px solid #fff;
+	}
+	
+	#footer ul{
+		float: left;
+		width: 50%;
+	}
+	
+	#foot ul a{
+		border-bottom: 0px !important;
 	}
 
 	/*	-------------------------------------------------------------------------	*/

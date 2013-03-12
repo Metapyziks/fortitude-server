@@ -10,6 +10,7 @@ using FortitudeServer.Responses;
 
 namespace FortitudeServer.Requests
 {
+    [RequestTypeName("sendreport")]
     class SendReportRequest : Request
     {
         public override Response Respond(NameValueCollection args)

@@ -36,6 +36,9 @@ namespace FortitudeServer
             Cache.PlacementCost = 5;
             Cache.MinPlacementDistance = 300d;
 
+            Player.PayoutInterval = 3.0 * 60.0 * 60.0;
+            Player.UnitsPerCache = 1.0;
+
             String iniPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "config.ini");
             String[] ownerEmails = null;
 
@@ -72,8 +75,12 @@ namespace FortitudeServer
                 while (_sActive) {
                     Task<HttpListenerContext> ctxTask = listener.GetContextAsync();
 
-                    while (!ctxTask.IsCompleted && _sActive)
+                    while (!ctxTask.IsCompleted && _sActive) { 
                         Thread.Sleep(10);
+                        if (Player.PayoutInterval > 1.0 && Player.PayoutDue) {
+                            Player.Payout();
+                        }
+                    }
 
                     if (!_sActive)
                         break;

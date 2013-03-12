@@ -95,9 +95,7 @@ namespace FortitudeServer
 
             while (_sActive) {
 #if DEBUG
-                String[] line = Console.ReadLine().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                if (line.Length > 0)
-                    ProcessCommand(line[0].ToLower(), line.Where((x, i) => i > 0).ToArray());
+                ProcessCommand(Console.ReadLine());
 #else
                 Thread.Sleep(10);
 #endif
@@ -134,6 +132,13 @@ namespace FortitudeServer
             } catch (Exception e) {
                 Console.WriteLine("Failed!");
             }
+        }
+
+        public static void ProcessCommand(String command)
+        {
+            String[] line = command.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            if (line.Length > 0)
+                ProcessCommand(line[0].ToLower(), line.Where((x, i) => i > 0).ToArray());
         }
 
         static void ProcessCommand(String command, String[] args)
@@ -323,6 +328,9 @@ namespace FortitudeServer
                     DatabaseManager.Update(ply);
 
                     Success("Gave {0} to {1}", username, amount);
+                    break;
+                default:
+                    Error("Unkown command \"{0}\"", command);
                     break;
             }
         }

@@ -1,0 +1,55 @@
+<?
+	if (session == null) {
+		response.Redirect("/login.html");
+		return;
+	}
+
+	Include("parts/functions.html");
+	getPageStart("Activity", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+	
+	var profileUsername = get["user"] ?? "";
+	Account profile = DatabaseManager.SelectFirst<Account>(x => x.Username == profileUsername);
+
+?>
+		<div id = "content">
+			<h1>{$profile.Username}</h1>
+			<p>
+				
+			</p>
+			<ul class = "news">
+			
+			
+			<li>
+					<h1>Account Summary</h1>
+
+					<? if (profileUsername == "" || profile == null) { ?> 
+					<p> We could not find the account you entered. Please try again.</p>
+					<p>Please entre a search term:</p>
+					<? Include ("/parts/search_form.html");
+					}
+					else { ?> 
+					
+					<table>
+						<tr>
+							<td>
+								<img src="/images/avatars/{$profile.AvatarID}-normal.gif" class="avatar" style = "margin: 2px;"/>
+							</td>
+							<td>
+								{$profile.Username}<br />
+							</td>
+							<td>
+								Active since <? calculateAge(profile.RegistrationDate); ?><br />
+							</td>
+						</tr>
+					</table>
+					<? } ?>
+				</li> <!-- Account summary -->
+			
+			</ul>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>
+		
+		//var allCaches = DatabaseManager.Select<Cache>(x => x.AccountID == 

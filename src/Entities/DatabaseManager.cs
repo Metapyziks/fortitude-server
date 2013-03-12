@@ -265,7 +265,7 @@ namespace FortitudeServer.Entities
             }
 
             foreach (MethodInfo method in _type.GetMethods()) {
-                if (method.IsDefined<CleanUpMethodAttribute>()) {
+                if (method.IsDefined<CleanUpMethodAttribute>() && method.GetParameters().Length == 0) {
                     CleanupMethod = method;
                     break;
                 }
@@ -298,6 +298,7 @@ namespace FortitudeServer.Entities
         public void Drop()
         {
             Console.WriteLine("  Dropping table {0}...", Name);
+            DatabaseManager.DeleteAll(_type);
             DatabaseManager.ExecuteNonQuery("DROP TABLE {0}", Name);
         }
 

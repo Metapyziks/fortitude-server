@@ -15,7 +15,7 @@ namespace FortitudeServer.Requests
             Account acc;
             ErrorResponse error;
 
-            if (!this.CheckAuth(args, out acc, out error, true))
+            if (!this.CheckAuth(args, out acc, out error, true, false))
                 return error;
 
             double lat, lon, radius;

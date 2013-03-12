@@ -39,15 +39,22 @@ namespace FortitudeServer.Entities
         private static readonly Regex _sEmailRegex;
         private static readonly Regex _sPasswordHashRegex;
 
+        private static readonly IEnumerable<String> _sReservedNames;
+
         static Account()
         {
             _sUsernameRegex = new Regex("^[a-zA-Z0-9_-]([ a-zA-Z0-9_-]{1,31})$");
             _sEmailRegex = new Regex("^[a-z0-9._%-]+@[a-z0-9.-]+\\.[a-z]{2,4}$");
             _sPasswordHashRegex = new Regex("^[0-9a-f]{32}$");
+
+            _sReservedNames = new[] { "admin", "owner", "outlaw", "outlaws", "unowned" };
         }
 
         public static bool IsUsernameValid(String username)
         {
+            username = username.ToLower();
+            if (_sReservedNames.Contains(username)) return false;
+
             return _sUsernameRegex.IsMatch(username);
         }
 

@@ -8,7 +8,8 @@ namespace FortitudeServer
     public enum EmailValidationType
     {
         Activate,
-        ResetPassword
+        ResetPassword,
+        Remove
     }
 
     public class EmailValidationCode

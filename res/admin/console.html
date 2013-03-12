@@ -4,6 +4,7 @@
     }
 
     if (post["cli"] != null && post["cli"].Length > 0) {
+        Console.WriteLine("> {0}", post["cli"]);
         Program.ProcessCommand(post["cli"]);
     }
 

@@ -61,7 +61,7 @@ namespace FortitudeServer.Requests
         }
 
         public bool CheckAuth(NameValueCollection args, out Account account,
-            out Responses.ErrorResponse error, bool acceptSession = true)
+            out Responses.ErrorResponse error, bool acceptSession = true, bool onlyValidated = true)
         {
             error = new Responses.ErrorResponse("auth error");
             account = null;
@@ -142,7 +142,7 @@ namespace FortitudeServer.Requests
                 sess.Refresh();
             }
 
-            if (account.Rank < Rank.Verified) {
+            if (onlyValidated && account.Rank < Rank.Verified) {
                 error = new Responses.ErrorResponse("auth error: account not activated");
                 return false;
             }

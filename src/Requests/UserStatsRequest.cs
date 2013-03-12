@@ -13,7 +13,7 @@ namespace FortitudeServer.Requests
             Account acc;
             Responses.ErrorResponse error;
 
-            if (!this.CheckAuth(args, out acc, out error, true))
+            if (!this.CheckAuth(args, out acc, out error, true, false))
                 return error;
 
             Player ply = Player.GetPlayer(acc);

@@ -47,10 +47,10 @@ namespace FortitudeServer.Entities
         [NotNull]
         public DateTime Expires { get; set; }
 
-        public void Delete()
+        [CleanUpMethod]
+        public void Cleanup()
         {
             DatabaseManager.Delete<ClaimedEvent>(x => x.SpecialEventID == SpecialEventID);
-            DatabaseManager.Delete(this);
         }
     }
 }

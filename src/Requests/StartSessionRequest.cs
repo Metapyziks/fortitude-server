@@ -5,19 +5,18 @@ using FortitudeServer.Entities;
 
 namespace FortitudeServer.Requests
 {
-    [RequestTypeName( "session" )]
+    [RequestTypeName("session")]
     class StartSessionRequest : Request
     {
-        public override Responses.Response Respond( NameValueCollection args )
+        public override Responses.Response Respond(NameValueCollection args)
         {
             Account account;
             Responses.ErrorResponse error;
 
-            if ( CheckAuth( args, out account, out error, false ) )
-            {
-                AuthSession sess = AuthSession.Create( account );
+            if (CheckAuth(args, out account, out error, false, false)) {
+                AuthSession sess = AuthSession.Create(account);
                 return new Responses.SessionInfoResponse(
-                    new String( sess.SessionCode ) );
+                    new String(sess.SessionCode));
             }
 
             return error;

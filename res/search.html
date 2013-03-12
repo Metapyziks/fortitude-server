@@ -1,0 +1,134 @@
+<?
+	if (session == null) {
+		response.Redirect("/login.html");
+		return;
+	}
+
+	var search = get["search"];
+
+	var acc = null;
+	Entity found_caches = null;
+
+	if (search != null) {
+		acc = DatabaseManager.SelectFirst<Account>(x => x.Username == search);
+		found_caches = DatabaseManager.Select<Cache>(x => x.Name == search);
+	}
+
+	Include("parts/functions.html");
+	getPageStart("Search", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>Search results</h1>
+
+			<div class = "table">
+				<div class = "module" style = "text-align: center;">
+					<h1>Users</h1>
+
+<?	if (search == null) {
+?>
+						<p>You haven't searched for anything!</p>
+						<p>Please enter a search term below:</p>
+<?						
+		Include ("/parts/search_form"); 
+	}
+
+	else if (acc != null) {
+?>
+						<p>Found one user:</p>
+						<img src="/images/avatars/{$acc.AvatarID}-normal.gif" class="avatar" />
+						<br />{$acc.Username}
+<?
+	}
+
+	else { 
+?>
+						<p>No users found.</p>
+						<p>Try again?</p>
+<?						
+		Include ("/parts/search_form"); 
+	}
+
+?>
+				</div>
+			
+				<div class = "table_gap"></div>
+			
+				<div class = "module" style = "text-align: center;">
+					<h1>Caches</h1>
+<?	if (search == null) {
+?>
+						<p>You haven't searched for anything!</p>
+						<p>Please enter a search term below:</p>
+<?						Include ("/parts/search_form.html"); 
+	}
+
+	else if (found_caches != null) {
+		foreach (var cache in caches) {
+			if (cache.IsNPC) { 
+?> 
+						<a href="map?cache={$cache.CacheID}">
+							<div class = "found_cache">
+								<img src="/images/outlaw_icon.png"><br />
+								{$cache.Name}<br />
+								Outlaw camp
+							</div>
+						</a> 
+<? 			}
+
+			else if (!cache.HasOwner) { 
+?> 
+						<a href="map?cache={$cache.CacheID}">
+							<div class = "found_cache">
+								<img src="/images/unowned_icon.png"><br />
+								{$cache.Name}<br />
+								Unowned cache
+							</div>
+						</a>  
+<? 			}
+
+			else { 
+				var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);
+				
+				if (owner == account) {
+?>			
+						<a href="map?cache={$cache.CacheID}">
+							<div class = "found_cache">
+								<img src="/images/allied_icon.png"><br />
+								{$cache.Name}<br />
+								Allied cache
+							</div>
+						</a> 
+	<?			}
+				
+				else {
+?>
+						<a href="map?cache={$cache.CacheID}">
+							<div class = "found_cache">
+								<img src="/images/enemy_icon.png"><br />
+								{$cache.Name}<br />
+								Enemy cache
+							</div>
+						</a>				
+<?				}
+			} 
+	 	}
+	}
+
+	else { 
+?>
+						<p>No users found.</p>
+						<p>Try again?</p>
+<?						Include ("/parts/search_form.html"); 
+	}
+
+?>
+					
+				</div>
+			</div>			
+			
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

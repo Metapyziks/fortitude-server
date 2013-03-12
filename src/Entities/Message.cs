@@ -19,7 +19,7 @@ namespace FortitudeServer.Entities
         
         [Capacity(255)]
         public String Content { get; set; }
-
+        
         public Message() { }
 
         public Message(int sender, int receiver, String subject, String content)

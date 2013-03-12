@@ -238,6 +238,33 @@ namespace FortitudeServer.Entities
             get { return (Rank & Rank.Owner) == Rank.Owner; }
         }
 
+        [CleanUpMethod]
+        public void Cleanup()
+        {
+            if (AccountID <= 0) return;
+
+#if DEBUG
+            Console.WriteLine("{0}: ~Goodbye cruel world~", Username);
+#endif
+            
+            var caches = DatabaseManager.Select<Cache>(x => x.AccountID == AccountID);
+            if (caches.Count == 0) return;
+
+            foreach (var cache in caches) {
+                cache.AccountID = 0;
+                cache.Balance = 0;
+                DatabaseManager.Update(cache);
+            }
+
+            DatabaseManager.Delete<Message>(x => x.AccountID == AccountID);
+            DatabaseManager.Delete<BattleReport>(x => x.AccountID == AccountID);
+            DatabaseManager.Delete<NPCInstance>(x => x.AccountID == AccountID);
+            DatabaseManager.Delete<Player>(x => x.AccountID == AccountID);
+            DatabaseManager.Delete<BlockedUser>(x => x.BlockerID == AccountID);
+            DatabaseManager.Delete<ClaimedEvent>(x => x.AccountID == AccountID);
+            DatabaseManager.Delete<Report>(x => x.AccountID == AccountID);
+        }
+
         public Responses.ErrorResponse Activate(String code = null)
         {
             if (IsVerified)

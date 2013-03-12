@@ -16,26 +16,22 @@
                 longitude = Double.Parse(coords[1].Trim());
                 units = Int32.Parse(post["units"]);
 
-                if (acc != null && acc.Rank != Rank.Unverified) {
-                    var cache = new NonPlayerCache {
-                        AccountID = -1,
-                        Name = CacheNamer.GenerateRandomName(),
-                        Latitude = latitude,
-                        Longitude = longitude,
-                        Balance = units
-                    };
-                    DatabaseManager.Insert(cache);
-                    success = true;
-                } else {
-                    error = String.Format("I can't find a user called {0} :(", uname);
-                }
+                var cache = new NonPlayerCache {
+                    AccountID = -1,
+                    Name = CacheNamer.GenerateRandomName(),
+                    Latitude = latitude,
+                    Longitude = longitude,
+                    Balance = units
+                };
+                DatabaseManager.Insert(cache);
+                success = true;
             } catch {
-                error = String.Format("Failed to place a cache at ({0}, {1}) owned by ({2}) :(", post["lat"], post["lon"], post["uname"]);
+                error = String.Format("Failed to place a cache at ({0}, {1}) :(", post["lat"], post["lon"]);
             }
         }
 ?>
 
-<h2>Place Non-Player Cache</h2>
+<h1>Place Non-Player Cache</h1>
 <form name="placeNPCForm" action="/admin" method="post">
     <input type="hidden" name="action" value="placenpc" />
     <table>

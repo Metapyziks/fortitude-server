@@ -42,6 +42,14 @@ namespace FortitudeServer.Entities
         [NotNull]
         public ReadStatus Status { get; set; }
 
+        [CleanUpMethod]
+        public void Cleanup()
+        {
+            if (GetType() != typeof(Notification)) {
+                DatabaseManager.Delete<Notification>(x => x.NotificationID == NotificationID);
+            }
+        }
+
         public Notification() { }
 
         protected Notification(int accountID, NotificationType type)

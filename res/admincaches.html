@@ -1,0 +1,43 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+        response.Redirect("404");
+    }
+
+    Include("parts/functions.html");
+	getPageStart("Cache List", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>Cache List</h1>
+			<table border="0" cellpadding="4">
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Location</th>
+					<th>Owner</th>
+					<th>Balance</th>
+				</tr><?
+	IEnumerable<Cache> allcaches = DatabaseManager.SelectAll<Cache>();
+	foreach (Cache cache in allcaches) { ?>
+			  	<tr>
+					<td>{$cache.CacheID}</td>
+					<td>{$cache.Name}</td>
+					<td>{$cache.Latitude}, {$cache.Longitude}</td>
+					<td>
+<?	if (cache.IsNPC) { ?> Non-player cache <? }
+	else if (!cache.HasOwner) { ?> Unowned cache <? }
+	else { 
+		var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);
+?> 						{$owner.Username} 
+<? } ?>
+					</td>
+					<td>{$cache.Balance}</td>
+				</tr><?
+	} ?>
+			</table>
+
+		</div> <!-- content -->
+		
+	<? Include ("parts/footer.html"); ?>

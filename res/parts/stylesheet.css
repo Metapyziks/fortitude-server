@@ -78,7 +78,7 @@
 		font-size: 11pt;
     }
 
-	#header li ul {
+	#header li div {
 		position: relative;
 		top: 0px;
 		left: 0px;
@@ -90,17 +90,17 @@
 		width: 135px;
     }
 
-	#header li ul a, #header li ul a:hover {
+	#header li div a, #header li div a:hover {
 		padding-left: 7px;
 		width: 128px;
 		border: none;
 	}
 	
-	#header li ul a:hover {
+	#header li div a:hover {
 		background: url('/images/white_75.png');
 	}
 
-	#header li:hover ul {
+	#header li:hover div {
 		display: block;
     }
 	
@@ -291,7 +291,7 @@
 		width: 47%;
 		border: 1px solid #000;
 		background: #444;
-		color: #000;
+		color: #fff;
 	}
 
 	#content .module h1 {
@@ -330,15 +330,30 @@
 		padding-left: 10px;
 	}
 
-	#content .module tr:last-child {
-		text-align: center;
-	}
-
 	#content .table_gap {
 		display: table-cell;
 		width: 2%;
 	}
+
+	/*	--------------------------------------------------------------------------	*/
+	/*	Account page modules - very similar to login, but not tabled
+	/*	--------------------------------------------------------------------------	*/
 	
+	#content .account .module {
+		display: block !important;
+		width: 100%;
+	}
+
+	#content .accountLeft {
+		float: left;
+		width: 49%;
+	}
+
+	#content .accountRight {
+		float: right;
+		width: 49%;
+	}
+
 	/*	--------------------------------------------------------------------------	*/
 	/*	Lists - news, faq etc
 	/*	--------------------------------------------------------------------------	*/
@@ -347,6 +362,10 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+
+	#content ul {
+		margin: 10px 0;
 	}
 
 	#content ul h1 {
@@ -362,6 +381,7 @@
 		border: 1px solid #000;
 		background: #444;
 		margin: 5px 0;
+		overflow: auto;
 	}
 
 	#content ul.news h1 {
@@ -396,28 +416,32 @@
 		max-height: 200px;
 	}
 
+	#content ul.news img.map_cache {
+		float: left;
+		margin: 10px;
+	}
+
 	#content ul.news table {
 		width: 100%;
 	}
 
 	.blocked_users {
 		width: 96%;
-		height: 70px;
+		height: 90px;
 		overflow: auto;
 		border: 1px solid #ccc;
 		color: #ccc;
 	}
 
-	.blocked_users p {
-		width: 100%;
-		margin: 2px 0;
-		text-align: center;
-		color: #fff;
-	}
-
 	.blocked_users span {
-		width: 30%;
+		width: 46%;
 		margin: 0;
 		float: left;
+		text-align: center;
 	}
 	
+	#content .image_box img {
+		float: left;
+		width: 30%;
+		margin: 0 1%;
+	}

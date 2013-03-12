@@ -30,31 +30,26 @@
     ErrorResponse reg_error = null;
     ErrorResponse reg_login_error = null;
     if(reg_hasCreds) {
-    	Console.WriteLine ("Got reg creds");
         reg_error = Account.AttemptRegister( reg_uname, reg_email, reg_phash );
     	
 	    if (reg_error == null) {
-	    	Console.WriteLine ("Inside reg_error == null");
 	    	reg_login_error = Account.AttemptLogin(reg_uname, reg_phash, out session);
 	        
 	        // If the above function is successful, it will create a session.
 	        // Use this session (if existing) to store the cookies.
 	        if (session != null) {
-	        	Console.WriteLine ("Insie session != null");
 	            response.SetCookie(new Cookie("auth-uid", session.AccountID.ToString()));
 	            response.SetCookie(new Cookie("auth-session", new String(session.SessionCode)));
 	        }
 	    }
 
 	    else {
-	    	Console.WriteLine ("Inside the else part");
 	    	Console.WriteLine (reg_error.Message);
 	    }
 	}
 
 
     if (isSignedIn()){
-    	Console.WriteLine ("Inside if is signed in");
         response.Redirect("/index.html");
 		return;
     }

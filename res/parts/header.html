@@ -37,7 +37,7 @@
 					<div>
 						<a href="/mycaches">&gt;&gt; Caches</a>
 						<a href="/myactivity">&gt;&gt; Activity log</a>
-						<a href="/profile?user={$account.Username}">&gt;&gt; Profile</a>
+						<a href="/profile?user={$account != null ? account.Username : ""}">&gt;&gt; Profile</a>
 					</div>
 				</li>
 				<li> 

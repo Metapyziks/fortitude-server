@@ -25,14 +25,12 @@
 	var new_password = post["new_pword_phash"];
 	var password = post["pword_phash"];
 
-	if ( (new_password != null) && (password != null) ) {
+	if (new_password != null && password != null) {
 		if(password.EqualsCharArray(account.PasswordHash)) {
 			account.PasswordHash = new_password.ToCharArray();
 			DatabaseManager.Update(account);
 			page_response = "Password successfully updated!";
-		}
-
-		else {
+		} else {
 			page_response = "There was an error updating your password: Please enter the correct current password.";
 		}
 	}
@@ -54,37 +52,36 @@
 
 	// Update the message settings
 
-	bool messages_on = Player.GetPlayer(account).MessageSettings == MessageSettings.Default;
+	var ply = Player.GetPlayer(account);
+	bool messages_on = ply.MessageSettings == MessageSettings.Default;
 
 	if (post["message_settings_updated"] != null) {	
 		
 		// Check if user has changed their block-all settings
-		bool new_message_state = true;
-		if (post["rec_mes"] == "off") {
-			new_message_state = false;
+		var new_message_state = (post["rec_mes"] != "off") ? MessageSettings.Default : MessageSettings.BlockAll;
+
+		if (ply.MessageSettings != new_message_state) {
+			ply.MessageSettings = new_message_state;
+			DatabaseManager.Update(ply);
 		}
 
-		if (messages_on != new_message_state) {
-			// Update message settings
-		}
-
-		if ( (post["block_user"] == post["unblock_user"]) && (post["block_user"] != null) {
-				page_response = "You can't block and unblock the same user!"
-			}
-
-		else {
+		if (post["block_user"] == post["unblock_user"] && post["block_user"] != null) {
+			page_response = "You can't block and unblock the same user!";
+		} else {
 			if (post["block_user"] != null) {
 				Account new_blocked_account = DatabaseManager.SelectFirst<Account>(x => x.Username == post["block_user"]);
-				BlockedUser new_blocked_user = DatabaseManager.SelectFirst<BlockedUser>(x => x.BlockedID == new_blocked_account.AccountID);
 
 				if (new_blocked_account == null) {
 					page_response = "Error blocking " + post["block_user"] + ". We could not find that user to block them.";
-				}
-				else if (new_blocked_user !- null) {
-					page_response = "Error blocking " + post["block_user"] + ". User is already on your block list.";
-				}
-				else {
-					// Block the user
+				} else {
+
+					BlockedUser new_blocked_user = DatabaseManager.SelectFirst<BlockedUser>(x => x.BlockedID == new_blocked_account.AccountID);
+
+					if (new_blocked_user != null) {
+						page_response = "Error blocking " + post["block_user"] + ". User is already on your block list.";
+					} else {
+						DatabaseManager.Insert(new BlockedUser { BlockerID = account.AccountID, BlockedID = new_blocked_account.AccountID });
+					}
 				}
 			}
 		}

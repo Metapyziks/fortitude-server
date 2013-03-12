@@ -65,6 +65,9 @@ namespace FortitudeServer.Entities
         }
     }
 
+    [AttributeUsage(AttributeTargets.Method)]
+    public class CleanUpMethodAttribute : Attribute { }
+
     public class DatabaseColumn
     {
         private readonly PropertyInfo _property;
@@ -225,6 +228,8 @@ namespace FortitudeServer.Entities
         public DatabaseTable SuperTable { get; private set; }
         public DatabaseColumn[] Columns { get; private set; }
 
+        public MethodInfo CleanupMethod { get; private set; }
+
         public DatabaseTable(Type type)
         {
             _type = type;
@@ -256,6 +261,13 @@ namespace FortitudeServer.Entities
             foreach (PropertyInfo property in _type.GetProperties()) {
                 if (ShouldInclude(property)) {
                     Columns[i++] = new DatabaseColumn(property);
+                }
+            }
+
+            foreach (MethodInfo method in _type.GetMethods()) {
+                if (method.IsDefined<CleanUpMethodAttribute>()) {
+                    CleanupMethod = method;
+                    break;
                 }
             }
         }
@@ -890,7 +902,7 @@ namespace FortitudeServer.Entities
             DatabaseTable table = GetTable<T>();
             DatabaseColumn primaryKey = table.Columns.First(x => x.PrimaryKey);
 
-            String predicate = String.Join("\n  OR ", entities.Select(x => String.Format("{0}='{1}'",
+            String predicate = String.Join("\n  OR ", entities.Select(x => String.Format("{0} = '{1}'",
                 primaryKey.Name, primaryKey.GetValue(x).ToString().Escape())));
 
             StringBuilder builder = new StringBuilder();

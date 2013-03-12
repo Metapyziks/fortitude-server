@@ -23,6 +23,7 @@
     // Creating new account:
     var reg_uname = post["reg_uname"] ?? "";
     var reg_email = ( post["reg_email"] ?? "" ).ToLower();
+	var reg_remail = ( post["reg_remail"] ?? "" ).ToLower();
     var reg_phash = ( post["reg_phash"] ?? "" ).ToLower();
 
     var reg_hasCreds = reg_uname.Length > 0 && reg_email.Length > 0 && reg_phash.Length > 0;
@@ -89,7 +90,8 @@
 		                <input type="hidden" name="reg_phash" />
 		                <table>
 		                <tr><td>Username:</td> <td><input type="text"     name="reg_uname" value="{$reg_uname}" /></td></tr>
-		                <tr><td>Email:   </td> <td><input type="email"    name="reg_email" value="{$reg_email}" /></td></tr>
+		                <tr><td>Email:        </td> <td><input type="email"    name="reg_email" value="{$reg_email}" /></td></tr>
+						<tr><td>Retype Email: </td> <td><input type="email"    name="reg_remail" value="{$reg_remail}" /></td></tr>
 		                <tr><td>Password:</td> <td><input type="password" name="reg_pword" /></td></tr>
 		                <tr><td>Retype Password:</td> <td><input type="password" name="reg_rpword" /></td></tr>
 		                <tr><td colspan ="2">
@@ -121,7 +123,7 @@
 												
 							<tr><td colspan="2"><input type="submit" value="Log in" /></td></tr>
 						</table>
-						<a href="resetpassword">Forgot your password?</a>
+						<span><a href="resetpassword">Forgot your password?</a></span>
 						<br style="clear: both;" />
 					</form>
 				</div>

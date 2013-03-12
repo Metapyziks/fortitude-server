@@ -24,6 +24,15 @@ function validatePassword(first, second)
 	return true;
 }
 
+function validateEmail(first, second)
+{
+	if (first != second) {
+		alert("Both Emails must match!");
+		return false;
+	}
+	return true;
+}
+
 function hex2a(hex) {
     var str = '';
     for (var i = 0; i < hex.length; i += 2)
@@ -41,6 +50,7 @@ function hash(string)
 function submitPassword(form)
 {
 	var valid = validatePassword(form.reg_pword.value, form.reg_rpword.value);
+	var valid = validateEmail(form.reg_email.value, form.reg_remail.value);
 	if (valid) form.reg_phash.value = hash(form.reg_pword.value);
 
 	form.reg_pword.value = "";

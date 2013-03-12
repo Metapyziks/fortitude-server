@@ -31,8 +31,8 @@ namespace FortitudeServer.Requests
                 return new ErrorResponse("invalid type");
             }
 
-            String message = args["message"];
-            if (message == null) {
+            String body = args["message"];
+            if (body == null) {
                 return new ErrorResponse("expected message");
             }
 
@@ -47,18 +47,27 @@ namespace FortitudeServer.Requests
 
             switch (type) {
                 case ReportType.Account:
-                    if (DatabaseManager.SelectFirst<Account>(x => x.AccountID == id && x.AccountID != acc.AccountID) == null) {
+                    var account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == id);
+                    if (account == null) {
                         return new ErrorResponse("invalid context id");
+                    }
+                    if (account.AccountID == acc.AccountID) {
+                        return new ErrorResponse("you cannot report yourself");   
                     }
                     break;
                 case ReportType.Cache:
-                    if (DatabaseManager.SelectFirst<Cache>(x => x.CacheID == id) == null) {
+                    var cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == id);
+                    if (cache == null) {
                         return new ErrorResponse("invalid context id");
                     }
                     break;
                 case ReportType.Message:
-                    if (DatabaseManager.SelectFirst<Message>(x => x.NotificationID == id && x.SenderID != acc.AccountID) == null) {
+                    var message = DatabaseManager.SelectFirst<Message>(x => x.NotificationID == id);
+                    if (message == null) {
                         return new ErrorResponse("invalid context id");
+                    }
+                    if (message.SenderID == acc.AccountID) {
+                        return new ErrorResponse("you cannot report a message sent by yourself");   
                     }
                     break;
                 default:
@@ -74,7 +83,7 @@ namespace FortitudeServer.Requests
                 AccountID = acc.AccountID,
                 Type = type,
                 ContextID = id,
-                Message = message
+                Message = body
             });
 
             return new Response(true);

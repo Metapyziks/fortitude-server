@@ -288,7 +288,7 @@ namespace FortitudeServer.Entities
             ply.Balance = 10;
 
             DatabaseManager.Update(this);
-            DatabaseManager.Insert(ply);
+            DatabaseManager.Update(ply);
             return null;
         }
 

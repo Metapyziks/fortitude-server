@@ -13,7 +13,7 @@ namespace FortitudeServer.Entities
 
         public static bool PayoutDue
         {
-            get { return (DateTime.Now - _sLastPayout).Seconds >= PayoutInterval; }
+            get { return (DateTime.Now - _sLastPayout).TotalSeconds >= PayoutInterval; }
         }
 
         public static void Payout()

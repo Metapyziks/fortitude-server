@@ -41,6 +41,13 @@ namespace FortitudeServer.Entities
 
         [NotNull]
         public int DefenderDeserters { get; set; }
+        
+        [CleanUpMethod]
+        public void Cleanup()
+        {
+            DatabaseManager.Delete<Event>(x => (x.Type == EventType.AttackCache
+                || x.Type == EventType.CacheAttacked) && x.AuxiliaryID == NotificationID);
+        }
 
         public BattleReport() { }
 

@@ -438,7 +438,7 @@
 		margin-right: 10px;
 	}
 
-	#content ul.news img {
+	#content ul.news img.small {
 		max-height: 200px;
 	}
 

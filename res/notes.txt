@@ -7,6 +7,11 @@
 			To Do
 	---------------------
 
+
+	Presentation
+		Think of what to say
+		Let Alice know what slides to put on prezi
+
 	'Login/Signup'
 		'Integrate errors neatly; asynchronious checking'
 		// Should be two email fields
@@ -25,7 +30,7 @@
 		// Implement search ajax
 		'Plan route to cache'
 
-	News
+	// News
 		// Add news items
 		// Add dates and news titles
 
@@ -48,7 +53,10 @@
 		// Subsection / new page of activity recording
 		// Get date to display properly
 
-	Messages	
+	Messages
+		// Inbox
+		Send message	
+		Add link under user profile
 
 	// Footer
 		// Site map
@@ -77,10 +85,9 @@
 
 		Styling of admin databases
 
-	User profile pages
+	// User profile pages
 		// Basic
 		// Show all caches on a map
-		'Send messages'
 
 
 	

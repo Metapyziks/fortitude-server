@@ -1,0 +1,47 @@
+<?
+	if (session == null || session.Rank != Rank.Owner) {
+        response.Redirect("404");
+    }
+
+	Include("parts/functions.html");
+	getPageStart("Special Caches", null, null);
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
+
+?>
+		<div id = "content">
+			<h1>Special Cache</h1>
+
+			<ul class = "news">
+				<li>
+					<h1>Current Special Caches</h1>
+					<table border="0" cellpadding="4" style = "text-align: center;">
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Expiry Date</th>
+							<th>Balance</th>
+							<th>Reward</th>
+							<th>Mac Address</th>
+						</tr>
+<?
+
+		var specialEvents = DatabaseManager.SelectAll<SpecialEvent>();
+
+		foreach (var evnt in specialEvents) { 
+?>
+					  	<tr>
+							<td>{$evnt.SpecialEventID}</td>
+							<td>{$evnt.Name}</td>
+							<td>{$evnt.Expires}</td>
+							<td>{$evnt.Balance}</td>
+							<td>{$evnt.Reward}</td>
+							<td>{$evnt.MACAddress}</td>
+						</tr>
+<?		} ?>
+					</table>
+				</li>
+			</ul>
+		</div> <!-- content -->
+		
+		<? Include ("parts/footer.html"); ?>

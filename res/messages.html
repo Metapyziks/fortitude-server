@@ -7,15 +7,67 @@
     Include("parts/functions.html");
     getPageStart("News", null, null);
     Include("parts/header.html");
-    Include ("parts/sidebar.html"); 
+    Include ("parts/sidebar.html");
+    
+    var messages = DatabaseManager.Select<Message>(x => x.AccountID == account.AccountID);
 ?>
 
 <div id = "content">
     <h1>Messages</h1>
-    <p>
-        Here will be the messages etc.
-    </p>
-</div>
+    <ul class = "news">
+        <li>
+            <h1>Inbox</h1>
+
+            <table style="text-align: center;">
+                <col width="30px" /> <col width="50%" /> <col width="25%" /> <col width="25%" />
+                <tr style="background-color: #292929;">
+                    <th></th> <th>Subject</th> <th>Sender</th> <th>Date</th>
+                </tr>
+<?
+    bool hadMessage = false;
+    var backColours = new[] { "#3c3c3c", "#303030" };
+    int rowNumber = 0;
+    foreach (var message in messages) {
+        var sender = DatabaseManager.SelectFirst<Account>(x => x.AccountID == message.SenderID);
+        if (sender == null) continue;
+        var backColour = backColours[rowNumber++ % backColours.Length];
+        var linkStart = "<a onclick=\"toggleMessage({$rowNumber});\" style=\"border-bottom: none; !important;\" >";
+        var linkEnd = "</a>";
+?>
+        <tr style="background-color: {$backColour}">
+            <td>
+                {$linkStart}<img src="/images/news_envelope{$message.Status == ReadStatus.Read ? "_read" : ""}.gif" style="margin: 2px 2px -2px 2px;" />{$linkEnd}
+            </td>
+            <td>
+                {$linkStart} {$message.Subject} {$linkEnd}
+            </td>
+            <td>
+                {$linkStart} {$sender.Username} {$linkEnd}
+            </td>
+            <td>
+                {$linkStart} {$message.TimeStamp} {$linkEnd}
+            </td>
+        </tr>
+        <tr style="display: none;" id="msg_{$rowNumber}">
+            <td> </td>
+            <td colspan="3" style="text-align: left; background-color: {$backColour}">
+                <p>{$message.Content}</p>
+            </td>
+        </tr>
+<?
+        hadMessage = true;
+    }
+    if (!hadMessage) {
+?>
+        <tr>No messages :(<tr>
+<?
+    }
+?>
+                </tr>
+            </table>
+        </li>
+    </ul>
+</div> <!-- content -->
 
 <?
     Include ("parts/footer.html");

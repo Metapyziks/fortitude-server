@@ -23,6 +23,7 @@ namespace FortitudeServer
     {
         public static int LocalPort = 80;
         public static String ServerAddress = null;
+        public static double RequestTimeout = 15.0;
 
         private static bool _sActive;
 
@@ -72,7 +73,10 @@ namespace FortitudeServer
 
                 Console.WriteLine("Http server started and ready for requests");
 
+                Stopwatch timeout = new Stopwatch();
+
                 while (_sActive) {
+                    timeout.Restart();
                     Task<HttpListenerContext> ctxTask = listener.GetContextAsync();
 
                     while (!ctxTask.IsCompleted && _sActive) { 
@@ -80,10 +84,17 @@ namespace FortitudeServer
                         if (Player.PayoutInterval > 1.0 && Player.PayoutDue) {
                             Player.Payout();
                         }
+                        //if (timeout.Elapsed.TotalSeconds >= RequestTimeout) {
+                        //    break;
+                        //}
                     }
 
                     if (!_sActive)
                         break;
+
+                    //if (timeout.Elapsed.TotalSeconds >= RequestTimeout) {
+                    //    continue;
+                    //}
 
                     ProcessRequest(await ctxTask);
                 }

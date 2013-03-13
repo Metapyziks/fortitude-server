@@ -122,6 +122,7 @@
 		foreach (var item in news) {
 			if (item.Type == NotificationType.BattleReport) {
 				var report = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == item.NotificationID);
+				if (report == null) continue;
 				var cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == report.CacheID);
 				if (cache != null && report != null) {
 ?>

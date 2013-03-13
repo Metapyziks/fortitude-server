@@ -156,24 +156,32 @@
 	    if(cache.AccountID == account.AccountID)
 	    {
 ?>
-		addAlliedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
+           var content = document.createElement('div');
+           content.innerHTML = "MEOW I AM A CAT!";
+		addAlliedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <?
 	    }
 	    else if(cache.AccountID == -1)
 	    {
 ?>		  
-  		addAdminMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
+           var content = document.createElement('div');
+           content.innerHTML = "WOOF I AM A DOG!";
+  		addAdminMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <? 
             }
 	    else if(cache.AccountID == 0)
 	    {
 ?>
-      		addUnownedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
+              var content = document.createElement('div');
+              content.innerHTML = "OINK I AM A PIG!";  
+              addUnownedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <?
 	    }
             else
 	    {
 ?>    
+                var content = document.createElement('div');
+                content.innerHTML = "MOO I AM A COW!";
 		addEnemyMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
 <?
 	    }

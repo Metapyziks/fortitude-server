@@ -18,6 +18,13 @@
 			<ul class = "news">
 <?
 		foreach (var cache in caches) {
+			var events = DatabaseManager.Select<Event>(x => x.Type >= EventType.Cache && x.ContextID == cache.CacheID);
+			
+			var dateGot = "the Big Bang";
+			if (events.Count() > 0) {
+				dateGot = events.First().TimeStamp.ToShortDateString();
+				events.RemoveAt(0);
+			}
 ?>
 			<li>
 				<h1>{$cache.Name}</h1>
@@ -25,27 +32,40 @@
 				<img src="http://maps.googleapis.com/maps/api/staticmap?center={$cache.Latitude},{$cache.Longitude}&markers={$cache.Latitude},{$cache.Longitude}&zoom=15&size=200x200&sensor=false" class="map_cache">
 				
 				<p>
-					{$cache.Balance} soldiers | <a href="#">View on Main Map</a>
+					{$cache.Balance} soldiers | <a href="map?cache={$cache.CacheID}">View on Main Map</a> | Obtained on {$dateGot}
 				</p>
 			
 <?
-			var events = DatabaseManager.Select<Event>(x => x.Type >= EventType.Cache && x.ContextID == cache.CacheID);
-			foreach (var evt in events)
-			{
-				switch(evt.Type)
-				{
-					case EventType.CachePlaced:
+			if (events.Count() > 0) {
 ?>
-				{$evt.TimeStamp.ToShortDateString()}
+				<table border="0" cellpadding="4" style = "text-align: center;">
+					<tr>
+						<th>Date</th>
+						<th>Attacker</th>
+						<th>Attacking army</th>
+						<th>Defending army</th>
+						<th>Surviving defendors</th>
+						<th>Enemy defectors</th>
+					</tr>
+<?			
+				foreach (var evt in events)
+				{
+					var log = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == evt.AuxiliaryID);
+					var attacker = DatabaseManager.SelectFirst<Account>(x => x.AccountID == log.AttackerID);
+?>
+					<tr>
+						<td>{$evt.TimeStamp.ToShortDateString()}</td>
+						<td><a href="profile?user={$attacker.Username}">{$attacker.Username}</a></td>
+						<td>{$log.AttackerInitial}</td>
+						<td>{$log.DefenderInitial}</td>
+						<td>{$log.DefenderSurvivors}</td>
+						<td>{$log.AttackerDeserters}</td>
+					</tr>
 <?
-						break;
-					case EventType.CacheAttacked:
-						var theBattleReportThing = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == evt.AuxiliaryID);
-						if (theBattleReportThing == null) {
-							break;
-						}
-						break;
 				}
+?>
+				</table>
+<?
 			}
 ?>
 			</li>

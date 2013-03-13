@@ -1,4 +1,4 @@
-	var alliedCacheIcon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/blue.png';
+var alliedCacheIcon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/blue.png';
 	var enemyCacheIcon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/red.png';
 	var unownedCacheIcon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/yellow.png';
 	var adminCacheIcon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/green.png';	
@@ -48,42 +48,74 @@
 	    });
 	}
 
-	function addAlliedMarker (latitude, longitude, name) 
-	{
-		mapCaches.push(new google.maps.Marker({
-			  position: new google.maps.LatLng(latitude,longitude),
-			  map: map,
-			  title: name,
-			  icon: alliedCacheIcon
-			}));
+        var infoWindowOpen = false;
+	var openInfoWindow = false;
+
+        function addInfoWindow(marker, content)
+        {
+            content.style.color = "black";
+	    var infowindow = new google.maps.InfoWindow({
+	        content: content
+	    });
+	    google.maps.event.addListener(marker, "click", function() {
+	        if(infoWindowOpen == true)
+	        {
+		    openInfoWindow.close();
+	        }
+	        infoWindowOpen = true;
+	        infowindow.open(map, marker);
+	        openInfoWindow = infowindow;
+	    });
+	    google.maps.event.addListener(infowindow, "closeclick", function() {
+		infowindow.close();
+		infoWindowOpen = false;
+	    });
 	}
 
-        function addEnemyMarker (latitude, longitude, name) 
+	function addAlliedMarker (latitude, longitude, name, content) 
 	{
-		mapCaches.push(new google.maps.Marker({
-			  position: new google.maps.LatLng(latitude,longitude),
-			  map: map,
-			  title: name,
-			  icon: enemyCacheIcon
-			}));
+	    var marker = new google.maps.Marker({
+	        position: new google.maps.LatLng(latitude,longitude),
+	        map: map,
+		title: name,
+		icon: alliedCacheIcon
+	    });
+	    addInfoWindow(marker, content);
+	    mapCaches.push(marker);
 	}
 
-        function addUnownedMarker (latitude, longitude, name) 
+        function addEnemyMarker (latitude, longitude, name, content) 
 	{
-		mapCaches.push(new google.maps.Marker({
-			  position: new google.maps.LatLng(latitude,longitude),
-			  map: map,
-			  title: name,
-			  icon: unownedCacheIcon
-			}));
+	    var marker = new google.maps.Marker({
+	        position: new google.maps.LatLng(latitude,longitude),
+		map: map,
+		title: name,
+		icon: enemyCacheIcon
+	    });
+	    addInfoWindow(marker, content);
+	    mapCaches.push(marker);
 	}
 
-        function addAdminMarker (latitude, longitude, name) 
+        function addUnownedMarker (latitude, longitude, name, content) 
 	{
-		mapCaches.push(new google.maps.Marker({
-			  position: new google.maps.LatLng(latitude,longitude),
-			  map: map,
-			  title: name,
-			  icon: adminCacheIcon
-			}));
+	    var marker = new google.maps.Marker({
+	        position: new google.maps.LatLng(latitude,longitude),
+		map: map,
+		title: name,
+		icon: unownedCacheIcon
+	    });
+	    addInfoWindow(marker, content);
+	    mapCaches.push(marker);
+	}
+
+        function addAdminMarker (latitude, longitude, name, content) 
+	{
+  	    var marker = new google.maps.Marker({
+	        position: new google.maps.LatLng(latitude,longitude),
+		map: map,
+		title: name,
+		icon: adminCacheIcon
+	    });
+	    addInfoWindow(marker, content);
+	    mapCaches.push(marker);
 	}

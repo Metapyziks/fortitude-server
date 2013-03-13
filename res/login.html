@@ -1,5 +1,7 @@
 
 <?	
+	Include("parts/functions.html");
+
 	// Logging in:
 
 	var login_uname = post["login_uname"] ?? "";
@@ -55,7 +57,6 @@
 		return;
     }
 
-	Include("parts/functions.html");
 	getPageStart("Login", null, null);
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 

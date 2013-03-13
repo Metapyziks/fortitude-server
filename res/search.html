@@ -1,12 +1,14 @@
 <?
 
+	Include("parts/functions.html");
+
 	var search = get["search"] ?? "";
 
-	Account acc = null;
+	Account this_acc = null;
 	IEnumerable<Cache> found_caches = null;
 
 	if (search != "") {
-		acc = DatabaseManager.SelectFirst<Account>(x => x.Username == search);
+		this_acc = DatabaseManager.SelectFirst<Account>(x => x.Username == search);
 		found_caches = DatabaseManager.Select<Cache>(x => x.Name == search);
 		int count = found_caches.Count();
 		if (count < 1) {
@@ -14,7 +16,6 @@
 		}
 	}
 
-	Include("parts/functions.html");
 	getPageStart("Search", null, null);
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
@@ -35,12 +36,12 @@
 		Include ("/parts/search_form.html"); 
 	}
 
-	else if (acc != null) {
+	else if (this_acc != null) {
 ?>
-						<a href="profile?user={$acc.Username}">
+						<a href="profile?user={$this_acc.Username}">
 							<div class = "found_cache">
-								<img src="/images/avatars/{$acc.AvatarID}-normal.gif" class="avatar" />
-								<br />{$acc.Username}
+								<img src="/images/avatars/{$this_acc.AvatarID}-normal.gif" class="avatar" />
+								<br />{$this_acc.Username}
 							</div>
 						</a>
 <?

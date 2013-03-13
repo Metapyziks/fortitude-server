@@ -19,12 +19,27 @@
 			<ul class = "news">
 <?			
 	foreach (var evt in events) 
+	{
+		switch(evt.Type)
 		{
-?>
-			<li>{$evt.Type} {$evt.TimeStamp}</li>
-<?
-
-			}
+			case EventType.Register: 
+				?><li>Account Created on: {$evt.TimeStamp} </li><?			
+				break;
+			case EventType.RankChange:
+				var rank = (Rank) evt.AuxiliaryID;
+				?><li>You were promoted to the rank of {$rank} on {$evt.TimeStamp} </li><?
+				break;
+			case EventType.PlaceCache:
+				var cachesName = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == evt.AuxiliaryID);
+				?><li>You claimed the cache {$cachesName} </li><?
+				break;
+			case EventType.AttackCache:
+				var theBattleReportThing =DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == evt.AuxiliaryID);
+				var thecachesName = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == theBattleReportThing.CacheID);
+				?><li>{$thecachesName} was attacked on {evt.TimeStamp}! </li><?
+				break;
+		}
+	}
 ?>
 			</ul>
 		</div> <!-- content -->

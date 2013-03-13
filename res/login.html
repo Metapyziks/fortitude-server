@@ -3,7 +3,7 @@
     Include("parts/functions.html");
 
 	// Logging in:
-
+	
 	var login_uname = post["login_uname"] ?? "";
     var login_phash = (post["login_phash"] ?? "").ToLower();
 	
@@ -56,6 +56,7 @@
         response.Redirect("/index.html");
 		return;
     }
+
 
 	getPageStart("Login", null, null);
 	Include("parts/header.html");

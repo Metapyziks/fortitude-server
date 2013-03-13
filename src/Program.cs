@@ -194,6 +194,26 @@ namespace FortitudeServer
                     }
                     Error("Invalid table name");
                     break;
+                case "findid":
+                    if (args.Length < 1) {
+                        Error("Expected a cache name");
+                        break;
+                    }
+                    String cacheName = String.Join(" ", args);
+
+                    var matches = DatabaseManager.Select<Cache>(x => x.Name == cacheName);
+
+                    if (matches.Count == 0) {
+                        Console.WriteLine("No caches found with name \"{0}\"", cacheName);
+                        break;
+                    }
+
+                    Console.WriteLine("Found {0} caches with name \"{1}\"", matches.Count, cacheName);
+
+                    foreach (var ca in matches) {
+                        Console.WriteLine("#{0}: ({1},{2})", ca.CacheID, ca.Longitude, ca.Latitude);
+                    }
+                    break;
                 case "placenpc":
                     if (args.Length < 2) {
                         Error("Expected a position");

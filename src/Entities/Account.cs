@@ -154,6 +154,28 @@ namespace FortitudeServer.Entities
             return account.Activate(code);
         }
 
+        public static Responses.ErrorResponse AttemptRemove(String email, String code)
+        {
+            if (email == null || email.Length == 0)
+                return new Responses.ErrorResponse("no email address given");
+
+            if (!Account.IsEmailValid(email))
+                return new Responses.ErrorResponse("invalid email address");
+
+            if (code == null || code.Length == 0)
+                return new Responses.ErrorResponse("no removal code given");
+
+            if (!Account.IsPasswordHashValid(code))
+                return new Responses.ErrorResponse("invalid removal code");
+
+            Account account = DatabaseManager.SelectFirst<Account>(x => x.Email == email);
+
+            if (account == null)
+                return new Responses.ErrorResponse("email address not recognised");
+
+            return account.Remove(code);
+        }
+
         public static Responses.ErrorResponse AttemptPromote(String username)
         {
             Account account = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
@@ -289,6 +311,20 @@ namespace FortitudeServer.Entities
 
             DatabaseManager.Update(this);
             DatabaseManager.Update(ply);
+            return null;
+        }
+
+        public Responses.ErrorResponse Remove(String code = null)
+        {
+            EmailValidationCode request = EmailValidationCode.Get(EmailValidationType.Remove, this);
+
+            if (code != null && (request == null || !code.EqualsCharArray(request.Code)))
+                return new Responses.ErrorResponse("incorrect removal code");
+
+            if (request != null)
+                request.Remove();
+
+            DatabaseManager.Delete(this);
             return null;
         }
 

@@ -1,0 +1,26 @@
+<?
+    var error = Account.AttemptRemove( get["email"], get["code"] );
+
+    Include("parts/functions.html");
+    getPageStart("Activitate", null, null);
+    Include("parts/header.html");
+    Include ("parts/sidebar.html"); 
+
+?>
+        <div id = "content">
+            <h1>Remove Account</h1>
+<? if( error != null ) { ?>
+            <p>
+                An error has occurred :(
+            </p>
+            <p>
+                Your account could not be removed. Reason: {$error.Message}.
+            </p>
+<? } else { ?>
+            <p>
+                Your account has been purged from our systems. Come back soon! Or don't. I'm a web page, not a cop.
+            </p>
+<? } ?>
+        </div> <!-- content -->
+        
+        <? Include ("parts/footer.html"); ?>

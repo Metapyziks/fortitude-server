@@ -448,7 +448,10 @@ public static class {0}
                         var sid = request.Cookies["auth-session"].Value;
                         session = AuthSession.Get(uid);
                         if (session != null && !sid.EqualsCharArray(session.SessionCode)) session = null;
-                        if (session != null) account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == uid);
+                        if (session != null) {
+                            account = DatabaseManager.SelectFirst<Account>(x => x.AccountID == uid);
+                            if (account == null) session = null;
+                        }
                     }
 
                     var writer = new StreamWriter(response.OutputStream);

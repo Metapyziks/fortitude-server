@@ -162,6 +162,10 @@ namespace FortitudeServer
                     subject = "Foritude password reset";
                     message = "To finish the password reset process just click this link: {0}\n\nHave fun!";
                     break;
+                case EmailValidationType.Remove:
+                    subject = "Fortitude account removal";
+                    message = "To finish the account removal process just click this link: {0}\n\nSorry to see you go!";
+                    break;
             }
 
             message = String.Format(message, link);

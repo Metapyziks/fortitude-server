@@ -61,7 +61,7 @@
 		// Site map
 		// Back to top
 		// Add site map to footer
-		Credit stone wall
+		//Credit stone wall
 
 	Levels
 

@@ -334,6 +334,7 @@ public static class {0}
                                 SkipWhitespace(content, ref i);
                                 if (!MatchNext(content, i++, ";")) continue;
 
+                                builder.Append(content.Substring(j, k - j));
                                 builder.Append("Echo(\"");
                                 if (_sPages.ContainsKey(file)) {
                                     Page page = _sPages[file];
@@ -347,8 +348,6 @@ public static class {0}
                                     builder.AppendFormat("Unable to include file {0}, file does not exist!", file);
                                 }
                                 builder.Append("\");");
-
-                                builder.Append(content.Substring(j, k - j));
                                 j = ++i;
                                 continue;
                             }

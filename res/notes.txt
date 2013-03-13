@@ -7,31 +7,27 @@
 			To Do
 	---------------------
 
-	Login/Signup
-		Integrate errors neatly; asynchronious checking
+	'Login/Signup'
+		'Integrate errors neatly; asynchronious checking'
 		// Should be two email fields
 		// Activate account
 		// Forgot your password
 
-	Side bar
+	// Side bar
 		// Change caches and recent news to display message when have none
 		// Implement search function
 
-	CAMDEN {
-		Map
-			// Test with pins
-			Format pin colours
-			Display cache on hover
-			Link to cache details
-			Implement search ajax
-			Plan route to cache
-	}
+	Map
+		// Test with pins
+		Format pin colours
+		Display cache on hover
+		Link to cache details
+		// Implement search ajax
+		'Plan route to cache'
 
 	News
 		// Add news items
 		// Add dates and news titles
-		Add admin form to update news items?
-		Make news items update automatically?
 
 	// Help
 		// Style FAQ
@@ -39,37 +35,34 @@
 		// Split it into sections, create links to
 		// Help intro screen
 
-	Home
+	// Home
 		// Fill home screen
-		Modularisation of home screen
 
-	Account screen
+	// Account screen
 		// Add forms and stuff
 		// Change avatar
-		KING { 'Delete Account' }
+		// KING { 'Delete Account' }
 		// Update password
 		// Update message settings
 		// Subsection / new page of all caches
-		'Subsection / new page of activity recording'
+		// Subsection / new page of activity recording
 		// Get date to display properly
 
-	KING {
-		'Messages'
-	}
+	Messages	
 
-	Footer
+	// Footer
 		// Site map
 		// Back to top
 		// Add site map to footer
-		//Credit stone wall
+		// Credit stone wall
 
-	Levels
+	// Levels
 
 	Admins
 		// Control panel
 		// Cache list
 			Cache location shown on map on hover
-			Sort into tabs of cache type
+			// Sort into tabs of cache type
 		// User list
 			// Link to user profile
 			// Sort into tabs of user type
@@ -89,10 +82,6 @@
 		// Show all caches on a map
 		'Send messages'
 
-	'Cache profile pages -- not doing! incorporate into all cache list'
-
-	Javascript disabled
-	Cross browser compatibility
 
 	
 	Handling cookies are:

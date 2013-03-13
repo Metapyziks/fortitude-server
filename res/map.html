@@ -5,65 +5,158 @@
 	}
 
 	Include("parts/functions.html");
-	var allCaches = DatabaseManager.SelectAll<Cache>();
-
-?>
-
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>
-			Fortitude: Map
-		</title>
-		<link rel="stylesheet" type="text/css" href="parts/stylesheet.css">
-		 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsQ0syxq6tKXsyCAoef02pSbrr2PcP0Tw&sensor=false"></script>
-    <script type="text/javascript">
-      function initialize() {
-        var mapOptions = {
-          center: new google.maps.LatLng(54.778599, -1.570315),
-          zoom: 14,
-          mapTypeId: google.maps.MapTypeId.TERRAIN
-        };
-        var map = new google.maps.Map(document.getElementById("map_canvas"),
-          mapOptions);
-        var caches = new Array();
-<?
-  foreach (var cache in allCaches) {
-?>
-        caches.push(new google.maps.Marker({
-          position: new google.maps.LatLng({$cache.Latitude},{$cache.Longitude}),
-          map: map,
-          title:"{$cache.Name}"
-        }));
-<?
-  }
-?>
-      }
-
-      window.onload = initialize;
-    </script>
-	</head>
-<?
+	getPageStart("Map", "https://maps.googleapis.com/maps/api/js?key=AIzaSyBsQ0syxq6tKXsyCAoef02pSbrr2PcP0Tw&sensor=false", "parts/map_script.js");
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
+
+	IEnumerable<Cache> displaycaches = DatabaseManager.SelectAll<Cache>();
+
+	var cache_ID = get["cache"] ?? "";
+	var filter = get["filter"] ?? "";
+	var search = get["search"] ?? "";
+	var searchtype = get["searchtype"] ?? "";
+
+	var page_response = "none";
+
+	if (cache_ID != "") {
+		int cacheIDasInt;
+		if (int.TryParse(cache_ID, out cacheIDasInt)) {
+			displaycaches = new List<Cache>{displaycaches.First(x => x.CacheID == cacheIDasInt)};
+		}
+	}
+
+	else if (searchtype == "username" && search != "") {
+		Account searched_user = DatabaseManager.SelectFirst<Account>(x => x.Username == search);
+		displaycaches = displaycaches.Where(x => x.AccountID == searched_user.AccountID);
+		if (displaycaches.Count() < 1) {
+			page_response = search + " does not have any caches.";
+		}
+		else {
+			page_response = "Showing all caches belonging to " + search;
+		}
+	}
+
+	else {
+		if (filter == "outlaw") {
+			displaycaches = displaycaches.Where(x => x.AccountID == -1);
+			if (displaycaches.Count() < 1) {
+				page_response = "Filtering by Outlaw Cache, but no Outlaw Caches were found.";
+			}
+			else if (search == "") {
+				page_response = "Showing all Outlaw Caches.";
+			}
+			else {
+				if (searchtype == "cache") {
+					displaycaches = displaycaches.Where(x => x.Name == search);
+					
+					if (displaycaches.Count() < 1) {
+						page_response = "No Outlaw Caches with the name " + search;
+					}
+					else {
+						page_response = "Showing Outlaw Caches with the name " + search;
+					}
+				}
+			}
+		}
+
+		else if (filter == "mine") {
+			displaycaches = displaycaches.Where(x => x.AccountID == account.AccountID);
+			if (displaycaches.Count() < 1) {
+				page_response = "Filtering by your caches, but no caches were found.";
+			}
+			else if (search == "") {
+				page_response = "Showing all of your caches.";
+			}
+			else {
+				if (searchtype == "cache") {
+					displaycaches = displaycaches.Where(x => x.Name == search);
+					
+					if (displaycaches.Count() < 1) {
+						page_response = "Could not find any of your caches with the name " + search;
+					}
+					else {
+						page_response = "Showing your caches with the name " + search;
+					}
+				}
+			}
+		}
+
+		else if (filter == "enemy") {
+			displaycaches = displaycaches.Where(x => x.AccountID > 0 && x.AccountID != account.AccountID);
+			if (displaycaches.Count() < 1) {
+				page_response = "Filtering by enemy, but no enemy caches were found.";
+			}
+			else if (search == "") {
+				page_response = "Showing all enemy caches.";
+			}
+			else {
+				if (searchtype == "cache") {
+					displaycaches = displaycaches.Where(x => x.Name == search);
+					
+					if (displaycaches.Count() < 1) {
+						page_response = "No enemy caches with the name " + search;
+					}
+					else {
+						page_response = "Showing enemy caches with the name " + search;
+					}
+				}
+			}
+		}
+	}
+
 ?>
-				
 		<div id = "content">
 			<h1>Map</h1>
-			<form>
-				<select>
-					<option value="all">All Caches</option>
+			<div id = "page_response">
+<?
+	if (page_response != "none") {
+?>
+				<ul class="news">
+					<li>
+						<p>
+							{$page_response}
+						</p>
+					</li>
+				</ul>
+<?
+	}
+?>
+			</div>
+			<form id = "map_options" name = "map_options" action = "map" method = "get">
+				<select name="filter">
+					<option value="all" selected="selected">All Caches</option>
 					<option value="mine">My Caches</option>
 					<option value="enemy">Enemy Caches</option>
-					<option value="admin">Outlaw Camps</option>
+					<option value="outlaw">Outlaw Camps</option>
 				</select>
 				<div style="float: right">
-					Search by username, cache name or location:
+					Search the map:
 					<input type="text" name="search" />
+					<select name="searchtype">
+						<option value="username" selected="selected">Username</option>
+						<option value="caches">Cache name</option>
+						<option value="location">Location</option>
+					</select>
 					<input type="submit" value="search" />
 				</div>
 			</form><br />
 			<div id="map_canvas" style="width:100%; height:512px; text-shadow: 0px 0px #000000; margin-bottom: 15px;"></div>
 		</div>
 		<? Include ("parts/footer.html"); ?>
+		<script>
+	var thisMap = initialize();
+<?
+	if (searchtype == "location" && search != "") {
+?>
+		get_coords ("{$search}");
+<?
+	}
+
+	foreach (Cache cache in displaycaches) {
+?>
+		addMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", thisMap);
+<?
+	}
+?>
+	</script>
 

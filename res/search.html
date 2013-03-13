@@ -37,9 +37,12 @@
 
 	else if (acc != null) {
 ?>
-						<p>Found one user:</p>
-						<img src="/images/avatars/{$acc.AvatarID}-normal.gif" class="avatar" />
-						<br />{$acc.Username}
+						<a href="profile?user={$acc.Username}">
+							<div class = "found_cache">
+								<img src="/images/avatars/{$acc.AvatarID}-normal.gif" class="avatar" />
+								<br />{$acc.Username}
+							</div>
+						</a>
 <?
 	}
 

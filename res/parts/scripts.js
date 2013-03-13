@@ -1,3 +1,4 @@
+
 function matches(string, regexp)
 {
 	return (string.match(regexp) || []).length > 0;

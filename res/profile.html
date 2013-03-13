@@ -5,13 +5,63 @@
 	}
 
 	Include("parts/functions.html");
-	getPageStart("Activity", null, null);
-	Include("parts/header.html");
-	Include ("parts/sidebar.html"); 
-	
+
 	var profileUsername = get["user"] ?? "";
 	Account profile = DatabaseManager.SelectFirst<Account>(x => x.Username == profileUsername);
 
+	IEnumerable<Cache> allCaches = null;
+
+	if (profile != null) {
+		allCaches = DatabaseManager.Select<Cache>(x => x.AccountID == profile.AccountID);
+		int count = allCaches.Count();
+		if (count < 1) {
+			allCaches = null;
+		}
+	};
+
+?>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Fortitude: Map
+		</title>
+		<link rel="stylesheet" type="text/css" href="parts/stylesheet.css">
+
+<? if (allCaches != null) { ?>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsQ0syxq6tKXsyCAoef02pSbrr2PcP0Tw&sensor=false"></script>
+    <script type="text/javascript">
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(54.778599, -1.570315),
+          zoom: 14,
+          mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"),
+          mapOptions);
+        var caches = new Array();
+<?
+  foreach (var cache in allCaches) {
+?>
+        caches.push(new google.maps.Marker({
+          position: new google.maps.LatLng({$cache.Latitude},{$cache.Longitude}),
+          map: map,
+          title:"{$cache.Name}"
+        }));
+<?
+  }
+?>
+      }
+
+      window.onload = initialize;
+    </script>
+<?	}	?>
+	</head>
+
+<?
+	Include("parts/header.html");
+	Include ("parts/sidebar.html"); 
 ?>
 		<div id = "content">
 			<h1>{$profile.Username}</h1>
@@ -26,7 +76,7 @@
 
 <? 	if (profileUsername == "" || profile == null) { ?> 
 					<p> We could not find the account you entered. Please try again.</p>
-					<p>Please entre a search term:</p>
+					<p>Please enter a search term:</p>
 <? 		Include ("/parts/search_form.html");
 	}
 	else { ?> 
@@ -44,9 +94,20 @@
 							</td>
 						</tr>
 					</table>
-<? 	} ?>
 				</li> <!-- Account summary -->
-			
+				<li>
+					<h1>{$profile.Username}'s Caches</h1>
+<? 		if (allCaches != null) { ?>
+					<div id="map_canvas" style="width:100%; height:512px; text-shadow: 0px 0px #000000; margin-bottom: 15px;"></div>
+<?		} else { ?>
+					<p>
+						{$profile.Username} does not own any caches!
+					</p>
+<? 	
+		}
+	} 
+?>
+				</li>
 			</ul>
 		</div> <!-- content -->
 		

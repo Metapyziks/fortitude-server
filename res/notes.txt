@@ -46,28 +46,33 @@
 	Account screen
 		// Add forms and stuff
 		// Change avatar
-		Delete Account
+		KING { 'Delete Account' }
 		// Update password
-		Update message settings
+		// Update message settings
 		// Subsection / new page of all caches
-		Subsection / new page of activity recording
+		'Subsection / new page of activity recording'
 		// Get date to display properly
 
 	KING {
-		Messages
+		'Messages'
 	}
 
 	Footer
 		// Site map
 		// Back to top
-		Add site map to footer
+		// Add site map to footer
 		Credit stone wall
 
+	Levels
 
 	Admins
 		// Control panel
 		// Cache list
+			Cache location shown on map on hover
+			Sort into tabs of cache type
 		// User list
+			// Link to user profile
+			// Sort into tabs of user type
 		Reports
 		Special Placement
 		Announcements
@@ -77,10 +82,17 @@
 		Filtering and searching cache list
 		Filtering and searching user list
 
+		Styling of admin databases
+
 	User profile pages
-	Cache profile pages -- not doing! incorporate into all cache list
+		// Basic
+		// Show all caches on a map
+		'Send messages'
 
+	'Cache profile pages -- not doing! incorporate into all cache list'
 
+	Javascript disabled
+	Cross browser compatibility
 
 	
 	Handling cookies are:

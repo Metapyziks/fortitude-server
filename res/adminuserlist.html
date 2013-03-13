@@ -4,13 +4,15 @@
     }
 
 	Include("parts/functions.html");
-	getPageStart("User list", "parts/admin_script.js", null);
+	getPageStart("User list", "parts/admin_user_script.js", null);
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 
 ?>
 		<div id = "content">
 			<h1>User List</h1>
+
+
 
 			<p style = "text-align: right; margin-right: 20px;">
 				<a onclick = "showTab('owner')">Owners</a> | <a onclick = "showTab('admin')">Administrators</a> | <a onclick = "showTab('verified')">Verified Users</a> | <a onclick = "showTab('unverified')">Unverified Users</a>
@@ -27,6 +29,8 @@
 				</li>
 				<li id = "unverified">
 					<? getUserSectionByRank(Rank.Unverified, "Unverified Users"); ?>
+				</li>
+				<li id = "result">
 				</li>
 			</ul>
 		</div> <!-- content -->

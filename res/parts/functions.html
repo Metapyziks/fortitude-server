@@ -36,7 +36,7 @@
 	};
 
 	// Get a section of the user list corresponding to users of a certain rank.
-	// @Params: String rank
+	// @Params: Rank (rank object) and string of section title
 	Action<Rank, String> getUserSectionByRank = (rank, title) =>
 	{
 ?>		
@@ -65,6 +65,56 @@
 <?		} ?>
 					</table>
 <?					
+	};
+
+	// Get a section of the cache list corresponding to caches of a certain type.
+	// @Params: String cache type and string of section title.
+	// Cache type is given as "owned", "unowned", and "admin".
+	Action<String, String> getCacheSectionByType = (type, title) =>
+	{
+?>
+		<h1>{$title}</h1>
+		<table border="0" cellpadding="4" style = "text-align: center;">
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Location</th>
+<?		if (type == "owned") { ?>
+				<th>Owner</th>
+<?		}	?>
+				<th>Balance</th>
+			</tr>
+<?		
+		IEnumerable<Cache> these_caches = DatabaseManager.Select<Cache>(x => x.AccountID == -1);
+
+		if (type == "owned"){
+			these_caches = DatabaseManager.Select<Cache>(x => x.AccountID > 0);
+		}
+
+		else if (type == "unowned"){
+			these_caches = DatabaseManager.Select<Cache>(x => x.AccountID == 0);
+		}
+
+		foreach (Cache cache in these_caches){
+?>
+			<tr>
+				<td>{$cache.CacheID}</td>
+				<td>{$cache.Name}</td>
+				<td>{$cache.Latitude}, {$cache.Longitude}</td>
+				
+<?			if (type == "owned") {
+				var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);
+?> 						
+				<td><a href="profile?user={$owner.Username}">{$owner.Username}</a></td> 
+<? 			} ?>
+				
+				<td>{$cache.Balance}</td>
+			</tr>
+<?
+		}
+?>	
+		</table>
+<?
 	};
 
     Func<bool> isSignedIn = () =>

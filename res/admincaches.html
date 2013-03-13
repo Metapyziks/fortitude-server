@@ -4,39 +4,29 @@
     }
 
     Include("parts/functions.html");
-	getPageStart("Cache List", null, null);
+	getPageStart("Cache List", "parts/admin_cache_script.js", null);
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 
 ?>
 		<div id = "content">
 			<h1>Cache List</h1>
-			<table border="0" cellpadding="4">
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Location</th>
-					<th>Owner</th>
-					<th>Balance</th>
-				</tr><?
-	IEnumerable<Cache> allcaches = DatabaseManager.SelectAll<Cache>();
-	foreach (Cache cache in allcaches) { ?>
-			  	<tr>
-					<td>{$cache.CacheID}</td>
-					<td>{$cache.Name}</td>
-					<td>{$cache.Latitude}, {$cache.Longitude}</td>
-					<td>
-<?	if (cache.IsNPC) { ?> Non-player cache <? }
-	else if (!cache.HasOwner) { ?> Unowned cache <? }
-	else { 
-		var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);
-?> 						{$owner.Username} 
-<? } ?>
-					</td>
-					<td>{$cache.Balance}</td>
-				</tr><?
-	} ?>
-			</table>
+			<p style = "text-align: right; margin-right: 20px;">
+				<a onclick = "showTab('owned')">Owned caches</a> | <a onclick = "showTab('unowned')">Unowned caches</a> | <a onclick = "showTab('admin')">Outlaw camps</a>
+			</p>
+			<ul class = "news">
+				<li id = "owned">
+					<? getCacheSectionByType("owned", "User Caches"); ?>
+				</li>
+				<li id = "unowned">
+					<? getCacheSectionByType("unowned", "Unowned User Caches"); ?>
+				</li>
+				<li id = "admin">
+					<? getCacheSectionByType("admin", "Outlaw Camps / Non Player Caches"); ?>
+				</li>
+				<li id = "result">
+				</li>
+			</ul>
 
 		</div> <!-- content -->
 		

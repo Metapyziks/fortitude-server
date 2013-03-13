@@ -52,13 +52,18 @@ namespace FortitudeServer.Entities
         [NotNull]
         public int Balance { get; set; }
 
-#if DEBUG
         [CleanUpMethod]
         public void Cleanup()
         {
+#if DEBUG
             Console.WriteLine("{0}: ~Goodbye cruel world~", Name);
-        }
 #endif
+
+            DatabaseManager.Delete<BattleReport>(x => x.CacheID == CacheID);
+            DatabaseManager.Delete<Event>(x => ((x.Type == EventType.CacheAttacked
+                || x.Type == EventType.CachePlaced) && x.ContextID == CacheID)
+                || (x.Type == EventType.PlaceCache && x.AuxiliaryID == CacheID));
+        }
 
         public Response Scout(Player ply, int units)
         {

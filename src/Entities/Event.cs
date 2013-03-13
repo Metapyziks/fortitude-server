@@ -19,6 +19,7 @@ namespace FortitudeServer.Entities
         CacheAttacked = Cache | 2
     }
 
+    [DatabaseEntity]
     public class Event
     {
         [PrimaryKey, AutoIncrement]
@@ -35,5 +36,15 @@ namespace FortitudeServer.Entities
 
         [NotNull]
         public DateTime TimeStamp { get; set; }
+
+        public Event() { }
+
+        public Event(EventType type, int ctxId, int auxId = 0)
+        {
+            Type = type;
+            ContextID = ctxId;
+            AuxiliaryID = auxId;
+            TimeStamp = DateTime.Now;
+        }
     }
 }

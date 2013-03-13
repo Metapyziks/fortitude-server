@@ -151,6 +151,7 @@ namespace FortitudeServer.Entities
                     report.DefenderDeserters = (int) (report.DefenderFatalities * (Tools.Random() * 0.1 + 0.1));
                     Balance = report.AttackerSurvivors + report.DefenderDeserters;
                     AccountID = attacker.AccountID;
+                    DatabaseManager.Delete<Event>(x => x.Type == EventType.CacheAttacked && x.ContextID == CacheID);
                 } else {
                     report.DefenderDeserters = report.DefenderInitial / 2 + report.AttackerFatalities;
                     attacker.Balance += report.DefenderDeserters + report.AttackerSurvivors;
@@ -169,10 +170,15 @@ namespace FortitudeServer.Entities
                     DatabaseManager.Update(defender);
                 }
             }
+            
+            DatabaseManager.Insert(report);
+            report = DatabaseManager.Select<BattleReport>(x => x.CacheID == report.CacheID && x.AttackerID == report.AttackerID).Last();
+
+            DatabaseManager.Insert(new Event(EventType.AttackCache, attacker.AccountID, report.NotificationID));
 
             if (!IsNPC) {
                 DatabaseManager.Update(this);
-                DatabaseManager.Insert(report);
+                DatabaseManager.Insert(new Event(EventType.CacheAttacked, CacheID, report.NotificationID));
             }
 
             DatabaseManager.Update(attacker);

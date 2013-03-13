@@ -57,6 +57,12 @@ namespace FortitudeServer.Requests
             DatabaseManager.Update(ply);
             DatabaseManager.Insert(cache);
 
+            cache = DatabaseManager.Select<Cache>(x => x.AccountID == acc.AccountID
+                && x.Name == cache.Name).Last();
+
+            DatabaseManager.Insert(new Event(EventType.CachePlaced, cache.CacheID));
+            DatabaseManager.Insert(new Event(EventType.PlaceCache, acc.AccountID, cache.CacheID));
+
             return new CacheInfoResponse(cache);
         }
     }

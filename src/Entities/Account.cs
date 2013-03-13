@@ -114,8 +114,10 @@ namespace FortitudeServer.Entities
             };
 
             DatabaseManager.Insert(account);
-
             account = DatabaseManager.Select<Account>(x => x.Email == email)[0];
+
+            DatabaseManager.Insert(new Event(EventType.Register, account.AccountID));
+
             EmailValidationCode.Create(EmailValidationType.Activate, account).SendEmail(account);
 
             return null;

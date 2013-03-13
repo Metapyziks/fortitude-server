@@ -27,7 +27,7 @@
 		// Test with pins
 		// Format pin colours
 		Display cache on hover
-		Link to cache details
+		// Link to cache details
 		// Implement search ajax
 		'Plan route to cache'
 

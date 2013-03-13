@@ -16,8 +16,24 @@ function getCookie(c_name) {
     }
 }
 
+function colourMessages() {
+    var _colours = ["#3c3c3c", "#303030"];
+
+    var table = document.getElementById("msg_table");
+    var count = 0;
+    for (var i = 1, row1; row1 = table.rows[i]; i += 2) {
+        if (row1.style.display != "none") {
+            var row2 = table.rows[i+1];
+            row1.style.background = _colours[count % _colours.length];
+            row2.style.background = row1.style.background;
+            ++ count;
+        }
+    }
+}
+
 function toggleMessage(messageid) {
     var contentElement = document.getElementById("msg_" + messageid);
+    var buttonsElement = document.getElementById("buttons_" + messageid);
     var iconElement = document.getElementById("icon_" + messageid);
     if (contentElement.style.display == "none") {
         if (!iconElement.src.endsWith("_read.gif")) {
@@ -31,8 +47,31 @@ function toggleMessage(messageid) {
                 }
             });
         }
-        contentElement.style.display = "inline";
+        contentElement.style.display = buttonsElement.style.display = "inline";
     } else {
-        contentElement.style.display = "none";        
+        contentElement.style.display = buttonsElement.style.display = "none";        
     }
+}
+
+function deleteMessage(messageid) {
+    var row1Element = document.getElementById("row1_" + messageid);
+    var row2Element = document.getElementById("row2_" + messageid);
+
+    row1Element.style.display = "none";
+    row2Element.style.display = "none";
+
+    new Ajax.Request("/api/deletemessage", {
+        method : "get",
+        parameters : {
+            uid : getCookie("auth-uid"),
+            session : getCookie("auth-session"),
+            messageid : messageid
+        }
+    });
+
+    colourMessages();
+}
+
+window.onload = function() {
+    colourMessages();
 }

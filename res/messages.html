@@ -5,7 +5,7 @@
     }
 
     Include("parts/functions.html");
-    getPageStart("News", null, null);
+    getPageStart("News", "//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js", "/parts/messages_script.js");
     Include("parts/header.html");
     Include ("parts/sidebar.html");
     
@@ -31,12 +31,12 @@
         var sender = DatabaseManager.SelectFirst<Account>(x => x.AccountID == message.SenderID);
         if (sender == null) continue;
         var backColour = backColours[rowNumber++ % backColours.Length];
-        var linkStart = "<a onclick=\"toggleMessage({$rowNumber});\" style=\"border-bottom: none; !important;\" >";
+        var linkStart = "<a onclick=\"toggleMessage(" + message.NotificationID + ");\" style=\"border-bottom: none; !important;\" >";
         var linkEnd = "</a>";
 ?>
         <tr style="background-color: {$backColour}">
             <td>
-                {$linkStart}<img src="/images/news_envelope{$message.Status == ReadStatus.Read ? "_read" : ""}.gif" style="margin: 2px 2px -2px 2px;" />{$linkEnd}
+                {$linkStart}<img id="icon_{$message.NotificationID}" src="/images/news_envelope{$message.Status == ReadStatus.Read ? "_read" : ""}.gif" style="margin: 2px 2px -2px 2px;" />{$linkEnd}
             </td>
             <td>
                 {$linkStart} {$message.Subject} {$linkEnd}
@@ -48,10 +48,11 @@
                 {$linkStart} {$message.TimeStamp} {$linkEnd}
             </td>
         </tr>
-        <tr style="display: none;" id="msg_{$rowNumber}">
-            <td> </td>
-            <td colspan="3" style="text-align: left; background-color: {$backColour}">
-                <p>{$message.Content}</p>
+        <tr style="height: auto; text-align: left;">
+            <td style="height: auto;" colspan="4">
+                <div style="display: none;" id="msg_{$message.NotificationID}">
+                    <p>{$message.Content}</p>
+                </div>
             </td>
         </tr>
 <?
@@ -59,7 +60,7 @@
     }
     if (!hadMessage) {
 ?>
-        <tr>No messages :(<tr>
+        <tr><td colspan="4">No messages :(</td><tr>
 <?
     }
 ?>

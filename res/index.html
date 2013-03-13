@@ -4,27 +4,54 @@
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 
+	bool resend = false;
+	if (get["resend"] == "true" && isSignedIn()) {
+		resend = true;
+		EmailValidationCode.Create(EmailValidationType.Activate, account).SendEmail(account);
+	}
+
 ?>
 		<div id = "content">
 			<h1>Fortitude</h1>
-			<ul class="news"><li>
-			<p>
-				Dare to test your fortitude? Fortitude is geocaching with a twist! 
-			</p>
-			<p>
-				Use the application on your android phone to conquer the world, by placing and defending caches at your location as well as travelling to your enemies caches to attack them. Here on the website, you can view a cache to target and set a route for you and your army to follow.
-			</p>
-			<p>	
-				Watch your army size increase as you expand your empire, plan battle strategies and make sure your kingdom dominates above all!
-			</p>
-			<div class = "image_box">
-				<img src="/images/battle_report_mockup.gif">
-				<img src="/images/main_mockup.jpg">
-				<img src="/images/attack_cache_mockup.gif">
-			</div>
-			<div style="clear: both;"></div>
-			<br />
-		</li></ul>
+			<ul class="news">
+<?	if (isSignedIn() && account.Rank == Rank.Unverified && !resend) {	?>
+				<li style="margin-bottom: 20px;">
+					<p>
+						Your account is not activated! Click the link in the email you were sent to activate your account and start joining in with Fortitude. Your account needs to be activated to place and conquer caches or send messages... so what are you waiting for?
+					</p>
+					<p>
+						If you can't find the activation email, check your spam folder or add {$EmailManager.AdminEmail} to your safe senders list. Or click the button below to resend the email.
+					</p>
+					<form id="resend_email" name="resend_email" action="index?resend=true" method="post" style="text-align@ center;">
+						<input type="submit" value="Send" />
+					</form>
+				</li>				
+<?	}	else if (isSignedIn() && resend ) { ?>
+				<li style="margin-bottom: 20px;">
+					<p>
+						An activation email has been sent to {$account.Email}. Remember to check your spam folder if you cannot see it!
+					</p>
+				</li>
+<?	}	?>
+				<li>
+					<p>
+						Dare to test your fortitude? Fortitude is geocaching with a twist! 
+					</p>
+					<p>
+						Use the application on your android phone to conquer the world, by placing and defending caches at your location as well as travelling to your enemies caches to attack them. Here on the website, you can view a cache to target and set a route for you and your army to follow.
+					</p>
+					<p>	
+						Watch your army size increase as you expand your empire, plan battle strategies and make sure your kingdom dominates above all!
+					</p>
+					<div class = "image_box">
+						<img src="/images/battle_report_mockup.gif">
+						<img src="/images/main_mockup.jpg">
+						<img src="/images/attack_cache_mockup.gif">
+					</div>
+					<div style="clear: both;"></div>
+					<br />
+				</li>
+			</ul>
 		</div> <!-- content -->
 		
 		<? Include ("parts/footer.html"); ?>

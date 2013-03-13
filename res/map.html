@@ -144,7 +144,7 @@
 		</div>
 		<? Include ("parts/footer.html"); ?>
 		<script>
-	var thisMap = initialize();
+	initialize();
 <?
 	if (searchtype == "location" && search != "") {
 ?>
@@ -153,9 +153,38 @@
 	}
 
 	foreach (Cache cache in displaycaches) {
+	    if(cache.AccountID == account.AccountID)
+	    {
 ?>
-		addMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", thisMap);
+           var content = document.createElement('div');
+           content.innerHTML = "MEOW I AM A CAT!";
+		addAlliedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <?
+	    }
+	    else if(cache.AccountID == -1)
+	    {
+?>		  
+           var content = document.createElement('div');
+           content.innerHTML = "WOOF I AM A DOG!";
+  		addAdminMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
+<? 
+            }
+	    else if(cache.AccountID == 0)
+	    {
+?>
+              var content = document.createElement('div');
+              content.innerHTML = "OINK I AM A PIG!";  
+              addUnownedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
+<?
+	    }
+            else
+	    {
+?>    
+                var content = document.createElement('div');
+                content.innerHTML = "MOO I AM A COW!";
+		addEnemyMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
+<?
+	    }
 	}
 ?>
 	</script>

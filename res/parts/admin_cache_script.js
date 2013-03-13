@@ -3,6 +3,7 @@
 	window.onload = function () {
 		hide ("unowned");
 		hide ("admin");
+		hide ("special");
 		hide ("result");
 	}
 
@@ -10,6 +11,7 @@
 		hide ("owned");
 		hide ("unowned");
 		hide ("admin");
+		hide ("special");
 		hide ("result");
 
 		show (id);

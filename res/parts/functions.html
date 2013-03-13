@@ -152,7 +152,7 @@
     };
 	
 	// Get a string out for how long ago a user's account was created
-	// @Params DateTime of when the user account was created
+	// @Params create is DateTime of when the user account was created
 	Action<DateTime> calculateAge = (created) =>
 	{
 		var ts = new TimeSpan(DateTime.UtcNow.Ticks - created.Ticks);
@@ -181,72 +181,54 @@
 			Echo (years <= 1 ? "one year ago" : years + " years ago");
 		}
 	};
+
+	// Create the set up for getting a user's level. This is done by creating an array of all levels;
+	// the number of points required for each level is calculated by a separate function to avoid
+	// having to rework anything if a level is added or remove.	
+	var _levelNames = new String[] {
+		"Serf",
+		"Peasant",
+		"Soldier",
+		"Archer",
+		"Knave",
+		"Housecarl",
+		"Knight",
+		"Lord",
+		"Baron",
+		"Conquerer",
+		"Warlord",
+		"Emperor",
+		"Has no life"
+	};
+
+	var _levelInts = new int[_levelNames.Length];
+	int max = 100;
+
+	for (int i = 0; i < _levelNames.Length; i++) {
+		double fraction = ((double) i/(_levelNames.Count()-1));
+		_levelInts[i] = (int) Math.Round (fraction*fraction * max);
+	}
 	
-	// Get the account status i.e Elite Warlord, depending on the number of 
-	// caches a user has
+	// Caculate a users level, depending on the number of 
+	// caches a user has and referring to the array of all names.
 	Action calculateStatus = () =>
 	{
 		var number = DatabaseManager.Select<Cache>(x => x.AccountID == session.AccountID).Count;
+		var level = _levelNames[_levelNames.Length-1];
+
+		if (number == 42) {
+			level = "The Answer";
+		}
+
+		else {
+			for (int i = 0; i < _levelNames.Length; i++) {
+				if (number <= _levelInts[i]) {
+					level = _levelNames[i];
+					break;
+				}
+			}
+		}
 		
-		if (number == 0)
-		{
-			Echo ("Serf");
-		}
-		else if (number == 1)
-		{
-			Echo ("Peasant");
-		}
-		else if (number == 2)
-		{
-			Echo ("Servant");
-		}
-		else if (number <= 4)
-		{
-			Echo ("Soldier");
-		}
-		else if (number <= 7)
-		{
-			Echo ("Knave");
-		}
-		else if (number <= 12)
-		{
-			Echo ("Housecarl");
-		}
-		else if (number <= 20)
-		{
-			Echo ("Knight");
-		}
-		else if (number <= 33)
-		{
-			Echo ("Lord");
-		}
-		else if (number <= 42)
-		{
-			Echo ("Baron");
-		}
-		else if (number == 43)
-		{
-			Echo ("The Answer");
-		}
-		else if (number <= 54)
-		{
-			Echo ("Baron");
-		}
-		else if (number <= 88)
-		{
-			Echo ("High Warlord");
-		}
-		else if (number <= 143)
-		{
-			Echo ("Conqurer");
-		}
-		else if (number <=999)
-		{
-			Echo ("Emporor");
-		}
-		else
-		{
-			Echo ("Has no life!");
-		}
+		Echo (level);
 	};
 ?>

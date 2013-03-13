@@ -222,6 +222,7 @@
 	
 	#footer p {
 		text-align: center;
+		margin-left: 550px;
 	}
 	
 	#footer .padding {
@@ -243,16 +244,20 @@
 	#footer ul.sitenav {
 		float: left;
 		display: block;
-		width: 22%;
+		width: 8%;
+	}
+
+	#footer ul {
 		list-style: none;
+		margin: 0px;
 	}
 	
 	#footer ul a {
 		border-bottom: 0px !important;
 	}
 
-	#footer ul ul {
-		margin-left: 15px;
+	#footer li {
+		margin-left: -25px !important;
 	}
 
 	/*	-------------------------------------------------------------------------	*/
@@ -435,6 +440,10 @@
 
 	#content ul.news img {
 		max-height: 200px;
+	}
+
+	#content ul.news #map_canvas img {
+		max-height: 600px !important;
 	}
 
 	#content ul.news img.map_cache {

@@ -16,6 +16,7 @@
 		'Integrate errors neatly; asynchronious checking'
 		// Should be two email fields
 		// Activate account
+		// Resend activation email
 		// Forgot your password
 
 	// Side bar
@@ -24,7 +25,7 @@
 
 	Map
 		// Test with pins
-		Format pin colours
+		// Format pin colours
 		Display cache on hover
 		Link to cache details
 		// Implement search ajax
@@ -43,13 +44,14 @@
 	// Home
 		// Fill home screen
 
-	// Account screen
+	Account screen
 		// Add forms and stuff
 		// Change avatar
 		// KING { 'Delete Account' }
 		// Update password
 		// Update message settings
 		// Subsection / new page of all caches
+			Cache History
 		// Subsection / new page of activity recording
 		// Get date to display properly
 
@@ -76,7 +78,12 @@
 			// Sort into tabs of user type
 		Reports
 		Special Placement
-		Announcements
+			// Included in cache view
+			Create new
+		Moving delete caches
+		Updating place npc
+
+		'Announcements'
 		// Console log
 		// Restart and update
 

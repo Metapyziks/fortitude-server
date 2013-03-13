@@ -24,6 +24,34 @@
 				<li id = "admin">
 					<? getCacheSectionByType("admin", "Outlaw Camps / Non Player Caches"); ?>
 				</li>
+				<li id = "special">
+					<h1>Current Special Caches</h1>
+					<table border="0" cellpadding="4" style = "text-align: center;">
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Expiry Date</th>
+							<th>Balance</th>
+							<th>Reward</th>
+							<th>Mac Address</th>
+						</tr>
+<?
+
+		var specialEvents = DatabaseManager.SelectAll<SpecialEvent>();
+
+		foreach (var evnt in specialEvents) { 
+?>
+					  	<tr>
+							<td>{$evnt.SpecialEventID}</td>
+							<td>{$evnt.Name}</td>
+							<td>{$evnt.Expires}</td>
+							<td>{$evnt.Balance}</td>
+							<td>{$evnt.Reward}</td>
+							<td>{$evnt.MACAddress}</td>
+						</tr>
+<?		} ?>
+					</table>
+				</li>
 				<li id = "result">
 				</li>
 			</ul>

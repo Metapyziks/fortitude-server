@@ -144,7 +144,7 @@
 		</div>
 		<? Include ("parts/footer.html"); ?>
 		<script>
-	var thisMap = initialize();
+	initialize();
 <?
 	if (searchtype == "location" && search != "") {
 ?>
@@ -153,9 +153,30 @@
 	}
 
 	foreach (Cache cache in displaycaches) {
+	    if(cache.AccountID == account.AccountID)
+	    {
 ?>
-		addMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", thisMap);
+		addAlliedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
 <?
+	    }
+	    else if(cache.AccountID == -1)
+	    {
+?>		  
+  		addAdminMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
+<? 
+            }
+	    else if(cache.AccountID == 0)
+	    {
+?>
+      		addUnownedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
+<?
+	    }
+            else
+	    {
+?>    
+		addEnemyMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}");
+<?
+	    }
 	}
 ?>
 	</script>

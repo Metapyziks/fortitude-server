@@ -9,6 +9,7 @@
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 
+	var events = DatabaseManager.Select<Event>(x => x.Type < EventType.Cache && x.ContextID == account.AccountID);
 ?>
 		<div id = "content">
 			<h1>View Activity Log</h1>
@@ -16,7 +17,15 @@
 				Here is what you've been up to.
 			</p>
 			<ul class = "news">
+<?			
+	foreach (var evt in events) 
+		{
+?>
+			<li>{$evt.Type} {$evt.TimeStamp}</li>
+<?
 
+			}
+?>
 			</ul>
 		</div> <!-- content -->
 		

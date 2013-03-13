@@ -4,6 +4,7 @@
 		hide ("owner");
 		hide ("admin");
 		hide ("unverified");
+		hide ("result");
 	}
 
 	function showTab (id) {
@@ -11,6 +12,7 @@
 		hide ("admin");
 		hide ("verified");
 		hide ("unverified");
+		hide ("result");
 
 		show (id);
 	}

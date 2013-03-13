@@ -317,22 +317,30 @@ namespace FortitudeServer
                     }
                     break;
                 case "message":
-                    if (args.Length < 3) {
-                        Error("Expected a receiver, subject, and content");
+                    if (args.Length < 4) {
+                        Error("Expected a sender, receiver, subject, and content");
                         break;
                     }
-                    String receiverName = args[0];
-                    String subject = args[1];
-                    String content = args[2];
+                    String senderName = args[0];
+                    String receiverName = args[1];
+                    String subject = args[2];
+                    String content = args[3];
 
+                    var sender = DatabaseManager.SelectFirst<Account>(x => x.Username == senderName);
+
+                    if (sender == null) {
+                        Error("Invalid sender name");
+                        break;
+                    }
+                    
                     var receiver = DatabaseManager.SelectFirst<Account>(x => x.Username == receiverName);
 
                     if (receiver == null) {
-                        Error("Invalid user name");
+                        Error("Invalid receiver name");
                         break;
                     }
 
-                    DatabaseManager.Insert(new Message(1, receiver.AccountID, subject, content));
+                    DatabaseManager.Insert(new Message(sender.AccountID, receiver.AccountID, subject, content));
                     break;
                 case "gibemone":
                     if (args.Length < 2) {

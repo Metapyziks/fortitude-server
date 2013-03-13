@@ -9,16 +9,21 @@ using Nini.Ini;
 
 namespace FortitudeServer
 {
-    static class EmailManager
+    public static class EmailManager
     {
-        private static SmtpClient stClient;
-        private static String stAdminEmail;
+        private static SmtpClient _sClient;
+        private static String _sAdminEmail;
 
         public static bool IsAvaliable
         {
-            get { return stClient != null; }
+            get { return _sClient != null; }
         }
 
+        public static String AdminEmail
+        {
+            get { return _sAdminEmail; }
+        }
+        
         public static void CreateClient(IniSection settings)
         {
             CreateClient( settings.GetValue( "server" ),
@@ -31,9 +36,9 @@ namespace FortitudeServer
 
         public static void CreateClient(String smtpAddress, int port, String email, String username, String password, bool ssl)
         {
-            stAdminEmail = email;
+            _sAdminEmail = email;
 
-            stClient = new SmtpClient(smtpAddress, port) {
+            _sClient = new SmtpClient(smtpAddress, port) {
                 Credentials = new NetworkCredential(username, password),
                 EnableSsl = ssl
             };
@@ -44,7 +49,7 @@ namespace FortitudeServer
         public static void Send(String to, String subject, String message)
         {
             try {
-                stClient.SendAsync(stAdminEmail, to, subject, message, null);
+                _sClient.SendAsync(_sAdminEmail, to, subject, message, null);
             } catch {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Email not sent because of reasons");

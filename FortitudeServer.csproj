@@ -89,6 +89,7 @@
     <Compile Include="src\Requests\BlockedUserListRequest.cs" />
     <Compile Include="src\Requests\CacheTransactionRequest.cs" />
     <Compile Include="src\Requests\ClaimSpecialEventRequest.cs" />
+    <Compile Include="src\Requests\DeleteMessageRequest.cs" />
     <Compile Include="src\Requests\NotificationListRequest.cs" />
     <Compile Include="src\Requests\ReadMessageRequest.cs" />
     <Compile Include="src\Requests\SendMessageRequest.cs" />

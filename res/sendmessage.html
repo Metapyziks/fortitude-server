@@ -5,11 +5,9 @@
     }
 
     Include("parts/functions.html");
-    getPageStart("News", new String[] { "//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js", "/parts/messages_script.js" }, null);
+    getPageStart("News", null, null);
     Include("parts/header.html");
     Include ("parts/sidebar.html");
-    
-    var messages = DatabaseManager.Select<Message>(x => x.AccountID == account.AccountID);
 ?>
 
 <div id = "content">
@@ -18,20 +16,23 @@
         <li>
             <h1>Inbox</h1>
 
-            <table style="text-align: center;" id="msg_table">
+            <table style="text-align: center;">
                 <col width="30px" /> <col width="50%" /> <col width="25%" /> <col width="25%" />
                 <tr style="background-color: #292929;">
                     <th></th> <th>Subject</th> <th>Sender</th> <th>Date</th>
                 </tr>
 <?
     bool hadMessage = false;
+    var backColours = new[] { "#3c3c3c", "#303030" };
+    int rowNumber = 0;
     foreach (var message in messages) {
         var sender = DatabaseManager.SelectFirst<Account>(x => x.AccountID == message.SenderID);
         if (sender == null) continue;
+        var backColour = backColours[rowNumber++ % backColours.Length];
         var linkStart = "<a onclick=\"toggleMessage(" + message.NotificationID + ");\" style=\"border-bottom: none; !important;\" >";
         var linkEnd = "</a>";
 ?>
-        <tr id="row1_{$message.NotificationID}">
+        <tr style="background-color: {$backColour}">
             <td>
                 {$linkStart}<img id="icon_{$message.NotificationID}" src="/images/news_envelope{$message.Status == ReadStatus.Read ? "_read" : ""}.gif" style="margin: 2px 2px -2px 2px;" />{$linkEnd}
             </td>
@@ -45,16 +46,10 @@
                 {$linkStart} {$message.TimeStamp} {$linkEnd}
             </td>
         </tr>
-        <tr id="row2_{$message.NotificationID}" style="height: auto; text-align: left;">
-            <td style="height: auto;" colspan="3">
+        <tr style="height: auto; text-align: left; background-color: {$backColour};">
+            <td style="height: auto;" colspan="4">
                 <div style="display: none;" id="msg_{$message.NotificationID}">
                     <p>{$message.Content}</p>
-                </div>
-            </td>
-            <td style="height: auto; text-align: center;">
-                <div style="display: none; text-align: center; width: 100%;" id="buttons_{$message.NotificationID}">
-                    <input type="button" href="/sendmessage?recipientid={$message.SenderID}" value="Reply" />
-                    <input type="button" onclick="deleteMessage({$message.NotificationID});" value="Delete" />
                 </div>
             </td>
         </tr>

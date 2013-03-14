@@ -74,10 +74,10 @@ function getCookie(c_name) {
 
 function styleTable(tableId, startFrom) {
     var _colours = ["#3c3c3c", "#303030"];
-
+    
     var table = document.getElementById(tableId);
     var count = 0;
-    for (var i = startFrom || 0, row1; row1 = table.rows[i]; ++ i) {
+    for (var i = startFrom, row1; row1 = table.rows[i]; ++ i) {
         if (row1.style.display != "none") {
             row1.style.background = _colours[count % _colours.length];
             ++ count;

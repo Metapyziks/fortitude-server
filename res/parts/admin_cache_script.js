@@ -5,6 +5,11 @@
 		hide ("admin");
 		hide ("special");
 		hide ("result");
+
+		styleTable ("tspecial", 1);
+		styleTable ("tadmin", 1);
+		styleTable ("towned", 1);
+		styleTable ("tunowned", 1);
 	}
 
 	function showTab (id) {

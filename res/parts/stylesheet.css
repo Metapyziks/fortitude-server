@@ -455,6 +455,10 @@
 		width: 100%;
 	}
 
+	#content ul.news table th {
+		background: #262626;
+	}
+
 	.blocked_users {
 		width: 96%;
 		height: 90px;

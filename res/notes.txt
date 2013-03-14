@@ -27,6 +27,7 @@
 		// Test with pins
 		// Format pin colours
 		Display cache on hover
+		Center map on cache when searching by cache id
 		// Link to cache details
 		// Implement search ajax
 		'Plan route to cache'
@@ -55,10 +56,10 @@
 		// Subsection / new page of activity recording
 		// Get date to display properly
 
-	Messages
+	// Messages
 		// Inbox
-		Send message	
-		Add link under user profile
+		// Send message	
+		// Add link under user profile
 
 	// Footer
 		// Site map
@@ -95,6 +96,7 @@
 	// User profile pages
 		// Basic
 		// Show all caches on a map
+		Filter cache list to single cache from get request
 
 
 	

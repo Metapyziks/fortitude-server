@@ -11,7 +11,7 @@
 
     {
         var username = post["send_username"] ?? "";
-        var subject = post["send_subject"] ?? "";
+        var subject = post["send_subject"] ?? get["subject"] ?? "";
         var message = post["send_message"] ?? "";
 
         Account user = null;

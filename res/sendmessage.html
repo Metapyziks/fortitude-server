@@ -8,6 +8,42 @@
     getPageStart("News", null, null);
     Include("parts/header.html");
     Include ("parts/sidebar.html");
+
+    {
+        var username = post["send_username"] ?? "";
+        var subject = post["send_subject"] ?? "";
+        var message = post["send_message"] ?? "";
+
+        Account user = null;
+
+        if (username.Length == 0 && get["userid"] != null && get["userid"].Length > 0) {
+            int id;
+            if (int.TryParse(get["userid"], out id)) {
+                user = DatabaseManager.SelectFirst<Account>(x => x.AccountID == id);
+                if (user != null) {
+                    username = user.Username;
+                }
+            }
+        } else if (post["action"] == "send") {
+            user = DatabaseManager.SelectFirst<Account>(x => x.Username == username);
+        }
+
+        var result_message = "";
+        if (post["action"] == "send") {
+            if (user == null) {
+                result_message = "Invalid user";
+            } else if (subject.Length < 1) {
+                result_message = "Please enter a subject";
+            } else if (message.Length < 1) {
+                result_message = "Please enter a message";
+            } else {
+                result_message = "Message sent!";
+                DatabaseManager.Insert(new Message(account.AccountID, user.AccountID, subject, message));
+                username = "";
+                subject = "";
+                message = "";
+            }
+        }
 ?>
 
 <div id = "content">
@@ -16,14 +52,15 @@
         <li style="overflow: hidden;">
             <h1>Send Message</h1>
             <form name="send_message" action="sendmessage" method="post">
+                <input type="hidden" name="action" value="send" />
                 <div style="text-align: center;">
                     <table style="width: 95%; margin: 0 2.5%; text-align: left;">
                         <tr><td>To:</td><td>Subject:</td></tr>
-                        <tr><td><input type="text" name="send_username" style="width: 192px;" /></td>
-                            <td><input type="text" name="send_subject" style="width: 384px;" /></td></tr>
+                        <tr><td><input type="text" name="send_username" style="width: 192px;" value="{$username}" /></td>
+                            <td><input type="text" maxlength="60" name="send_subject" style="width: 384px;" value="{$subject}" /></td></tr>
                         <tr><td>Message:</td></tr>
-                        <tr><td colspan="2"><textarea name="send_message" style="width: 100%; height: 160px;"></textarea></td></tr>
-                        <tr><td><input type="submit" value="Send" /></td></tr>
+                        <tr><td colspan="2"><textarea maxlength="255" name="send_message" style="width: 100%; height: 160px;">{$message}</textarea></td></tr>
+                        <tr><td><input type="submit" value="Send" /> {$result_message}</td></tr>
                     </table>
                 </div>
             </form>
@@ -32,5 +69,6 @@
 </div> <!-- content -->
 
 <?
+    }
     Include ("parts/footer.html");
 ?>

@@ -72,7 +72,7 @@
 	Admins
 		// Control panel
 		// Cache list
-			Cache location shown on map on hover
+			// !Cache location shown on map on hover or location links to view cache on map
 			// Sort into tabs of cache type
 		// User list
 			// Link to user profile
@@ -91,7 +91,7 @@
 		Filtering and searching cache list
 		Filtering and searching user list
 
-		Styling of admin databases
+		// Styling of admin databases
 
 	// User profile pages
 		// Basic

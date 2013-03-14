@@ -118,7 +118,7 @@
 			<tr id="row_{$cache.CacheID}">
 				<td>{$cache.CacheID}</td>
 				<td>{$cache.Name}</td>
-				<td>{$cache.Latitude}, {$cache.Longitude}</td>
+				<td><a href="map?cache={$cache.CacheID}">{$cache.Latitude}, {$cache.Longitude}</a></td>
 				
 <?			if (type == "owned") {
 				var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);

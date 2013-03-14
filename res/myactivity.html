@@ -17,31 +17,58 @@
 				Here is what you've been up to.
 			</p>
 			<ul class = "news">
+				<li>
+					<table border="0" cellpadding="4" style = "text-align: center;" id="acttable">
+						<tr>
+							<th style="width: 20%;">
+								Date
+							</th>
+							<th>
+								Activity
+							</th>
+						</tr>
 <?			
+
 	foreach (var evt in events) 
 	{
 		switch(evt.Type)
 		{
 			case EventType.Register: 
-				?><li>Account Created on: {$evt.TimeStamp} </li><?			
-				break;
-			case EventType.RankChange:
-				var rank = (Rank) evt.AuxiliaryID;
-				?><li>You were promoted to the rank of {$rank} on {$evt.TimeStamp} </li><?
+?>
+						<tr>
+							<td>{$evt.TimeStamp.ToShortDateString()}</td>
+							<td style="text-align: left; padding-left: 15px;">{$account.Username} joined Fortitude!</td>
+						</tr>
+<?			
 				break;
 			case EventType.PlaceCache:
-				var cachesName = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == evt.AuxiliaryID);
-				?><li>You claimed the cache {$cachesName} </li><?
+				Cache cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == evt.AuxiliaryID);
+?>
+						<tr>
+							<td>{$evt.TimeStamp.ToShortDateString()}</td>
+							<td style="text-align: left; padding-left: 15px;">Placed cache <a href="mycaches?cache={$evt.AuxiliaryID}">{$cache.Name}</a> | <a href="map?cache={$evt.AuxiliaryID}">View on map</a></td>
+						</tr>
+<?		
 				break;
 			case EventType.AttackCache:
-				var theBattleReportThing =DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == evt.AuxiliaryID);
-				var thecachesName = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == theBattleReportThing.CacheID);
-				?><li>{$thecachesName} was attacked on {evt.TimeStamp}! </li><?
+				BattleReport bat_rep =DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == evt.AuxiliaryID);
+				Cache bat_cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == bat_rep.CacheID);
+?>
+						<tr>
+							<td>{$evt.TimeStamp.ToShortDateString()}</td>
+							<td style="text-align: left; padding-left: 15px;">Battle report involving cache <a href="mycaches?cache={$bat_cache.CacheID}">{$bat_cache.Name}</a> | <a href="map?cache={$bat_cache.CacheID}">View on map</a></td>
+						</tr>
+<?	
 				break;
 		}
 	}
 ?>
+					</table>
+				</li>
 			</ul>
 		</div> <!-- content -->
 		
 		<? Include ("parts/footer.html"); ?>
+		<script>
+			window.onload = styleTable ("acttable", 1);
+		</script>

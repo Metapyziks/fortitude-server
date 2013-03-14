@@ -90,14 +90,22 @@
 				<th>Location</th>
 <?		if (type == "owned") { ?>
 				<th>Owner</th>
-<?		}	?>
+<?		}
+		if (type == "admin") {
+?>
+				<th>Growth Style</th>
+<?	}	?>
 				<th>Balance</th>
 				<th>Delete</th>
 			</tr>
 <?		
-		IEnumerable<Cache> these_caches = DatabaseManager.Select<Cache>(x => x.AccountID == -1);
+		IEnumerable<Cache> these_caches = null;
 
-		if (type == "owned"){
+		if (type == "admin") {
+			these_caches = DatabaseManager.SelectAll<NonPlayerCache>();
+		}
+
+		else if (type == "owned"){
 			these_caches = DatabaseManager.Select<Cache>(x => x.AccountID > 0);
 		}
 
@@ -116,7 +124,16 @@
 				var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);
 ?> 						
 				<td><a href="profile?user={$owner.Username}">{$owner.Username}</a></td> 
-<? 			} ?>
+<? 			} 
+			if (type == "admin") {
+				NonPlayerCache npc = (NonPlayerCache) cache;
+				GrowthStyle shape = (GrowthStyle) ((int) npc.GrowthStyle & 3);
+				GrowthStyle speed = (GrowthStyle) ((int) npc.GrowthStyle & 12);
+?>
+				<td>{$shape == GrowthStyle.Slow ? "Constant" : shape.ToString()}, {$speed}</td>
+<?
+			}
+?>
 				
 				<td>{$cache.Balance}</td>
 				<td><input type="button" onclick="deleteCache({$cache.CacheID});" value="Delete" /></td>

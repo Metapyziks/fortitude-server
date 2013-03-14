@@ -5,9 +5,6 @@
     }
 
     Include("parts/functions.html");
-    getPageStart("News", null, null);
-    Include("parts/header.html");
-    Include ("parts/sidebar.html");
 
     {
         var username = post["send_username"] ?? "";
@@ -37,13 +34,15 @@
             } else if (message.Length < 1) {
                 result_message = "Please enter a message";
             } else {
-                result_message = "Message sent!";
                 DatabaseManager.Insert(new Message(account.AccountID, user.AccountID, subject, message));
-                username = "";
-                subject = "";
-                message = "";
+                response.Redirect("/messages.html?response=Message+sent+successfully");
+                return;
             }
         }
+
+        getPageStart("News", null, null);
+        Include("parts/header.html");
+        Include ("parts/sidebar.html");
 ?>
 
 <div id = "content">

@@ -17,11 +17,26 @@
         }
     };
 
+    var page_response = get["response"] ?? "none";
+
     var messages = DatabaseManager.Select<Message>(x => x.AccountID == account.AccountID).OrderByDescending(x => x.TimeStamp.Ticks);
 ?>
 
 <div id = "content">
     <h1>Messages</h1>
+<?
+    if (page_response != "none") {
+?>
+                <ul class="news">
+                    <li>
+                        <p>
+                            {$page_response}
+                        </p>
+                    </li>
+                </ul>
+<?
+    }
+?>
     <ul class = "news">
         <li>
             <h1>Inbox</h1>

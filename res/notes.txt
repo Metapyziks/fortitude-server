@@ -54,6 +54,7 @@
 		// Subsection / new page of all caches
 			// Cache History
 		// Subsection / new page of activity recording
+			Style activity recording
 		// Get date to display properly
 
 	// Messages

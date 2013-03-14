@@ -39,7 +39,9 @@ var alliedCacheIcon = 'http://www.google.com/intl/en_us/mapfiles/ms/micons/blue.
 	    {
 	        if (status == google.maps.GeocoderStatus.OK)
 	        {   
+	            alert(results[0].geometry.location);
 	            processCoords(results[0].geometry.location);
+
 	        }
 	        else
 	        {

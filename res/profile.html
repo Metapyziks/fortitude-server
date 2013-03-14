@@ -20,7 +20,7 @@
 	};
 	
 	if (profileUsername == "") {
-		response.Redirect("/login.html");
+		response.Redirect("/index.html");
 		return;
 	}
 
@@ -69,7 +69,11 @@
 	Include ("parts/sidebar.html"); 
 ?>
 		<div id = "content">
+<? 	if (profileUsername == "" || profile == null) { ?> 
+			<h1>User Profile</h1>
+<?	} else {	?>			
 			<h1>{$profile.Username}</h1>
+<? } ?>
 			<p>
 				
 			</p>
@@ -82,7 +86,8 @@
 <? 	if (profileUsername == "" || profile == null) { ?> 
 					<p> We could not find the account you entered. Please try again.</p>
 					<p>Please enter a search term:</p>
-<? 		Include ("/parts/search_form.html");
+<? 		Include ("/parts/search_form.html"); ?><br /><br />
+<?
 	}
 	else { ?> 
 					

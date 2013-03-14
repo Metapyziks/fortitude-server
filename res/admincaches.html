@@ -10,14 +10,22 @@
 
 	var cache_ID = get["cache"] ?? "";
 	String page_response = "none";
-	Cache this_cache = null;
+	Cache this_here_cache = null;
+	List<Cache> these_here_caches = null;
 
 	if (cache_ID != "") {
 		int cacheIDasInt;
 		if (int.TryParse(cache_ID, out cacheIDasInt)) {
-			this_cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheIDasInt);
-			if (this_cache == null) {
-				page_response = "You do not appear to own this cache!.";
+			this_here_cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheIDasInt);
+			if (this_here_cache == null) {
+				page_response = "Could not find cache with CacheID " + cache_ID + ".";
+			}
+		}
+		else {
+			these_here_caches = DatabaseManager.Select<Cache>(x => x.Name == cache_ID);
+			if (these_here_caches.Count() < 1) {
+				page_response = "Could not find any caches with name " + cache_ID + ".";
+				these_here_caches = null;
 			}
 		}
 	}
@@ -25,7 +33,30 @@
 ?>
 		<div id = "content">
 			<h1>Cache List</h1>
-			<p style = "text-align: right; margin-right: 20px;">
+			<ul class = "news">
+<?
+	if (page_response != "none") {
+?>
+				<li>
+					<p>{$page_response}</p>
+				</li>
+<?
+	}
+
+	if (this_here_cache != null) {
+		getCacheDetails (this_here_cache);
+	}
+
+	if (these_here_caches != null) {
+		foreach (Cache here_cache in these_here_caches) {
+			getCacheDetails (here_cache);
+		}
+	}	
+?>
+			</ul>
+			<form style = "float: left; width: 40%;">
+				
+			<p style = "text-align: right; margin-right: 20px; margin-top: 20px;">
 				<a onclick = "showTab('owned')">Owned caches</a> | <a onclick = "showTab('unowned')">Unowned caches</a> | <a onclick = "showTab('admin')">Outlaw camps</a> | <a onclick = "showTab('special')">Special Placement</a>
 			</p>
 			<ul class = "news">

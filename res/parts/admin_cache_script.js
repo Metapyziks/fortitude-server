@@ -32,6 +32,9 @@
 
 
 	function deleteCache(cacheid) {
+		if (!confirm('Delete this cache? Action cannot be reversed.')) {
+			return;
+		}
 		document.getElementById("row_" + cacheid).style.display = "none";
 
 	    new Ajax.Request("/api/deletecache", {

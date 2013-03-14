@@ -181,6 +181,18 @@ namespace FortitudeServer
                     else
                         Success("Promoted {0} to admin", args[0]);
                     break;
+                case "deleteaccount":
+                    if (args.Length == 0) {
+                        Error("Expected a user name");
+                        break;
+                    }
+                    var accnt = DatabaseManager.SelectFirst<Account>(x => x.Username == args[0]);
+                    if (accnt == null) {
+                        Error("Invalid user name");
+                        break;
+                    }
+                    DatabaseManager.Delete(accnt);
+                    break;
                 case "delete":
                     if (args.Length == 0) {
                         Error("Expected an identifier");

@@ -38,18 +38,18 @@
 <?
 			if (events.Count() > 0) {
 ?>
-				<div style = "width: 80%; float: right;">
+				<div style = "width: 70%; float: right;">
 				<table border="0" cellpadding="4" style = "text-align: center;">
 					<tr>
-						<th>Date</th>
-						<th>Attacker</th>
-						<th>Attacking army</th>
-						<th>Defending army</th>
-						<th>Surviving defendors</th>
+						<th style="width: 16.7%;">Date</th>
+						<th style="width: 16.7%;">Attacker</th>
+						<th style="width: 16.7%;">Attacking army</th>
+						<th style="width: 16.7%;">Defending army</th>
+						<th style="width: 16.7%;">Surviving defendors</th>
 						<th>Enemy defectors</th>
 					</tr>
 				</table>
-				<div style = "height: 180px; overflow: auto; text-align: center;">
+				<div style = "height: 170px; overflow: auto; text-align: center;">
 				<table class="cache_history">
 <?			
 				foreach (var evt in events)
@@ -58,11 +58,11 @@
 					var attacker = DatabaseManager.SelectFirst<Account>(x => x.AccountID == log.AttackerID);
 ?>
 					<tr>
-						<td>{$evt.TimeStamp.ToShortDateString()}</td>
-						<td><a href="profile?user={$attacker.Username}">{$attacker.Username}</a></td>
-						<td>{$log.AttackerInitial}</td>
-						<td>{$log.DefenderInitial}</td>
-						<td>{$log.DefenderSurvivors}</td>
+						<td style="width: 16.7%;">{$evt.TimeStamp.ToShortDateString()}</td>
+						<td style="width: 16.7%;"><a href="profile?user={$attacker.Username}">{$attacker.Username}</a></td>
+						<td style="width: 16.7%;">{$log.AttackerInitial}</td>
+						<td style="width: 16.7%;">{$log.DefenderInitial}</td>
+						<td style="width: 16.7%;">{$log.DefenderSurvivors}</td>
 						<td>{$log.AttackerDeserters}</td>
 					</tr>
 <?

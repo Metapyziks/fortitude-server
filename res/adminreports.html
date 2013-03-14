@@ -1,0 +1,91 @@
+<?
+    if (session == null || session.Rank < Rank.Admin) {
+        response.Redirect("404");
+    }
+
+    Include("parts/functions.html");
+    getPageStart("Report list", "parts/admin_report_script.js", null);
+    Include("parts/header.html");
+    Include ("parts/sidebar.html"); 
+
+
+    var reports = DatabaseManager.SelectAll<Report>();
+    /*
+    var reports = new [] {
+        new Report {
+            ReportID = 1,
+            AccountID = 1,
+            Type = ReportType.Account,
+            ContextID = 1,
+            Message = "This user is lame"            
+        }
+    };
+    */
+?>
+        <div id = "content">
+            <h1>Report List</h1>
+
+    <ul class = "news">
+        <li>
+            <h1>Open Reports</h1>
+
+            <table style="text-align: center;" id="msg_table">
+                <col width="10%" /> <col width="20%" /> <col width="20%" /> <col width="40%" /> <col width="10%" />
+                <tr style="background-color: #262626;">
+                    <th>Type</th> <th>Sender</th> <th>Reported</th> <th>Messsage</th> <th>&nbsp;</th>
+                </tr>
+<?
+    bool hadReport = false;
+    foreach (var report in reports) {
+        var sender = DatabaseManager.SelectFirst<Account>(x => x.AccountID == report.AccountID);
+        if (sender == null) continue;
+        String contextName = null;
+        switch (report.Type) {
+            case ReportType.Cache:
+                var cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == report.ContextID);
+                if (cache == null) break;
+                contextName = "<a href=\"/map?cache=" + report.ContextID + "\">" + cache.Name + "</a>";
+                break;
+            case ReportType.Account:
+                var accnt = DatabaseManager.SelectFirst<Account>(x => x.AccountID == report.ContextID);
+                if (accnt == null) break;
+                contextName = "<a href=\"/profile?user=" + accnt.Username + "\">" + accnt.Username + "</a>";
+                break;
+        }
+        if (contextName == null) continue;
+?>
+        <tr id="row1_{$report.ReportID}">
+            <td>
+                {$report.Type}
+            </td>
+            <td>
+                <a href="/profile?user={$sender.Username}">{$sender.Username}</a>
+            </td>
+            <td>
+                {$contextName}
+            </td>
+            <td>
+                {$report.Message}
+            </td>
+            <td>
+                <input type="button" value="Delete" />
+            </td>
+        </tr>
+<?
+        hadReport = true;
+    }
+    if (!hadReport) {
+?>
+        <tr><td colspan="4">No reports! :D</td><tr>
+<?
+    }
+?>
+                </tr>
+            </table>
+        </li>
+    </ul>
+</div> <!-- content -->
+
+<?
+    Include ("parts/footer.html");
+?>

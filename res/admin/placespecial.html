@@ -1,0 +1,81 @@
+<?
+    if (session == null || session.Rank != Rank.Owner) {
+        response.Redirect("404");
+    }
+
+    {
+        bool success = false;
+        
+        DateTime expires = DateTime.Now.AddMonths(1);
+        string name = null;
+        int balance = 0;
+        int reward = 0;
+        string mac = null;
+        string specialerror = null;
+        if (post["action"] == "placespecial") {
+            if (SpecialEvent.IsAddressValid(post["specialmac"])) {
+                balance = Int32.Parse(post["specialbalance"]);
+                reward = Int32.Parse(post["specialreward"]);
+                name = post["specialname"] ?? "";
+                mac = post["specialmac"] ?? "";
+
+                if (name == "") {
+                    specialerror = "Please enter a name.";
+                }
+
+                else if (mac == "") {
+                    specialerror = "Please enter a mac address.";
+                }
+
+                else {
+                    try {
+                        var cache = new SpecialEvent{
+                            Name = name,
+                            Reward = reward,
+                            Balance = balance,
+                            MACAddress = mac,
+                            Expires = expires
+                        };
+
+                        DatabaseManager.Insert(cache);
+
+                        success = true;
+                    } catch {
+                        specialerror = String.Format("Failed to place a special event cache at {0} :(", post["specialmac"]);
+                    }
+                }
+
+            }
+
+            else {
+                specialerror = "Mac address not valid.";
+            }
+        }
+?>
+
+<h1>Place Special Event Cache</h1>
+<form name="placeSpecialForm" action="/admin" method="post">
+    <input type="hidden" name="action" value="placespecial" />
+    <table>
+    <tr><td>Name:</td> <td><input type="text" name="specialname" value='{$name ?? ""}' /></td></tr>
+    <tr><td>MAC Address:</td> <td><input type="text" name="specialmac" value='{$mac ?? ""}' /></td></tr>
+    <tr><td>Balance:</td> <td><input type="number" name="specialbalance" min="1" max="65535" value="10"  style="width: 100px;"/></td></tr>
+    <tr><td>Reward:</td> <td><input type="number" name="specialreward" min="1" max="65535" value="10"  style="width: 100px;"/>
+    <input type="submit" value="Apply" /></td></tr>
+<?
+        if (success) {
+?>
+    <tr><td colspan ="2">Placed a special event cache at {$mac ?? ""}!</td></tr>
+<?
+        } else if (specialerror != null) {
+?>
+    <tr><td colspan ="2">{$specialerror ?? ""}</td></tr>
+<?
+       }
+?>
+    </table>
+</form>
+<?
+    }
+?>
+

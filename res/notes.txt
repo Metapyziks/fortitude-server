@@ -44,14 +44,14 @@
 	// Home
 		// Fill home screen
 
-	Account screen
+	// Account screen
 		// Add forms and stuff
 		// Change avatar
 		// KING { 'Delete Account' }
 		// Update password
 		// Update message settings
 		// Subsection / new page of all caches
-			Cache History
+			// Cache History
 		// Subsection / new page of activity recording
 		// Get date to display properly
 
@@ -77,11 +77,11 @@
 			// Link to user profile
 			// Sort into tabs of user type
 		Reports
-		Special Placement
+		// Special Placement
 			// Included in cache view
-			Create new
-		Moving delete caches
-		Updating place npc
+			// Create new
+		// Moving delete caches
+		// Updating place npc
 
 		'Announcements'
 		// Console log
@@ -110,13 +110,3 @@
 	//Overwrite cookie / update value:
 	response.SetCookie (new Cookie ("cookie name", "cookie value two" ));
 	
-	
-	Admin form to add new outlaw camp must include:
-	-----------------------------------------------
-	
-	Location => latitude and longitude
-	Initial population
-	Growth style => drop down (Constant, Logarithmic, Linear, Quadratic)
-	Growth speed => drop down (Slow, Moderate, Fast)
-	
-	Choose name from cache name generator or generate one automatically?

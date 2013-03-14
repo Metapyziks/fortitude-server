@@ -9,19 +9,25 @@
         double longitude = 0;
         int units = 0;
         string error = null;
+        GrowthStyle type;
+        GrowthStyle speed;
         if (post["action"] == "placenpc") {
             try {
                 var coords = post["coords"].Split(',');
                 latitude = Double.Parse(coords[0].Trim());
                 longitude = Double.Parse(coords[1].Trim());
                 units = Int32.Parse(post["units"]);
+                Enum.TryParse<GrowthStyle>(post["growthstyle"], out type);
+                Enum.TryParse<GrowthStyle>(post["growthspeed"], out speed);
+
 
                 var cache = new NonPlayerCache {
                     AccountID = -1,
                     Name = CacheNamer.GenerateRandomName(),
                     Latitude = latitude,
                     Longitude = longitude,
-                    Balance = units
+                    Balance = units,
+                    GrowthStyle = type | speed
                 };
                 DatabaseManager.Insert(cache);
                 success = true;
@@ -36,7 +42,18 @@
     <input type="hidden" name="action" value="placenpc" />
     <table>
     <tr><td>Lat, Lon:</td> <td><input type="text" name="coords" value="0.000, 0.000" /></td></tr>
-    <tr><td>Initial:</td> <td><input type="number" name="units" min="1" max="65535" value="10" /><input type="submit" value="Apply" /></td></tr>
+    <tr><td>Initial:</td> <td><input type="number" name="units" min="1" max="65535" value="10" style="width: 97px;"/></td></tr>
+    <tr><td>Growth style:</td><td><select name="growthstyle" style = "width: 100px;">
+                        <option value="Constant" selected="selected">Constant</option>
+                        <option value="Logarithmic">Logarithmic</option>
+                        <option value="Linear">Linear</option>
+                        <option value="Quadratic">Quadratic</option>
+                    </select></td></tr>
+    <tr><td>Growth speed:</td><td><select name="growthspeed" style="width: 100px;">
+                        <option value="Slow" selected="selected">Slow</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Fast">Fast</option>
+                    </select><input type="submit" value="Apply" /></td></tr>
 <?
         if (success) {
 ?>

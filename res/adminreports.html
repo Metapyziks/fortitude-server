@@ -1,6 +1,6 @@
 <?
-    if (session == null || session.Rank != Rank.Owner) {
-        //response.Redirect("404");
+    if (session == null || session.Rank != Rank.Admin) {
+        response.Redirect("404");
     }
 
     Include("parts/functions.html");

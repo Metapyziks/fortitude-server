@@ -136,11 +136,26 @@
 							</p>
 						</li>
 <?
-					news_count = news_count + 1;
-					if (news_count == 5) break;
-
 				}
+			} else if (item.Type == NotificationType.Message) {
+				var message = DatabaseManager.SelectFirst<Message>(x => x.NotificationID == item.NotificationID);
+				if (message == null) continue;
+				var sender = DatabaseManager.SelectFirst<Account>(x => x.AccountID == message.SenderID);
+				if (sender == null) continue;
+?>
+						<li>
+							<span><a href="/messages">New message</a> from <a href="profile?user={$sender.Username}">{$sender.Username}</a></span>
+							<p>
+								Subject: {$message.Subject}
+							</p>
+						</li>
+<?				
+			} else {
+				continue;
 			}
+
+			news_count = news_count + 1;
+			if (news_count == 5) break;
 		}
 ?>
 					<li class = "last_child">

@@ -9,11 +9,34 @@
     Include("parts/header.html");
     Include ("parts/sidebar.html");
     
-    var messages = DatabaseManager.Select<Message>(x => x.AccountID == account.AccountID);
+    Func<String, String> prependRE = x => {
+        if (!x.StartsWith("Re: ")) {
+            return "Re: " + x;
+        } else {
+            return x;
+        }
+    };
+
+    var page_response = get["response"] ?? "none";
+
+    var messages = DatabaseManager.Select<Message>(x => x.AccountID == account.AccountID).OrderByDescending(x => x.TimeStamp.Ticks);
 ?>
 
 <div id = "content">
     <h1>Messages</h1>
+<?
+    if (page_response != "none") {
+?>
+                <ul class="news">
+                    <li>
+                        <p>
+                            {$page_response}
+                        </p>
+                    </li>
+                </ul>
+<?
+    }
+?>
     <ul class = "news">
         <li>
             <h1>Inbox</h1>
@@ -53,7 +76,7 @@
             </td>
             <td style="height: auto; text-align: center;">
                 <div style="display: none; text-align: center; width: 100%;" id="buttons_{$message.NotificationID}">
-                    <input type="button" href="/sendmessage?userid={$message.SenderID}" value="Reply" />
+                    <a href="/sendmessage?userid={$message.SenderID}&subject={$prependRE(message.Subject)}" style="border-bottom: 0 !important;"><input type="button" value="Reply" /></a>
                     <input type="button" onclick="deleteMessage({$message.NotificationID});" value="Delete" />
                 </div>
             </td>

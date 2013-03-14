@@ -16,9 +16,9 @@
 	if (cache_ID != "") {
 		int cacheIDasInt;
 		if (int.TryParse(cache_ID, out cacheIDasInt)) {
-			this_cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheIDasInt);
+			this_cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheIDasInt && x.AccountID == account.AccountID);
 			if (this_cache == null) {
-				page_response = "You do not appear to own this cache!.";
+				page_response = "You do not appear to own this cache!";
 			}
 		}
 	}

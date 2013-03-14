@@ -8,6 +8,20 @@
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 
+	var cache_ID = get["cache"] ?? "";
+	String page_response = "none";
+	Cache this_cache = null;
+
+	if (cache_ID != "") {
+		int cacheIDasInt;
+		if (int.TryParse(cache_ID, out cacheIDasInt)) {
+			this_cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheIDasInt);
+			if (this_cache == null) {
+				page_response = "You do not appear to own this cache!.";
+			}
+		}
+	}
+
 ?>
 		<div id = "content">
 			<h1>Cache List</h1>

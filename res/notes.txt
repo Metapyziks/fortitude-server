@@ -54,7 +54,7 @@
 		// Subsection / new page of all caches
 			// Cache History
 		// Subsection / new page of activity recording
-			Style activity recording
+			// Style activity recording
 		// Get date to display properly
 
 	// Messages
@@ -97,7 +97,10 @@
 	// User profile pages
 		// Basic
 		// Show all caches on a map
-		Filter cache list to single cache from get request
+		// Filter cache list to single cache from get request
+
+	Add second email field to sidebar
+	Get credit info in footer
 
 
 	

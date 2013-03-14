@@ -15,7 +15,7 @@ function validatePassword(first, second)
 		return false;
 	}
 	if (!matches(first, /[0-9]/) || !matches(first, /[a-z]/i)) {
-		alert("Password must containt at least one number and one letter!");
+		alert("Password must contain at least one number and one letter!");
 		return false;
 	}
 	if (first != second) {
@@ -50,14 +50,20 @@ function hash(string)
 
 function submitPassword(form)
 {
-	var valid = validatePassword(form.reg_pword.value, form.reg_rpword.value);
-	var valid = validateEmail(form.reg_email.value, form.reg_remail.value);
-	if (valid) form.reg_phash.value = hash(form.reg_pword.value);
+    if (!validatePassword(form.reg_pword.value, form.reg_rpword.value)) {
+        return false;
+	}
+
+	if (!validateEmail(form.reg_email.value, form.reg_remail.value)) {
+        return false;
+    }
+
+    form.reg_phash.value = hash(form.reg_pword.value);
 
 	form.reg_pword.value = "";
 	form.reg_rpword.value = "";
 
-	return valid;
+	return true;
 }
 
 function getCookie(c_name) {

@@ -9,74 +9,42 @@
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 
+	var cache_ID = get["cache"] ?? "";
+	String page_response = "none";
+	Cache this_cache = null;
+
+	if (cache_ID != "") {
+		int cacheIDasInt;
+		if (int.TryParse(cache_ID, out cacheIDasInt)) {
+			this_cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == cacheIDasInt);
+			if (this_cache == null) {
+				page_response = "You do not appear to own this cache!.";
+			}
+		}
+	}
+
 ?>
 		<div id = "content">
 			<h1>View All Caches</h1>
-			<p>
-				Here is a list of every cache you own.
-			</p>
 			<ul class = "news">
 <?
-		foreach (var cache in caches) {
-			var events = DatabaseManager.Select<Event>(x => x.Type >= EventType.Cache && x.ContextID == cache.CacheID);
-			
-			var dateGot = "the Big Bang";
-			if (events.Count() > 0) {
-				dateGot = events.First().TimeStamp.ToShortDateString();
-				events.RemoveAt(0);
-			}
+		if (page_response != "none") {
 ?>
 			<li>
-				<h1>{$cache.Name}</h1>
-							
-				<img src="http://maps.googleapis.com/maps/api/staticmap?center={$cache.Latitude},{$cache.Longitude}&markers={$cache.Latitude},{$cache.Longitude}&zoom=15&size=200x200&sensor=false" class="map_cache">
-				
-				<p style="margin-bottom: 0px;">
-					{$cache.Balance} soldiers | <a href="map?cache={$cache.CacheID}">View on Main Map</a> | Obtained on {$dateGot}
-				</p>
-			
-<?
-			if (events.Count() > 0) {
-?>
-				<div style = "width: 70%; float: right; margin-right: 4px; margin-bottom: 4px;">
-				<table border="0" cellpadding="4" style = "text-align: center;">
-					<tr>
-						<th style="width: 16.7%;">Date</th>
-						<th style="width: 16.7%;">Attacker</th>
-						<th style="width: 16.7%;">Attacking army</th>
-						<th style="width: 16.7%;">Defending army</th>
-						<th style="width: 16.7%;">Surviving defendors</th>
-						<th>Enemy defectors</th>
-					</tr>
-				</table>
-				<div style = "height: 134px; overflow: auto; text-align: center;">
-				<table class="cache_history">
-<?			
-				foreach (var evt in events)
-				{
-					var log = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == evt.AuxiliaryID);
-					var attacker = DatabaseManager.SelectFirst<Account>(x => x.AccountID == log.AttackerID);
-?>
-					<tr>
-						<td style="width: 16.7%;">{$evt.TimeStamp.ToShortDateString()}</td>
-						<td style="width: 16.7%;"><a href="profile?user={$attacker.Username}">{$attacker.Username}</a></td>
-						<td style="width: 16.7%;">{$log.AttackerInitial}</td>
-						<td style="width: 16.7%;">{$log.DefenderInitial}</td>
-						<td style="width: 16.7%;">{$log.DefenderSurvivors}</td>
-						<td>{$log.AttackerDeserters}</td>
-					</tr>
-<?
-				}
-?>
-				</table>
-			</div>
-		</div>
-<?
-			}
-?>
+				<p>{$page_response}</p>
 			</li>
 <?
-	}	
+		}
+
+		if (this_cache != null) {
+			getCacheDetails(this_cache);
+		}
+
+		else {
+			foreach (var cache in caches) {
+				getCacheDetails(cache);
+			}
+		}	
 ?>
 			</ul>
 		</div> <!-- content -->

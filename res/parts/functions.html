@@ -107,7 +107,7 @@
 
 		foreach (Cache cache in these_caches){
 ?>
-			<tr>
+			<tr id="row_{$cache.CacheID}">
 				<td>{$cache.CacheID}</td>
 				<td>{$cache.Name}</td>
 				<td>{$cache.Latitude}, {$cache.Longitude}</td>
@@ -119,7 +119,7 @@
 <? 			} ?>
 				
 				<td>{$cache.Balance}</td>
-				<td>DELETE DELETE</td>
+				<td><input type="button" onclick="deleteCache({$cache.CacheID});" value="Delete" /></td>
 			</tr>
 <?
 		}

@@ -4,7 +4,7 @@
     }
 
     Include("parts/functions.html");
-	getPageStart("Cache List", "parts/admin_cache_script.js", null);
+	getPageStart("Cache List", new String[] { "//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js", "parts/admin_cache_script.js" }, null);
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 

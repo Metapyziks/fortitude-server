@@ -24,3 +24,17 @@
 	function hide (id) {
 		document.getElementById(id).style.display = 'none';
 	}
+
+
+	function deleteCache(cacheid) {
+		document.getElementById("row_" + cacheid).style.display = "none";
+
+	    new Ajax.Request("/api/deletecache", {
+	        method : "get",
+	        parameters : {
+	            uid : getCookie("auth-uid"),
+	            session : getCookie("auth-session"),
+	            cacheid : cacheid
+	        }
+	    });
+	}

@@ -92,6 +92,9 @@
 							<td>
 								Active since <? calculateAge(profile.RegistrationDate); ?><br />
 							</td>
+                            <td>
+                                <a href="/sendmessage?userid={$profile.AccountID}" style="border-bottom: 0 !important;"><input type="button" value="Send Message" /></a>
+                            </td>
 						</tr>
 					</table>
 				</li> <!-- Account summary -->

@@ -13,10 +13,19 @@
 <div id = "content">
     <h1>Messages</h1>
     <ul class = "news">
-        <li>
+        <li style="overflow: hidden;">
             <h1>Send Message</h1>
-            <form name="send_message">
-                
+            <form name="send_message" action="sendmessage" method="post">
+                <div style="text-align: center;">
+                    <table style="width: 95%; margin: 0 2.5%; text-align: left;">
+                        <tr><td>To:</td><td>Subject:</td></tr>
+                        <tr><td><input type="text" name="send_username" style="width: 192px;" /></td>
+                            <td><input type="text" name="send_subject" style="width: 384px;" /></td></tr>
+                        <tr><td>Message:</td></tr>
+                        <tr><td colspan="2"><textarea name="send_message" style="width: 100%; height: 160px;"></textarea></td></tr>
+                        <tr><td><input type="submit" value="Send" /></td></tr>
+                    </table>
+                </div>
             </form>
         </li>
     </ul>

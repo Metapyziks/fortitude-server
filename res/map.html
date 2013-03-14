@@ -9,7 +9,7 @@
 	Include("parts/header.html");
 	Include ("parts/sidebar.html"); 
 
-	IEnumerable<Cache> displaycaches = DatabaseManager.SelectAll<Cache>();
+	List<Cache> displaycaches = DatabaseManager.SelectAll<Cache>();
 
 	var cache_ID = get["cache"] ?? "";
 	var filter = get["filter"] ?? "";
@@ -32,7 +32,7 @@
 
 	else if (searchtype == "username" && search != "") {
 		Account searched_user = DatabaseManager.SelectFirst<Account>(x => x.Username == search);
-		displaycaches = displaycaches.Where(x => x.AccountID == searched_user.AccountID);
+		displaycaches = displaycaches.Where(x => x.AccountID == searched_user.AccountID).ToList();
 		if (displaycaches.Count() < 1) {
 			page_response = search + " does not have any caches.";
 		}
@@ -43,7 +43,7 @@
 
 	else {
 		if (filter == "outlaw") {
-			displaycaches = displaycaches.Where(x => x.AccountID == -1);
+			displaycaches = displaycaches.Where(x => x.AccountID == -1).ToList();
 			if (displaycaches.Count() < 1) {
 				page_response = "Filtering by Outlaw Cache, but no Outlaw Caches were found.";
 			}
@@ -52,7 +52,7 @@
 			}
 			else {
 				if (searchtype == "cache") {
-					displaycaches = displaycaches.Where(x => x.Name == search);
+					displaycaches = displaycaches.Where(x => x.Name == search).ToList();
 					
 					if (displaycaches.Count() < 1) {
 						page_response = "No Outlaw Caches with the name " + search;
@@ -65,7 +65,7 @@
 		}
 
 		else if (filter == "mine") {
-			displaycaches = displaycaches.Where(x => x.AccountID == account.AccountID);
+			displaycaches = displaycaches.Where(x => x.AccountID == account.AccountID).ToList();
 			if (displaycaches.Count() < 1) {
 				page_response = "Filtering by your caches, but no caches were found.";
 			}
@@ -74,7 +74,7 @@
 			}
 			else {
 				if (searchtype == "cache") {
-					displaycaches = displaycaches.Where(x => x.Name == search);
+					displaycaches = displaycaches.Where(x => x.Name == search).ToList();
 					
 					if (displaycaches.Count() < 1) {
 						page_response = "Could not find any of your caches with the name " + search;
@@ -87,7 +87,7 @@
 		}
 
 		else if (filter == "enemy") {
-			displaycaches = displaycaches.Where(x => x.AccountID > 0 && x.AccountID != account.AccountID);
+			displaycaches = displaycaches.Where(x => x.AccountID > 0 && x.AccountID != account.AccountID).ToList();
 			if (displaycaches.Count() < 1) {
 				page_response = "Filtering by enemy, but no enemy caches were found.";
 			}
@@ -96,7 +96,7 @@
 			}
 			else {
 				if (searchtype == "cache") {
-					displaycaches = displaycaches.Where(x => x.Name == search);
+					displaycaches = displaycaches.Where(x => x.Name == search).ToList();
 					
 					if (displaycaches.Count() < 1) {
 						page_response = "No enemy caches with the name " + search;
@@ -163,7 +163,7 @@
 	    {
 ?>
            var content = document.createElement('div');
-           content.innerHTML = "MEOW I AM A CAT!";
+           content.innerHTML = '<a href="mycaches?cache={$cache.CacheID}" style="color: #000;">{$cache.Name}</a>';
 		addAlliedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <?
 	    }
@@ -171,7 +171,7 @@
 	    {
 ?>		  
            var content = document.createElement('div');
-           content.innerHTML = "WOOF I AM A DOG!";
+           content.innerHTML = '{$cache.Name}, admin cache';
   		addAdminMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <? 
             }
@@ -179,15 +179,16 @@
 	    {
 ?>
               var content = document.createElement('div');
-              content.innerHTML = "OINK I AM A PIG!";  
+              content.innerHTML = '{$cache.Name}, unowned';  
               addUnownedMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <?
 	    }
             else
 	    {
+	    	Account owner = DatabaseManager.SelectFirst<Account> (x => x.AccountID == cache.AccountID);
 ?>    
                 var content = document.createElement('div');
-                content.innerHTML = "MOO I AM A COW!";
+                content.innerHTML = '{$cache.Name}, owned by <a href=profile?user="{$owner.Username}" style="color: #000;">{$owner.Username}</a>';
 		addEnemyMarker({$cache.Latitude}, {$cache.Longitude}, "{$cache.Name}", content);
 <?
 	    }

@@ -118,14 +118,15 @@
 					<h1>Recent News</h1>
 					<ul>
 <?
-		var news = DatabaseManager.Select<Notification>(x => x.AccountID == account.AccountID);
-		int news_count = 0;
-		foreach (var item in news) {
-			if (item.Type == NotificationType.BattleReport) {
-				var report = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == item.NotificationID);
-				if (report == null) continue;
-				var cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == report.CacheID);
-				if (cache != null && report != null) {
+		{
+			var news = DatabaseManager.Select<Notification>(x => x.AccountID == account.AccountID);
+			int news_count = 0;
+			foreach (var item in news) {
+				if (item.Type == NotificationType.BattleReport) {
+					var report = DatabaseManager.SelectFirst<BattleReport>(x => x.NotificationID == item.NotificationID);
+					if (report == null) continue;
+					var cache = DatabaseManager.SelectFirst<Cache>(x => x.CacheID == report.CacheID);
+					if (cache != null && report != null) {
 ?>
 						<li>
 							<span><a href="map?cache={$cache.CacheID}">{$cache.Name}</a> has been {$(report.DefenderSurvivors > 0) ? "attacked" : "defeated"}</span>
@@ -136,25 +137,38 @@
 							</p>
 						</li>
 <?
-					news_count = news_count + 1;
-					if (news_count == 5) break;
-
+					}
+				} else if (item.Type == NotificationType.Message) {
+					var _message = DatabaseManager.SelectFirst<Message>(x => x.NotificationID == item.NotificationID);
+					if (_message == null) continue;
+					var sender = DatabaseManager.SelectFirst<Account>(x => x.AccountID == _message.SenderID);
+					if (sender == null) continue;
+?>
+						<li>
+							<span><a href="/messages">New message</a> from <a href="profile?user={$sender.Username}">{$sender.Username}</a></span>
+							<p>
+								Subject: {$_message.Subject}
+							</p>
+						</li>
+<?				
+				} else {
+					continue;
 				}
+
+				news_count = news_count + 1;
+				if (news_count == 5) break;
 			}
-		}
 ?>
 					<li class = "last_child">
 
 <?
-		if (news_count == 0) {
+			if (news_count == 0) {
 ?>
 							<p>
 								You don't have any news! Start playing the game through the Fortitude app today.
 							</p>
 <?		
-		}
-
-		else {
+			} else {
 ?>
 							<p>
 								Showing {$news_count} most recent {$pluralify("news item", "news items", news_count)}.
@@ -162,12 +176,14 @@
 							<p>
 								<a href="#">View all caches</a>
 							</p>
-<?		}
+<?		
+			}
 ?>
 						</li>
 					</ul>
 				</li> <!-- recent news -->
 <?
+		}
 	}
 ?>
 			</ul>	

@@ -92,6 +92,7 @@
 				<th>Owner</th>
 <?		}	?>
 				<th>Balance</th>
+				<th>Delete</th>
 			</tr>
 <?		
 		IEnumerable<Cache> these_caches = DatabaseManager.Select<Cache>(x => x.AccountID == -1);
@@ -118,6 +119,7 @@
 <? 			} ?>
 				
 				<td>{$cache.Balance}</td>
+				<td>DELETE DELETE</td>
 			</tr>
 <?
 		}

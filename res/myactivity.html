@@ -56,7 +56,32 @@
 ?>
 						<tr>
 							<td>{$evt.TimeStamp.ToShortDateString()}</td>
-							<td style="text-align: left; padding-left: 15px;">Battle report involving cache <a href="mycaches?cache={$bat_cache.CacheID}">{$bat_cache.Name}</a> | <a href="map?cache={$bat_cache.CacheID}">View on map</a></td>
+							<td style="text-align: left; padding-left: 15px;">
+<?
+				if (bat_rep.AttackerID == account.AccountID) {
+					var bat_defender = DatabaseManager.SelectFirst<Account>(x => x.AccountID == bat_rep.DefenderID);
+					var bat_result = "successfully";
+					if (bat_rep.DefenderSurvivors > 0) {
+						bat_result = "unsuccessfully";
+					}
+?>
+								You {$bat_result} attacked <a href="map?cache={$evt.AuxiliaryID}">{$bat_cache.Name}</a>, owned by {$bat_defender.Username}. 
+<?
+				}
+
+				else {
+					var bat_attacker = DatabaseManager.SelectFirst<Account>(x => x.AccountID == bat_rep.AttackerID);
+					var bat_result = "successfully";
+					if (bat_rep.AttackerSurvivors > 0) {
+						bat_result = "unsuccessfully";
+					}
+?>
+								{$bat_attacker.Username} {$bat_result} attacked <a href="map?cache={$evt.AuxiliaryID}">{$bat_cache.Name}</a>
+<?
+				}
+
+?>
+							</td>
 						</tr>
 <?	
 				break;

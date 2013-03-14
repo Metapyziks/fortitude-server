@@ -21,7 +21,12 @@
 	if (cache_ID != "") {
 		int cacheIDasInt;
 		if (int.TryParse(cache_ID, out cacheIDasInt)) {
-			displaycaches = new List<Cache>{displaycaches.First(x => x.CacheID == cacheIDasInt)};
+			try {
+				displaycaches = new List<Cache>{displaycaches.First(x => x.CacheID == cacheIDasInt)};
+			}
+			catch {
+				page_response = "Cache not found.";
+			}
 		}
 	}
 

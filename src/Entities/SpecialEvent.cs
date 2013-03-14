@@ -15,7 +15,7 @@ namespace FortitudeServer.Entities
         static SpecialEvent()
         {
             String part = "([a-zA-Z0-9]{2})";
-            _sAddressRegex = new Regex("^" + part + "(:" + part + "){5,7}?$");
+            _sAddressRegex = new Regex("^" + part + "([:-]" + part + "){5,7}?$");
         }
 
         public static bool IsAddressValid(String address)

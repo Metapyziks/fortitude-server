@@ -45,8 +45,8 @@
 	};
 
 	// Display a cache's information, including owner, balance, history
-	// @Params: The cache to display.
-	Action<Cache> getCacheDetails = (cache) =>
+	// @Params: The cache to display, and whether or not it's to be displayed on the admin pages (includes extra details)
+	Action<Cache, bool> getFullCacheDetails = (cache, onAdmin) =>
 	{
 		var events = DatabaseManager.Select<Event>(x => x.Type >= EventType.Cache && x.ContextID == cache.CacheID);
 			
@@ -58,6 +58,17 @@
 ?>
 	<li>
 		<h1>{$cache.Name}</h1>
+<?	if (onAdmin) { ?><p style="float: right;
+		margin-top: -40px;
+		margin-right: 10px;">
+<?		if (cache.AccountID < 0) {?> Outlaw Camp
+<? }	else if (cache.AccountID == 0) {?> Unowned Cache
+<? }	else {
+			var owner = DatabaseManager.SelectFirst<Account>(x => x.AccountID == cache.AccountID);
+?>			<a href="profile?user={$owner.Username}" style="border-bottom: none !important;">{$owner.Username}</a>
+<? } ?>		</p>
+<?
+} ?>
 							
 				<img src="http://maps.googleapis.com/maps/api/staticmap?center={$cache.Latitude},{$cache.Longitude}&markers={$cache.Latitude},{$cache.Longitude}&zoom=15&size=200x200&sensor=false" class="map_cache">
 				
@@ -104,6 +115,11 @@
 	</li>
 <?
 			}
+	};
+
+	Action<Cache> getCacheDetails = (cache) =>
+	{
+		getFullCacheDetails (cache, false);
 	};
 
 	// Get a section of the user list corresponding to users of a certain rank.

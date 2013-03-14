@@ -44,18 +44,22 @@
 	}
 
 	if (this_here_cache != null) {
-		getCacheDetails (this_here_cache);
+		getFullCacheDetails (this_here_cache, true);
 	}
 
 	if (these_here_caches != null) {
 		foreach (Cache here_cache in these_here_caches) {
-			getCacheDetails (here_cache);
+			getFullCacheDetails (here_cache, true);
 		}
 	}	
 ?>
 			</ul>
-			<form style = "float: left; width: 40%;">
-				
+			<p>
+				<form style = "float: left; width: 30%;" action = "admincaches" id = "searchadmincaches" name = "searchadmincaches" method = "get">
+					<input type="text" name="cache" />
+					<input type="submit" value="search" />
+				</form>
+			</p>	
 			<p style = "text-align: right; margin-right: 20px; margin-top: 20px;">
 				<a onclick = "showTab('owned')">Owned caches</a> | <a onclick = "showTab('unowned')">Unowned caches</a> | <a onclick = "showTab('admin')">Outlaw camps</a> | <a onclick = "showTab('special')">Special Placement</a>
 			</p>
